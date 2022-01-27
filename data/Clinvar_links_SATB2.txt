@@ -1,0 +1,283 @@
+Link	AA_ref	AA_alt	AA_pos	Gene	ClinicalSignificance
+https://www.ncbi.nlm.nih.gov/clinvar/variation/2519	Arg	Ter	239	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/208673	Arg	Ter	283	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/216996	Thr	Ile	390	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/235893	Lys	Ter	499	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/280687	Arg	Ter	429	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/280282	Arg	Gln	429	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/373069	Arg	His	399	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/373586	Gln	Ter	290	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/374253	Lys	Glu	400	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/391717	Glu	Val	494	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/381575	Arg	Cys	389	SATB2	Pathogenic/Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/422062	Glu	Lys	566	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/422498	Leu	Pro	182	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/420691	Val	Glu	131	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/421610	Leu	Arg	96	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/423831	Val	Asp	62	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/419551	Gly	Ter	42	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/427210	Gly	Glu	392	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/429920	Gly	Arg	116	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/436636	Pro	Leu	655	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/437864	Trp	Ter	225	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/452989	Glu	Lys	643	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469553	Ala	Thr	726	SATB2	Benign/Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469550	Asn	Asn	701	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469548	Asp	Asp	685	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469546	Ser	Ser	617	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469545	Pro	Pro	606	SATB2	Benign/Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469543	NA	NA	NA	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469541	NA	NA	NA	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469561	Ala	Ala	167	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469556	Lys	Lys	119	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469551	Asp	Asp	70	SATB2	Benign/Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469542	Gln	Gln	419	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469552	Ser	Ser	707	SATB2	Benign/Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469564	Gln	Gln	275	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469563	Pro	Pro	252	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469559	Asp	Asp	136	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469558	Pro	Pro	135	SATB2	Benign/Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469555	Ala	Ala	114	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469554	Ala	Ala	111	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469549	Thr	Thr	696	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469540	NA	NA	NA	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469565	Gln	Gln	285	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469560	Thr	Thr	151	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469557	Pro	Pro	127	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/469547	Val	Val	65	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/489104	Met	Val	1	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/504014	Gln	Ter	333	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/521523	Met	Arg	418	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/522269	Arg	Ter	459	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/523422	Gln	Ter	664	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537276	Pro	Pro	404	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537279	Ser	Ser	357	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537273	Ala	Thr	288	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537283	Val	Val	146	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537271	Gly	Ser	706	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537284	Gly	Gly	478	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537280	Ala	Ala	380	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537278	Leu	Leu	298	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537270	Asp	Glu	244	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537282	Val	Val	476	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537274	Ala	Thr	334	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537277	Leu	Leu	102	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537272	Ala	Thr	683	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537281	Ile	Ile	345	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/537275	Ile	Thr	232	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/545530	Gly	Ser	515	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/546548	Ser	Leu	649	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/575584	Ile	Val	481	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/579062	Gln	His	732	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/578465	Ser	Ser	703	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/573402	Gln	Ter	115	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/581027	Arg	Leu	667	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/571732	NA	NA	NA	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/570770	Arg	Gln	325	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/581640	Asp	Glu	244	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/581209	Val	Ile	554	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/568908	NA	NA	NA	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/584426	Glu	Ter	692	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/584423	Glu	Gln	396	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/584422	Gln	Ter	391	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/584421	Val	Gly	381	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/584420	Gln	Ter	250	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/584419	NA	NA	NA	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/589091	Lys	Asn	724	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/588573	Lys	Lys	614	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/588708	Ser	Gly	528	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/587756	NA	NA	NA	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/589397	Ala	Ser	288	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/589354	Met	Ile	568	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/588166	Arg	Pro	399	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/588693	Ala	Ala	50	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/589615	Pro	Pro	14	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/620021	NA	NA	NA	SATB2	Pathogenic/Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/620309	Gln	Ter	586	SATB2	Pathogenic/Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/620393	Gln	Ter	285	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/620517	Gln	Ter	113	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/624168	Ala	Val	52	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/625206	NA	NA	NA	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/660219	Ile	Thr	730	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/658810	Glu	Lys	729	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/654229	Ala	Gly	728	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/648172	Lys	Arg	712	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/657003	Glu	Lys	709	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/646214	Glu	Lys	692	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/646453	Val	Val	684	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/662502	Glu	Asp	678	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/658775	Ser	Ser	649	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/660875	Ser	Gly	610	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/662501	Arg	Cys	399	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/658215	Val	Ile	247	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/649561	Asn	Ser	213	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/656899	Gln	Ter	188	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/661483	Gly	Ser	71	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/657251	NA	NA	NA	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/702795	Ile	Ile	645	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/772578	Lys	Lys	524	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/719062	Leu	Leu	412	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/731082	Cys	Cys	195	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/733330	Asp	Glu	133	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/728443	Leu	Leu	102	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/744892	Ala	Ala	715	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/749209	His	His	673	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/737598	Lys	Lys	591	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/735762	Asp	Asp	489	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/742384	Glu	Glu	401	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/738064	Ser	Ser	198	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/743941	Tyr	Tyr	106	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/749913	Ala	Ala	82	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/747430	NA	NA	NA	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/746659	NA	NA	NA	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/753214	Thr	Thr	696	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/758202	Ile	Ile	659	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/763132	His	His	583	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/761793	Ala	Ala	510	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/758524	Val	Val	508	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/754796	Ala	Thr	479	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/752847	Thr	Thr	469	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/754847	Arg	Arg	416	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/753205	Gln	Gln	305	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/758242	Leu	Leu	197	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/760693	Asn	Asn	177	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/756669	Ala	Ala	140	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/759125	Asn	Asn	124	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/799264	Leu	Leu	69	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/801849	Gln	Ter	309	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/801850	NA	NA	NA	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/809135	Tyr	Cys	130	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/807484	Tyr	Ter	75	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/828114	Leu	Phe	126	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/833582	Asn	Lys	665	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/833604	Ile	Val	282	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/833904	His	Arg	278	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/833930	Lys	Arg	161	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/833628	Pro	Ala	40	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/838035	Val	Met	571	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/834509	Glu	Asp	557	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/845077	Asn	Ser	480	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/838898	Ile	Val	474	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/848678	Ser	Ser	440	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/848669	Glu	Gly	396	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/836573	Ser	Ile	376	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/834784	Arg	Gln	88	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/870946	Asn	Lys	531	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/930646	Gln	Ter	275	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/931898	Lys	Glu	30	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/931623	NA	NA	NA	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/948951	Thr	Ala	267	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/944821	Asn	Lys	257	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/949573	Met	Ile	142	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/938268	Ala	Val	725	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/938971	Met	Val	258	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/936574	Pro	Leu	47	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/958193	Gln	Arg	585	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/963124	Val	Leu	581	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/964503	Gly	Ser	478	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/961361	Thr	Asn	460	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/964267	Glu	Asp	426	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/962176	Thr	Ser	190	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/967319	Val	Leu	55	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/973276	Tyr	Ter	106	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/973256	Tyr	Ser	433	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/978890	Gln	Ter	588	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/978889	Ser	Asn	513	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/981628	Gly	Arg	392	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/986170	Gln	Ter	493	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/986051	NA	NA	NA	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/987219	Gln	Ter	409	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/987151	Glu	Ter	185	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/987018	Lys	Ter	184	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/988374	Lys	Ter	218	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/996683	Ile	Phe	621	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1008181	Arg	Cys	543	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1005615	Pro	Leu	468	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1002627	Arg	Lys	416	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1001127	Ala	Thr	32	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1013446	Val	Ala	139	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1023416	Ala	Pro	728	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1019234	Ala	Val	683	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1026820	Val	Leu	131	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1032668	Glu	Val	436	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1032667	Gln	Ter	379	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1032669	NA	NA	NA	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1035050	Ala	Thr	720	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1035375	Pro	Leu	615	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1039759	Pro	Ser	615	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1044366	Arg	His	532	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1046438	Leu	His	306	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1053939	Glu	Gly	709	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1062696	Ser	Phe	449	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1059312	Ala	Val	137	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1058180	Gln	Glu	115	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1059517	Arg	Lys	78	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1063554	Pro	Ala	26	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1065439	Gln	Pro	391	SATB2	Likely pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1081890	Ser	Ser	610	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1093075	Pro	Pro	606	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1095718	Ala	Ala	600	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1087474	Ser	Asn	593	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1079443	Ala	Ala	590	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1089810	Ser	Ser	587	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1087816	His	His	570	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1077949	Ser	Ser	565	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1077843	NA	NA	NA	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1093869	Leu	Leu	179	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1089608	Tyr	His	75	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1086059	Leu	Leu	58	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1109432	Ala	Ala	726	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1104360	Lys	Lys	724	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1112880	His	His	646	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1101563	Leu	Leu	629	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1119292	Asn	Ile	526	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1114042	Thr	Thr	484	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1106168	Leu	Leu	264	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1108963	Gln	Gln	250	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1109715	Ser	Ser	204	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1106391	Tyr	Tyr	75	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1106046	Gln	Gln	68	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1105778	Pro	Pro	21	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1139130	His	His	669	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1122398	NA	NA	NA	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1129447	Arg	Arg	552	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1129853	Leu	Leu	517	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1126904	Leu	Leu	517	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1127258	Asp	Asp	477	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1127214	Val	Val	445	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1123789	Asn	Thr	355	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1130552	Asn	Asn	268	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1122659	NA	NA	NA	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1132221	Leu	Leu	152	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1133430	Leu	Leu	143	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1122746	Pro	Pro	127	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1123657	Lys	Lys	89	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1132845	His	His	81	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1120995	Leu	Leu	73	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1153396	Asp	Asp	691	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1157371	Ser	Ser	682	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1159767	Arg	Arg	667	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1160959	Arg	His	618	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1158579	Asp	Asp	609	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1160132	Pro	Pro	602	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1142573	NA	NA	NA	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1147074	Leu	Phe	534	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1142331	Thr	Thr	460	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1156337	Ser	Ser	376	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1156611	Pro	Pro	353	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1149134	Ala	Ala	322	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1145384	Ile	Ile	282	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1142359	Ser	Ser	271	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1141435	Thr	Thr	209	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1153171	NA	NA	NA	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1142536	Tyr	Tyr	147	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1151224	Ala	Ala	137	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1147252	NA	NA	NA	SATB2	Likely benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1165541	Glu	Glu	592	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1164562	Asn	Ser	482	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1164710	Asn	Ser	268	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1168408	Arg	His	251	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1164336	Val	Met	51	SATB2	Benign
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1172597	Gln	Ter	642	SATB2	Pathogenic
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1174112	Arg	Cys	532	SATB2	Uncertain/conflicting
+https://www.ncbi.nlm.nih.gov/clinvar/variation/1175463	NA	NA	NA	SATB2	Benign
