@@ -26,13 +26,12 @@ write_delim(pat.df, "data/SATB2_Patient_variants_v1.txt", # write to data folder
 ## read in from xlsx file
 pat.df.id <- read_excel("prep_data/SATB2_Patient_variants_v1_with_IDs.xlsx")
 
-## add new column with registry IDs only: remove first 6 characters 'SATB2-'
-pat.df.id$`SATB2 ID` <- gsub("^.{0,6}", "", pat.df.id$`SATB2 ID`)
+# ## add new column with registry IDs only: remove first 6 characters 'SATB2-'
+# pat.df.id$`SATB2 ID` <- gsub("^.{0,6}", "", pat.df.id$`SATB2 ID`)
 
 ## rename registry id column and make it NUM
 pat.df.id <- pat.df.id %>% 
-  rename(registry_id = `SATB2 ID`) %>% 
-  mutate(registry_id = as.numeric(registry_id))
+  rename(registry_id = `SATB2 ID`)
 
 pat.df.id %>%
   mutate(registry_id = str_sub(`SATB2 ID`, 6, -1))
