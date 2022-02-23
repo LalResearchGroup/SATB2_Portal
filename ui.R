@@ -40,7 +40,7 @@ schema_color_light <- "gainsboro"
 
 contact_us <- "mailto:lald@ccf.org; stefana4@ccf.org; yazarate@uams.edu"
 contact_yuri <- "mailto:yazarate@uams.edu"
-contact_katie <- "mailto:kbbonsanko@uams.edu"
+contact_katie <- "mailto:kbbosanko@uams.edu"
 
 ##### Landing Page Variable #####
 #General
