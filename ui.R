@@ -607,6 +607,13 @@ tabPanel(title = "Families", value = "familyTab",
                                                         target = '_blank')),
                                                   div(style = "display: inline-block; width: 40%;", 
                                                       width = 12, shiny::a(
+                                                        img(src = "SATB2_LOGO_Australia.jpg", 
+                                                            width = 300, 
+                                                            height = 300),
+                                                        href = "https://satb2.org.au/",
+                                                        target = '_blank')),
+                                                  div(style = "display: inline-block; width: 40%;", 
+                                                      width = 12, shiny::a(
                                                         img(src = "SATB2_LOGO_esp.png", 
                                                             width = 600, 
                                                             height = 600),
@@ -1114,7 +1121,7 @@ tabPanel(title = p(HTML(paste0(em("SATB2"), " Registry"))), value = "registryTab
                                                     syndrome in the United States. This clinic is hosted quarterly and participants can anticipate undergoing a comprehensive evaluation
                                                     by our experienced ", em("SATB2"), " team. More information at ", em("SATB2"), " International Clinic (", 
                                                                   shiny::a("archildrens.org", 
-                                                                           href = "https://www.archildrens.org/", 
+                                                                           href = "https://www.archildrens.org/programs-and-services/satb2-international-clinic?&journey=symptoms", 
                                                                            target = "_blank"), ").")))
                                  )),
                                  column(4,align="center", img(src="SAS_registry_LOGO.jpg", width="95%"), 
