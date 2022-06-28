@@ -78,7 +78,7 @@ basic_visual_title = "Clinical Information of our patients"
 basic_phenotype_title1 = "Population breakdown"
 basic_phenotype_title2 = "Speech and walking"
 basic_phenotype_title3 = "Verbal output" 
-basic_phenotype_title4 = "Clefte plate & Low bone density" 
+basic_phenotype_title4 = "Cleft plate & Low bone density" 
 basic_phenotype_title5 = "Other phenotypes"
 
 basic_plot_title_fac1_1 = "Sex"
@@ -186,7 +186,7 @@ NAFE = Non-acquired focal epilepsy; EOAE = Early onset absence epilepsy; DEE = D
 
 research_geno_transcripts <- p("The following transcript was used:",em("SATB2"),": ENST00000287766",
                                br(),
-                               "H: Helix")
+                               "H: Helix",
 
 #Datasets required for research tab 
 Patient_data.df <- read_delim("data/SATB2_Patient_variants_v1.txt", delim = "\t") 
@@ -1052,20 +1052,20 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                         p(research_geno_transcripts , align="center", style=sub_style),
                                                         br()
                                                  ),
-                                                 # column(5,
-                                                 #        addSpinner(color = spinner_color,
-                                                 #                   r3dmolOutput(
-                                                 #                     outputId = "threeDmolGene_all",
-                                                 #                     width = "100%",
-                                                 #                     height = "400px"
-                                                 #                   )),
-                                                 #        div("UniProt:",
-                                                 #            align="center",
-                                                 #            style=sub_style,
-                                                 #            shiny::a("Q9UPW6", href = "https://www.uniprot.org/uniprot/Q9UPW6", target = "_blank"),
-                                                 #            br(),
-                                                 #            div("Predicted structure", align = "center", style=sub_style,
-                                                 #                shiny::a("Alpha fold", href = "https://www.alphafold.ebi.ac.uk/entry/Q9UPW6", target = "_blank"))))
+                                                 column(5,
+                                                        addSpinner(color = spinner_color,
+                                                                   r3dmolOutput(
+                                                                     outputId = "threeDmolGene_all",
+                                                                     width = "100%",
+                                                                     height = "400px"
+                                                                   )),
+                                                        div("UniProt:",
+                                                            align="center",
+                                                            style=sub_style,
+                                                            shiny::a("Q9UPW6", href = "https://www.uniprot.org/uniprot/Q9UPW6", target = "_blank"),
+                                                            br(),
+                                                            div("Predicted structure", align = "center", style=sub_style,
+                                                                shiny::a("Alpha fold", href = "https://www.alphafold.ebi.ac.uk/entry/Q9UPW6", target = "_blank"))))
                                                )),
                                              fluidRow(
                                                column(12, 
