@@ -544,7 +544,7 @@ shinyUI(
                                        br(),
                                        fluidRow(align = "center",
                                                 column(6, box(title=div("Further Phenotypes", style = "font-size: 15px"), width=12, align="center",
-                                                              img(src = "worldcloud_phenotype.png", width = "100%"),
+                                                              img(src = "worldcloud_phenotype_1.png", width = "100%"),
                                                               footer = div("Frequently described phenotypes associaed with SATB2."))),
                                                 column(12,
                                                        align="center",
@@ -1045,27 +1045,27 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                  column(5,plotOutput(outputId = "Genotype_legend_plot", height = 30, width = 450) ),
                                                ),
                                                fluidRow(
-                                                 column(7,
+                                                 column(12,
                                                         addSpinner(plotlyOutput(outputId = "Genotype_overview_plot"), color =
                                                                      spinner_color),
                                                         br(),
                                                         p(research_geno_transcripts , align="center", style=sub_style),
                                                         br()
                                                  ),
-                                                 column(5,
-                                                        addSpinner(color = spinner_color,
-                                                                   r3dmolOutput(
-                                                                     outputId = "threeDmolGene_all",
-                                                                     width = "100%",
-                                                                     height = "400px"
-                                                                   )),
-                                                        div("UniProt:",
-                                                            align="center",
-                                                            style=sub_style,
-                                                            shiny::a("Q9UPW6", href = "https://www.uniprot.org/uniprot/Q9UPW6", target = "_blank"),
-                                                            br(),
-                                                            div("Predicted structure", align = "center", style=sub_style,
-                                                                shiny::a("Alpha fold", href = "https://www.alphafold.ebi.ac.uk/entry/Q9UPW6", target = "_blank"))))
+                                                 # column(5,
+                                                 #        addSpinner(color = spinner_color,
+                                                 #                   r3dmolOutput(
+                                                 #                     outputId = "threeDmolGene_all",
+                                                 #                     width = "100%",
+                                                 #                     height = "400px"
+                                                 #                   )),
+                                                 #        div("UniProt:",
+                                                 #            align="center",
+                                                 #            style=sub_style,
+                                                 #            shiny::a("Q9UPW6", href = "https://www.uniprot.org/uniprot/Q9UPW6", target = "_blank"),
+                                                 #            br(),
+                                                 #            div("Predicted structure", align = "center", style=sub_style,
+                                                 #                shiny::a("Alpha fold", href = "https://www.alphafold.ebi.ac.uk/entry/Q9UPW6", target = "_blank"))))
                                                )),
                                              fluidRow(
                                                column(12, 

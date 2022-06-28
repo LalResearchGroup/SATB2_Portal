@@ -247,7 +247,7 @@ Onset_days_2.fun <- function(select_gene,phenotype,colors_sel){
 Phenotype_wordcl.fun <- function(Patient_data.df){
   
   Patient_filtered.df <- Patient_data.df %>% 
-    select(26:39) 
+    select(26:28,31:38) 
   wc_input <- colSums(is.na(Patient_filtered.df))
   
   word_cloud_input.df<- tibble(word = names(wc_input) %>% str_replace_all(.,"_"," "),freq = wc_input) %>% 
@@ -969,51 +969,94 @@ shinyServer(function(input, output, session) {
       "There is no data that matches your filters."
     ))
 
-    plotty1 <- plot_ly(data = z %>% 
-                         dplyr::rename(phenotype_sel = Cleft_palate) %>% 
-                         select(phenotype_sel) %>%
-                         arrange(phenotype_sel) %>% 
-                         filter(!is.na(phenotype_sel)) %>% 
-                         group_by(phenotype_sel) %>% 
-                         dplyr::summarise(n = n()) %>% 
-                         assign("save",.,envir = .GlobalEnv), 
+    selected_data.df <- z %>% 
+      dplyr::rename(phenotype_sel = Cleft_palate) %>% 
+      select(phenotype_sel) %>%
+      arrange(phenotype_sel) %>% 
+      filter(!is.na(phenotype_sel)) %>% 
+      group_by(phenotype_sel) %>% 
+      dplyr::summarise(n = n()) %>% 
+      assign("save",.,envir = .GlobalEnv)
+    
+    all_data.df <- Patient_data.df %>% 
+      dplyr::rename(phenotype_sel = Cleft_palate) %>% 
+      select(phenotype_sel) %>%
+      arrange(phenotype_sel) %>% 
+      filter(!is.na(phenotype_sel)) %>% 
+      group_by(phenotype_sel) %>% 
+      dplyr::summarise(n = n()) 
+    
+    n_tot_y <- ifelse(length(selected_data.df$n[which(selected_data.df == "Yes")]) != 0,selected_data.df$n[which(selected_data.df == "Yes")],0)
+    
+    n_tot_n <- ifelse(length(selected_data.df$n[which(selected_data.df == "No")]) != 0,selected_data.df$n[which(selected_data.df == "No")],0)
+    
+    plot1_input.df <- tibble(phenotype_sel = c("Yes","No"), n_tot = c(n_tot_y,n_tot_n), per = c(n_tot_y/all_data.df$n[which(all_data.df$phenotype_sel == "Yes")]*100,n_tot_n/all_data.df$n[which(all_data.df$phenotype_sel == "No")]*100))
+    
+    plotty1 <- plot_ly(data = plot1_input.df, 
                        x = ~ phenotype_sel, 
-                       y = ~ round(n, digits = 2), 
+                       y = ~ round(per, digits = 2), 
                        color = ~ phenotype_sel, 
                        colors = basic_phenotype_colors,
                        type = "bar", 
                        hoverinfo = "text", showlegend = FALSE,
-                       text= ~ paste0(round(n, digits = 2), " (" ,n," individuals)")) %>% 
+                       text= ~ paste0(round(n_tot, digits = 2), " (" ,n_tot," individuals)")) %>% 
       layout(title="", 
              font=plotly_font,
              xaxis = list(title="",showline = T, tickangle = 45),
-             yaxis = list(title="N of individuals",showline = T),
+             yaxis = list(title="Share of individuals (%)",showline = T),
              margin = list(b = 160)) %>%
       config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  
                        
     
-    plotty2 <- plot_ly(data = z %>% 
-                         dplyr::rename(phenotype_sel = Total_speech) %>% 
-                         select(phenotype_sel) %>%
-                         arrange(phenotype_sel) %>% 
-                         filter(!is.na(phenotype_sel)) %>% 
-                         mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
-                         group_by(phenotype_sel) %>% 
-                         dplyr::summarise(n = n()) %>% 
-                         assign("save",.,envir = .GlobalEnv), 
+    selected_data.df <- z %>% 
+      dplyr::rename(phenotype_sel = Total_speech) %>% 
+      select(phenotype_sel) %>%
+      arrange(phenotype_sel) %>% 
+      filter(!is.na(phenotype_sel)) %>% 
+      mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
+      group_by(phenotype_sel) %>% 
+      dplyr::summarise(n = n()) %>% 
+      assign("save",.,envir = .GlobalEnv)
+    
+    all_data.df <- Patient_data.df %>% 
+      dplyr::rename(phenotype_sel = Total_speech) %>% 
+      select(phenotype_sel) %>%
+      arrange(phenotype_sel) %>% 
+      filter(!is.na(phenotype_sel)) %>% 
+      mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
+      group_by(phenotype_sel) %>% 
+      dplyr::summarise(n = n())
+    
+    n_tot_none <- ifelse(length(selected_data.df$n[which(selected_data.df == "None")]) != 0,selected_data.df$n[which(selected_data.df == "None")],0)
+    
+    n_tot_1_10 <- ifelse(length(selected_data.df$n[which(selected_data.df == "1 to 10")]) != 0,selected_data.df$n[which(selected_data.df == "1 to 10")],0)
+    
+    n_tot_10_50 <- ifelse(length(selected_data.df$n[which(selected_data.df == "10 to 50")]) != 0,selected_data.df$n[which(selected_data.df == "10 to 50")],0)
+    
+    n_tot_g50 <- ifelse(length(selected_data.df$n[which(selected_data.df == "Greater than 50")]) != 0,selected_data.df$n[which(selected_data.df == "Greater than 50")],0)
+    
+    plot2_input.df <- tibble(phenotype_sel = c(" None","1 to 10","10 to 50","Greater than 50"), 
+                             n_tot = c(n_tot_none,n_tot_1_10,n_tot_10_50,n_tot_g50), 
+                             per = c(n_tot_none/all_data.df$n[which(all_data.df$phenotype_sel == "None")]*100,
+                                     n_tot_1_10/all_data.df$n[which(all_data.df$phenotype_sel == "1 to 10")]*100,
+                                     n_tot_10_50/all_data.df$n[which(all_data.df$phenotype_sel == "10 to 50")]*100,
+                                     n_tot_g50/all_data.df$n[which(all_data.df$phenotype_sel == "Greater than 50")]*100))
+    
+    plotty2 <- plot_ly(data = plot2_input.df, 
                        x = ~ phenotype_sel, 
-                       y = ~ round(n, digits = 2), 
+                       y = ~ round(per, digits = 2), 
                        color = ~ phenotype_sel, 
                        colors = basic_phenotype_colors,
                        type = "bar", 
                        hoverinfo = "text", showlegend = FALSE,
-                       text= ~ paste0(round(n, digits = 2), " (" ,n," individuals)")) %>% 
+                       text= ~ paste0(round(n_tot, digits = 2), " (" ,n_tot," individuals)")) %>% 
       layout(title="", 
              font=plotly_font,
              xaxis = list(title="",showline = T, tickangle = 45),
-             yaxis = list(title="N of individuals",showline = T),
+             yaxis = list(title="Share of individuals (%)",showline = T),
              margin = list(b = 160)) %>%
-      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE) 
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  
+    
     
     plotty3 <- plot_ly(data =z %>% 
                          dplyr::rename(Onset_days = Age_first_word_months) %>% 
@@ -1041,7 +1084,7 @@ shinyServer(function(input, output, session) {
     subplot(plotty1,plotty2,plotty3, nrows = 1,titleY = T) %>% 
       layout(annotations = list(
         list(x = 0.1 , y = 1.1, text = "Cleft Palate", showarrow = F, xref='paper', yref='paper'),
-        list(x = 0.5 , y = 1.1, text = "Total speech", showarrow = F, xref='paper', yref='paper'),
+        list(x = 0.5 , y = 1.1, text = "Total words spoken", showarrow = F, xref='paper', yref='paper'),
         list(x = 0.9 , y = 1.1, text = "Age at first word (months)", showarrow = F, xref='paper', yref='paper'))
       )
   })
@@ -1284,7 +1327,7 @@ shinyServer(function(input, output, session) {
   res_mod <- callModule(
     module = selectizeGroupServer,
     id = "research-filters",
-    data = Patient_data.df,
+    data = Patient_data.df %>% filter(Vartype != "Intronic"),
     vars = c("Vartype",  "AA_alt", "Domain","Clinical_seizures","Cleft_palate","Total_speech", "Abnormal_brainMRI")
   )
   
@@ -1370,7 +1413,7 @@ shinyServer(function(input, output, session) {
    
     if (input$gnomad_m == TRUE) {
       g <- g + geom_point(data=Control_data.df ,
-                          size=2, color = "black", aes(x=AA_pos, y=2, alpha=0.1*Allele_count, text=paste0("Position: ",AA_pos,", Allele count: ", Allele_count)))
+                          size=2, color = "black", aes(x=AA_pos, y=2, alpha=1, text=paste0("Position: ",AA_pos,", Allele count: ", Allele_count)))
     }
     
 
