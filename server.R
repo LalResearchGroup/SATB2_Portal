@@ -1582,7 +1582,7 @@ shinyServer(function(input, output, session) {
                    type = "bar", 
                    hoverinfo = "text", showlegend = FALSE,
                    text = ~ paste0(round(n, digits = 2), " (" ,n," individuals)")) %>% 
-      layout(title = "Proportion of individuals according\nto total number of words spoken", 
+      layout(title = "Spoken words", 
              font=plotly_font,
              xaxis = list(title = "",showline = T, tickangle = 45),
              yaxis = list(title = "Share of individuals (%)", showline = T),

@@ -50,7 +50,7 @@ landing_bannername = "banner01_italic.png"
 
 #Tabs 
 
-landing_tab1 = p(HTML(paste0("Features and genetics of ", em("SATB2"), "-Asssociated syndrome")))
+landing_tab1 = p(HTML(paste0("Features and genetics of ", em("SATB2"), "-Associated syndrome")))
 landing_tab2 = p("Resources for families and caregivers\n     ",
                  br(),
                  br())
@@ -78,7 +78,7 @@ basic_visual_title = "Clinical Information of our patients"
 basic_phenotype_title1 = "Population breakdown"
 basic_phenotype_title2 = "Speech and walking"
 basic_phenotype_title3 = "Verbal output" 
-basic_phenotype_title4 = "Clefte plate & Low bone density" 
+basic_phenotype_title4 = "Cleft palate & Low bone density" 
 basic_phenotype_title5 = "Other phenotypes"
 
 basic_plot_title_fac1_1 = "Sex"
@@ -124,7 +124,7 @@ dd_id_tippy <- h5(HTML(paste0("<ul><li>DD = Developmental delay</li>")),
 Gene1_basic_text <- p(HTML(paste0("",em("SATB2"),"-Associated syndrome (SAS, Glass syndrome) is an autosomal dominant multisystem disorder characterized by significant
                                   neurodevelopmental compromise with limited to absent speech, intellectual disability of variable severity, behavioral issues, skeletal 
                                   anomalies, and craniofacial abnormalities. More details can be found on ", 
-                                  shiny::a("Genereviews.", href = "https://www.ncbi.nlm.nih.gov/books/NBK458647/"))))
+                                  shiny::a("Genereviews.", target = "_blank", href = "https://www.ncbi.nlm.nih.gov/books/NBK458647/"))))
 
 
 #####Families Variable #####  
@@ -186,7 +186,9 @@ NAFE = Non-acquired focal epilepsy; EOAE = Early onset absence epilepsy; DEE = D
 
 research_geno_transcripts <- p("The following transcript was used:",em("SATB2"),": ENST00000287766",
                                br(),
-                               "H: Helix")
+                               "H: Helix",
+                               br(),
+                               "PTV: Protein Truncating Variant")
 
 #Datasets required for research tab 
 Patient_data.df <- read_delim("data/SATB2_Patient_variants_v1.txt", delim = "\t") 
@@ -545,7 +547,7 @@ shinyUI(
                                        fluidRow(align = "center",
                                                 column(6, box(title=div("Further Phenotypes", style = "font-size: 15px"), width=12, align="center",
                                                               img(src = "worldcloud_phenotype.png", width = "100%"),
-                                                              footer = div("Frequently described phenotypes associaed with SATB2."))),
+                                                              footer = div("Frequently described phenotypes associated with SATB2."))),
                                                 column(12,
                                                        align="center",
                                                        p(basic_abbreviations1, style=sub_style))))
