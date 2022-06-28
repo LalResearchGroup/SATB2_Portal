@@ -186,7 +186,7 @@ NAFE = Non-acquired focal epilepsy; EOAE = Early onset absence epilepsy; DEE = D
 
 research_geno_transcripts <- p("The following transcript was used:",em("SATB2"),": ENST00000287766",
                                br(),
-                               "H: Helix",
+                               "H: Helix")
 
 #Datasets required for research tab 
 Patient_data.df <- read_delim("data/SATB2_Patient_variants_v1.txt", delim = "\t") 
