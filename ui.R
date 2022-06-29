@@ -801,75 +801,83 @@ tabPanel(title = "Families", value = "familyTab",
 
         # ##### VARIANT ANALYSIS #####
 
-        tabPanel(title = "Variant Analysis", value = "variantTab",
-
+  tabPanel(title = "Variant Analysis", value = "variantTab",
+         ##set color schema
+         # tags$style(HTML(paste0("
+         #      .panel-default>.panel-heading {
+         #      background-color: ",schema_color,";
+         #      color: black
+         #      }"))),
          fluidRow(
            column(10, offset = 1,
                   panel(heading = "Analyse your variants", status = "info",
-           fluidRow(
-             column(12,style='padding:30px;',
-               fluidRow(
-                 panel(status="default", heading = "Enter variant",
-                   column(3,
-                     pickerInput(
-                         inputId = 'var_gene',
-                         label =  h5(strong(var_possible_genes_title)),
-                         width = "100%",
-                         choices = var_possible_genes,
-                         options = list(`style` = "default")
-                     )
-                   ),
-                   column(3,
-                     numericInputIcon(
-                         inputId = "search_cDNA_pos",
-                         label = h5(strong("cDNA Position")),
-                         min = 1,
-                         max = 10000,
-                         value = 1166,
-                         width = "100%"
-                     ),
-                     pickerInput(
-                         inputId = "search_Allele",
-                         label = "Ref",
-                         choices = c("G", "A", "C", "T"),
-                         selected = "G"
-                     ),
-                     pickerInput(
-                         inputId = "search_cDNA_alt",
-                         label = "Alt",
-                         choices = c("G", "A", "C", "T", "null"),
-                         selected = "A"
-                     ),
-                     actionButton(inputId = "search_var_c", label = "Search")),
-                   column(3,
-                     numericInputIcon(
-                         inputId = "search_AA_pos",
-                         label = h5(strong("Amino Acid Position")),
-                         min = 1,
-                         max = 10000,
-                         value = 389,
-                         width = "100%"
-                     ),
-                     pickerInput(
-                         inputId = "search_AA_ref",
-                         label = "Ref",
-                         choices = sort(unique(master.df$AA_ref)),
-                         selected = "Arg"
-                     ),
-                     pickerInput(
-                         inputId = "search_AA_alt",
-                         label = "Alt",
-                         choices = sort(unique(master.df$AA_alt)),
-                         selected = "Cys"
-                     ),
-                     actionButton(inputId = "search_var_p", label = "Search")),
-                   column(2,
-                     pickerInput(
-                       inputId = "get_var_type",
-                       label = h5(strong("Variant Consequence")),
-                       choices = "Missense",
-                       selected = "Missense"))
-           )))),
+                        
+                        fluidRow(column(12,style='padding:30px;',
+                                        fluidRow(panel(status="default", heading = "Enter variant",
+                                                       column(3, 
+                                                              br(),
+                                                              br(),
+                                                              h3("Selected gene: SATB2"),
+                                                              h4("Transcript: ENST00000260926")
+                                                              # pickerInput(
+                                                              #   inputId = 'var_gene',
+                                                              #   label =  h5(strong(var_possible_genes_title)),
+                                                              #   width = "100%",
+                                                              #   choices = var_possible_genes,
+                                                              #   options = list(`style` = "default")
+                                                              # )
+                                                       ),
+                                                       column(2,align = "center",
+                                                              br(),br(),br(),
+                                                              h3("and")),
+                                                       column(3, 
+                                                              br(),
+                                                              
+                                                              textInput(inputId = "cDNA", 
+                                                                        label = p(h4("cDNA input",
+                                                                                     tippy(icon("question-circle"),
+                                                                                           tooltip = h6(HTML(paste0("Variant input:")),
+                                                                                                        HTML(paste0("<ul><li>Single nucleotide exchange: c.301C>T</li>",
+                                                                                                                    "<li>Inframe deletion/insertion/duplication: c.301delCCC</li>",
+                                                                                                                    "<li>Frameshift deletion/insertion/duplication: c.1176dupA</li>",
+                                                                                                                    "<li>Preliminary Stopp: c.2134C>T</li>",
+                                                                                                                    "<li>Splice variant: c.4581+3A>T</li>")),
+                                                                                                        align = "left"),
+                                                                                           animation = "scale",
+                                                                                           theme = "light"))),
+                                                                        value = "c.346G>A"),
+                                                              
+                                                              
+                                                              br(),
+                                                              actionButton(inputId = "search_var_c", label = "Search")),
+                                                       column(1,align = "center",
+                                                              br(),br(),br(),
+                                                              h3("or")),
+                                                       column(3, 
+                                                              br(),
+                                                              
+                                                              textInput("Protein", 
+                                                                        label = p(h4("Protein input",
+                                                                                     tippy(icon("question-circle"),
+                                                                                           tooltip = h6(HTML(paste0("Variant input:")),
+                                                                                                        HTML(paste0("<ul><li>Only single amino acids exchanges are searchable: p.Trp40Ala</li>")),
+                                                                                                        align = "left"),
+                                                                                           animation = "scale",
+                                                                                           theme = "light"))), 
+                                                                        value = "p.Gly116Arg"),
+                                                              br(),
+                                                              actionButton(inputId = "search_var_p", label = "Search")),
+                                                       
+                                                       column(8, offset = 2, align = "center",
+                                                              br(),br(),
+                                                              #h4("Variant consequence"),
+                                                              div(width = "100%",valueBoxOutput("consequenceBox", width = 12)))#,
+                                                       #verbatimTextOutput("value"))
+                                                       # ))),
+                                        )))),
+                 # )))),
+        conditionalPanel(
+          condition = "output.vartype=='Missense'",
            fluidRow(
              column(12,style='padding:30px;',
                fluidRow(
@@ -925,6 +933,7 @@ tabPanel(title = "Families", value = "familyTab",
                     br(),
                     DT::dataTableOutput(outputId = "compareTable")
                   )#,
+            )))))
 #                   tabPanel("In silico scores",
 #                            br(),
 #                            #column(5,plotOutput(outputId = "paraz_legend", height = 30, width = 450)),
@@ -946,11 +955,23 @@ tabPanel(title = "Families", value = "familyTab",
 #                            ),
 #                            column(12,plotOutput(outputId = "paraz_legend", height = 30, width = 600))
 
-                  )
-  ))
-             ))
-                  )))
-         ), # end variant analysis tab
+
+        ),
+      conditionalPanel(
+        condition = "output.vartype=='Nonsense'",
+        fluidRow(
+          column(12,style='padding:30px;',
+                 fluidRow(
+                   panel(status="default",
+                         heading = "Patient information",
+                         box(title = var_patient_info_title, width = 12,
+                             DT::dataTableOutput(outputId = "patientTable_nonsense"),
+                             br(), p(var_patient_info_abb, style=sub_style, align = "center")))#,
+        ))),
+      )
+
+                   )))
+   ), # end variant analysis tab
 
 ##### RESEARCH #####
 

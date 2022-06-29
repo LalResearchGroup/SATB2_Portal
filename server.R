@@ -2,6 +2,7 @@
 ################# SATB2 PORTAL ##################
 ################################################
 ################## LIBRARIES ################
+#setwd("C:/Users/tobia/OneDrive/Studium Biologie/Praktikum/SATB2_Portal/")
 
 library(shiny)
 library(plotly)
@@ -280,7 +281,182 @@ basic_onset_legend <- function(){
   return(plot)
 }
 
-#variant analysis< 
+#variant analysis<
+
+#### Variant Analysis- Variant selection ####
+get_var_conseq_cDNA <- function(cDNA_input,gene_input, all_exchanges.df){
+  
+  cDNA_sel <- str_remove(cDNA_input,"c\\.") %>% tolower()
+  
+  cDNA_pos_sel <- str_extract_all(cDNA_sel,"[0-9]+") %>% unlist() %>% as.numeric()
+  
+  cDNA_alt_sel <- str_split(cDNA_sel,">|dup|del|ins",simplify = T) %>% .[,length(.)]
+  
+  cDNA_ref_sel <- case_when(str_detect(cDNA_sel,"ins") ~ str_split(cDNA_sel,"ins",simplify = T) %>% .[1] %>% str_sub(.,-1,-1),
+                            str_detect(cDNA_sel,"del") ~"del",
+                            str_detect(cDNA_sel,">") ~ str_split(cDNA_sel,">",simplify = T) %>% .[1] %>% str_sub(.,-1,-1),
+                            str_detect(cDNA_sel,"dup") ~ str_split(cDNA_sel,"dup",simplify = T) %>% .[1] %>% str_sub(.,-1,-1),
+                            TRUE~"error")
+  
+  variant_conseq <- case_when(length(cDNA_pos_sel) == 1 & str_detect(cDNA_sel,"ins") & nchar(cDNA_alt_sel) %%3 == 0 ~ "Inframe Insertion",
+                              length(cDNA_pos_sel) == 1 & str_detect(cDNA_sel,"ins") & nchar(cDNA_alt_sel) %%3 != 0 ~ "Frameshift Insertion",
+                              length(cDNA_pos_sel) == 1 & str_detect(cDNA_sel,"del") & nchar(cDNA_alt_sel) %%3 == 0 ~ "Inframe Deletion",
+                              length(cDNA_pos_sel) == 1 & str_detect(cDNA_sel,"del") & nchar(cDNA_alt_sel) %%3 != 0 ~ "Frameshift Deletion",
+                              length(cDNA_pos_sel) == 1 & str_detect(cDNA_sel,"dup") & nchar(cDNA_alt_sel) %%3 == 0 ~ "Inframe Duplication",
+                              length(cDNA_pos_sel) == 1 & str_detect(cDNA_sel,"dup") & nchar(cDNA_alt_sel) %%3 != 0 ~ "Frameshift Duplication",
+                              length(cDNA_pos_sel) == 2 & str_detect(cDNA_sel,"\\+|\\-") & cDNA_pos_sel[2] <=5~ "splice-site",
+                              length(cDNA_pos_sel) == 2 & str_detect(cDNA_sel,"\\+|\\-") & cDNA_pos_sel[2] >5~ "intronic",
+                              length(cDNA_pos_sel) == 1 & cDNA_ref_sel != "error"~ "Missense",
+                              TRUE ~ "No valid input")
+  
+  variant_conseq <- ifelse(cDNA_ref_sel == "error" | 
+                             (str_detect(cDNA_sel,"ins") & str_detect(cDNA_sel,"dup")) |
+                             (str_detect(cDNA_sel,"ins") & str_detect(cDNA_sel,"del")) |
+                             (str_detect(cDNA_sel,"dup") & str_detect(cDNA_sel,"del")), "No valid input", variant_conseq)
+  
+  if(variant_conseq == "Missense"){
+    
+    #if cDNA_pos_error is empty this cDNA_pos does not exist in this gene 
+    cDNA_pos_true.df <- all_exchanges.df %>%
+      filter(Gene == gene_input,
+             cDNA_pos == cDNA_pos_sel)
+    
+    
+    variant_conseq_miss <- all_exchanges.df %>%
+      filter(Gene == gene_input,
+             cDNA_pos == cDNA_pos_sel,
+             Allele == cDNA_ref_sel %>% toupper(),
+             cDNA_alt == cDNA_alt_sel %>% toupper()) %>% 
+      .$Vartype
+    
+    
+    variant_conseq <- case_when(nrow(cDNA_pos_true.df) == 0~"This is not a valid cDNA position",
+                                identical(variant_conseq_miss, character(0)) & cDNA_ref_sel != cDNA_alt_sel~paste("No valid nucleotide exchange. The reference nuleotide at this position is",cDNA_pos_true.df$Allele[1]),
+                                cDNA_ref_sel == cDNA_alt_sel~ "Reference and alternative nucelotide must not be the same.")
+    
+    variant_conseq <- ifelse(!is.na(variant_conseq), variant_conseq,variant_conseq_miss)
+    
+  }
+  
+  if(variant_conseq == "splice-site"){
+    
+    if(cDNA_pos_sel[1]< 6){
+      
+      variant_conseq <- "5'UTR variant"
+      
+    } else if (cDNA_pos_sel[1]> max(master.df %>% filter(Gene == gene_input) %>% .$cDNA_pos,na.rm = T)){
+      
+      variant_conseq <- "3'UTR variant"
+    } else{
+      
+      splice_master.df <- master.df %>% 
+        filter(Gene ==gene_input,
+               cDNA_pos > cDNA_pos_sel[1]-6,
+               cDNA_pos < cDNA_pos_sel[1]+6)
+      
+      if(max(splice_master.df$Genomic_pos)-min(splice_master.df$Genomic_pos) <12){
+        
+        variant_conseq <- "Selected splice variant is not close to a splice site"
+        
+      } 
+      
+    }  
+    
+  }
+  
+  return(variant_conseq)
+}
+
+
+#Protein
+
+
+get_var_conseq_Protein <- function(protein_input,gene_input, all_exchanges.df){
+  
+  protein_sel <- str_remove(protein_input,"p\\.") %>% tolower()
+  
+  protein_pos_sel <- str_extract_all(protein_sel,"[0-9]+") %>% unlist() %>% as.numeric()
+  
+  
+  #alternative
+  protein_alt_sel <- str_split(protein_sel,"[0-9]+",simplify = T) %>% .[2]
+  
+  
+  if(is.na(protein_alt_sel)){
+    protein_alt_sel <- NA
+  } else if(protein_alt_sel == "X"| protein_alt_sel == "x"|protein_alt_sel == "*"| tolower(protein_alt_sel) == "stop"){
+    ##search for stop codoons
+    protein_alt_sel <- "Stop"
+    
+  }else if (nchar(protein_alt_sel) == 3){
+    
+    protein_alt_sel <- paste0(str_sub(protein_alt_sel,1,1) %>% toupper(),str_sub(protein_alt_sel,2,3) %>% tolower()) %>% a() 
+    
+  }else{
+    protein_alt_sel <- protein_alt_sel %>% toupper() 
+  }
+  
+  protein_ref_sel <- str_split(protein_sel,"[0-9]+",simplify = T) %>% .[1]
+  #reference
+  
+  if(is.na(protein_ref_sel)){
+    protein_ref_sel <- NA
+  }else if(protein_ref_sel == "X"| protein_ref_sel == "x"|protein_ref_sel == "*"| tolower(protein_ref_sel) == "stop"){
+    
+    protein_ref_sel <- "Stop"
+    
+  }else if (nchar(protein_ref_sel) == 3){
+    
+    protein_ref_sel <- paste0(str_sub(protein_ref_sel,1,1) %>% toupper(),str_sub(protein_ref_sel,2,3) %>% tolower()) %>% a() 
+    
+  }else{
+    protein_ref_sel <- protein_ref_sel %>% toupper() 
+  }
+  
+  
+  #generate variant consequence 
+  if(is.na(protein_ref_sel) | is.na(protein_alt_sel) | length(protein_pos_sel)>1 | length(protein_pos_sel) == 0 | (nchar(protein_ref_sel)  != 1 & protein_ref_sel != "Stop") | (nchar(protein_alt_sel)  != 1 & protein_alt_sel != "Stop")){
+    
+    variant_conseq <- "No valid input. Only single aminoacid exchanges are accepted."
+    
+  }else{
+    
+    protein_ref_sel <- ifelse(protein_ref_sel != "Stop", aaa(protein_ref_sel),"Stop")
+    protein_alt_sel <- ifelse(protein_alt_sel != "Stop", aaa(protein_alt_sel),"Stop")
+    
+    #check if aminoacid position exist in this gene
+    AA_pos_true.df <- all_exchanges.df %>% 
+      filter(Gene == gene_input,
+             AA_pos == protein_pos_sel)
+    
+    #check if selected reference aminoacid is correct 
+    true_ref_aminoacid_check.df <- all_exchanges.df %>% 
+      filter(Gene == gene_input,
+             AA_pos == protein_pos_sel,
+             AA_ref == protein_ref_sel)
+    
+    true_ref_aminoacid.df <- all_exchanges.df %>% 
+      filter(Gene == gene_input,
+             AA_pos == protein_pos_sel)
+    
+    
+    variant_conseq <- case_when(nrow(AA_pos_true.df) == 0~ "Amino acid position does not exist in this gene",
+                                nrow(true_ref_aminoacid_check.df) == 0~ paste0("Wrong reference amino acid. The reference amino acid is:",true_ref_aminoacid.df$AA_ref[1]),
+                                protein_alt_sel == protein_ref_sel ~"Synonymous",
+                                protein_alt_sel == "Stop"~ "Stop-gain",
+                                protein_pos_sel ==1~ "Stop-loss",
+                                (protein_alt_sel %in% (all_exchanges.df$AA_alt %>% unique() %>% .[.!= "Stop"] ))~ "Missense",
+                                TRUE~"No valid alternative amino acid.")
+    
+    
+    
+  }
+  
+  
+  return(variant_conseq)
+}
+
+
 extract_gnomad_features <- function(Control_data.df,selected.df,variable,label){
 
   if(label == "exchange"){
@@ -706,131 +882,299 @@ shinyServer(function(input, output, session) {
   
   #Updates after gene change 
   
-  observeEvent(input$var_gene, {
-
-    filtered_cDNA_pos <- all_exchanges.df %>% filter(cDNA_pos == input$search_cDNA_pos, Gene == input$var_gene)
-    
-
-    updatePickerInput(session = session, inputId = "search_Allele",
-                      choices = unique(filtered_cDNA_pos$Allele))
-
-    updatePickerInput(session = session, inputId = "search_cDNA_alt",
-                      choices = if(all(is.na(filtered_cDNA_pos$cDNA_alt))){NA}else{unique(filtered_cDNA_pos$cDNA_alt[!is.na(filtered_cDNA_pos$cDNA_alt)])},
-                      selected = filtered_cDNA_pos$cDNA_alt[1])
-
-    updatePickerInput(session = session, inputId = "search_AA_alt",
-                      choices = all_exchanges.df %>% filter(Gene == input$var_gene, AA_pos == filtered_cDNA_pos$AA_pos[1]) %>% .$AA_alt %>% unique(),
-                      selected = filtered_cDNA_pos %>% filter(cDNA_alt == cDNA_alt[1]) %>% .$AA_alt)
-
-    updatePickerInput(session = session, inputId = "search_AA_ref",
-                      choices = filtered_cDNA_pos %>% filter(cDNA_alt == cDNA_alt[1]) %>% .$AA_ref,
-                      selected = filtered_cDNA_pos %>% filter(cDNA_alt == cDNA_alt[1]) %>% .$AA_ref)
-  })
-    
-  #Updates after DNA change 
+  output$value <- renderText({ input$cDNA })
   
-  observeEvent(input$search_cDNA_pos, {
-
-    filtered_cDNA_pos <- all_exchanges.df %>% filter(cDNA_pos == input$search_cDNA_pos, Gene == input$var_gene)
-    filtered_cDNA_pos_aa <- all_exchanges.df %>% filter(AA_pos == filtered_cDNA_pos$AA_pos, Gene == input$var_gene)
-
-    updatePickerInput(session = session, inputId = "search_Allele",
-                      choices = unique(filtered_cDNA_pos$Allele))
-
-    updatePickerInput(session = session, inputId = "search_cDNA_alt",
-                      choices = if(all(is.na(filtered_cDNA_pos$cDNA_alt))){NA}else{unique(filtered_cDNA_pos$cDNA_alt[!is.na(filtered_cDNA_pos$cDNA_alt)])},
-                      selected = "A")
-
-    updateNumericInputIcon(session = session, inputId = "search_AA_pos",
-                      value = if(all(is.na(filtered_cDNA_pos$AA_pos))){NA}else{unique(filtered_cDNA_pos$AA_pos[!is.na(filtered_cDNA_pos$AA_pos)])})
-
-    updatePickerInput(session = session, inputId = "search_AA_ref",
-                      choices = unique(filtered_cDNA_pos_aa$AA_ref))
-
-    updatePickerInput(session = session, inputId = "search_AA_alt",
-                      choices = unique(filtered_cDNA_pos_aa$AA_alt))
-
-  })
-
-  observeEvent(input$search_cDNA_alt, {
-
-    filtered_cDNA_pos <- all_exchanges.df %>% filter(cDNA_pos == input$search_cDNA_pos, Gene == input$var_gene, cDNA_alt == input$search_cDNA_alt)
-
-    updatePickerInput(session = session, inputId = "search_AA_alt",
-                      selected = unique(filtered_cDNA_pos$AA_alt))
-
-  })
-  
-  #Updates after AA change
-  observeEvent(input$search_AA_alt, {
-    filtered_AA_alt <- all_exchanges.df %>% filter(AA_pos == input$search_AA_pos, Gene == input$var_gene, AA_alt == input$search_AA_alt)
-
-    updatePickerInput(session = session,
-                      inputId = c("get_var_type"),
-                      choices = c(unique(filtered_AA_alt$Vartype)),
-                      selected = c(unique(filtered_AA_alt$Vartype)))
-  })
-
-  observeEvent(input$search_AA_pos, {
-
-    filtered_AA_pos <- all_exchanges.df %>% filter(AA_pos == input$search_AA_pos, Gene == input$var_gene)
-
-    updatePickerInput(session = session, inputId = "search_AA_ref",
-                      choices = sort(unique(filtered_AA_pos$AA_ref)))
-
-    updatePickerInput(session = session, inputId = "search_AA_alt",
-                      choices = unique(filtered_AA_pos$AA_alt))
+  output$vartype <- renderText({ 6 })
+  ##Updates after Gene selection
+  observeEvent("SATB2", {
+    
+    variant_conseq <- get_var_conseq_cDNA(input$cDNA,"SATB2",all_exchanges.df)
+    
+    output$value <- renderText({ variant_conseq })
     
   })
   
-  ## Actions once the search button is pressed 
+  
+  #Updates after cDNA change 
+  observeEvent(input$cDNA, {
+    
+    variant_conseq <- get_var_conseq_cDNA(input$cDNA,"SATB2",all_exchanges.df)
+    
+    output$value <- renderText({ variant_conseq })
+    
+    output$consequenceBox <- renderValueBox({
+      valueBox(
+        value = tags$p("Variant consequence",style = "font-size:70%"), 
+        subtitle = tags$p(variant_conseq,style = "font-size:150%;font-color:black"),
+        color = "olive"
+      )
+    })
+    
+  })
+  
+  
+  observeEvent(input$Protein, {
+    
+    variant_conseq <- get_var_conseq_Protein(input$Protein,"SATB2",all_exchanges.df)
+    
+    output$value <- renderText({ variant_conseq })
+    
+    output$consequenceBox <- renderValueBox({
+      valueBox(
+        value = tags$p("Variant consequence",style = "font-size:70%"), 
+        subtitle = tags$p(variant_conseq,style = "font-size:150%;font-color:black"),
+        color = "olive"
+      )
+    })
+    
+  })
+  
+  ## Once the search button is pressed 
   
   varFilterInput <- reactiveValues(data=NULL)
   
   varFilterInputClinvar <- reactiveValues(data=NULL)
   
   observeEvent(input$search_var_c, {
-    varFilterInput$data <- all_exchanges.df %>% filter(Gene==input$var_gene) %>% filter(cDNA_pos==input$search_cDNA_pos) %>%
-      filter(Allele==input$search_Allele) %>% filter(cDNA_alt==input$search_cDNA_alt)
     
-    varFilterInputClinvar$data <- clinvar.df %>% filter(Gene==input$var_gene) %>% filter(AA_pos==input$search_AA_pos) %>%
-      filter(AA_ref==input$search_AA_ref) %>% filter(AA_alt==input$search_AA_alt)
+    variant_conseq <- get_var_conseq_cDNA(input$cDNA,"SATB2",all_exchanges.df)
+    
+    output$value <- renderText({ variant_conseq })
+    
+    output$vartype <- reactive({
+      g <- ifelse(variant_conseq == "Missense","Missense",
+             ifelse(variant_conseq %in% c("Frameshift Insertion", "Frameshift Deletion","Frameshift Duplication", "splice-site", "Nonsense"),"Nonsense","Other"))
+      
+      print(g)
+    })
+    
+    outputOptions(output, 'vartype', suspendWhenHidden = FALSE)
+    
+    output$consequenceBox <- renderValueBox({
+      valueBox(
+        value = tags$p("Variant consequence",style = "font-size:70%"), 
+        subtitle = tags$p(variant_conseq,style = "font-size:150%;font-color:black"),
+        color = "olive"
+      )
+    })
+    #generate datafile for subsequent visualz 
+    
+    if(variant_conseq == "Missense"){
+      
+      cDNA_sel <- str_remove(input$cDNA,"c\\.") %>% tolower()
+      
+      cDNA_pos_sel <- str_extract_all(cDNA_sel,"[0-9]+") %>% unlist() %>% as.numeric()
+      
+      cDNA_ref_sel <- str_split(cDNA_sel,">",simplify = T) %>% .[1] %>% str_sub(.,-1,-1) %>% toupper()
+      
+      cDNA_alt_sel <- str_split(cDNA_sel,">",simplify = T) %>% .[2] %>% str_sub(.,-1,-1) %>% toupper()
+      
+      
+      varFilterInput$data <- all_exchanges.df %>% 
+        filter(Gene=="SATB2", 
+               cDNA_pos == cDNA_pos_sel,
+               Allele == cDNA_ref_sel,
+               cDNA_alt == cDNA_alt_sel)
+      
+      #For clinvar significance
+      varFilterInputClinvar$data <- clinvar.df %>% 
+        filter(Gene=="SATB2", 
+               AA_pos == varFilterInput$data$AA_pos[1],
+               AA_ref == varFilterInput$data$AA_ref[1],
+               AA_alt == varFilterInput$data$AA_alt[1])
+    }else{
+      
+      print("test")
+      
+      varFilterInput$data <-tibble(cDNA_input = input$cDNA, Gene = "SATB2")
+      
+    }
     
   })
   
   observeEvent(input$search_var_p, {
-    varFilterInput$data <- all_exchanges.df %>% filter(Gene==input$var_gene) %>% filter(AA_pos==input$search_AA_pos) %>%
-      filter(AA_ref==input$search_AA_ref) %>% filter(AA_alt==input$search_AA_alt)
     
-    varFilterInputClinvar$data <- clinvar.df %>% filter(Gene==input$var_gene) %>% filter(AA_pos==input$search_AA_pos) %>%
-      filter(AA_ref==input$search_AA_ref) %>% filter(AA_alt==input$search_AA_alt)
+    variant_conseq <- get_var_conseq_Protein(input$Protein,"SATB2",all_exchanges.df)
+    
+    output$value <- renderText({ variant_conseq })
+    
+    output$vartype <- renderText({
+      ifelse(variant_conseq == "Missense","Missense",
+             ifelse(variant_conseq %in% c("Frameshift Insertion", "Frameshift Deletion","Frameshift Duplication", "splice-site", "Stop-gain","Nonsense"),"Nonsense","Other"))
+    })
+    
+    output$consequenceBox <- renderValueBox({
+      valueBox(
+        value = tags$p("Variant consequence",style = "font-size:70%"), 
+        subtitle = tags$p(variant_conseq,style = "font-size:150%;font-color:black"),
+        color = "olive"
+      )
+    })
+    
+    #generate datafile for subsequent visualz 
+    
+    if(variant_conseq == "Missense"){
+      
+      protein_sel <- str_remove(input$Protein,"p\\.") %>% tolower()
+      
+      protein_pos_sel <- str_extract_all(protein_sel,"[0-9]+") %>% unlist() %>% as.numeric()
+      
+      protein_ref_sel <- str_split(protein_sel,"[0-9]+",simplify = T) %>% .[1]
+      protein_ref_sel <- ifelse(nchar(protein_ref_sel) ==3, 
+                                paste0(str_sub(protein_ref_sel,1,1) %>% toupper(),str_sub(protein_ref_sel,2,3) %>% tolower()),
+                                aaa(toupper(protein_ref_sel)))
+      
+      protein_alt_sel <- str_split(protein_sel,"[0-9]+",simplify = T) %>% .[2]
+      protein_alt_sel <- ifelse(nchar(protein_alt_sel) ==3, 
+                                paste0(str_sub(protein_alt_sel,1,1) %>% toupper(),str_sub(protein_alt_sel,2,3) %>% tolower()),
+                                aaa(toupper(protein_alt_sel)))
+      
+      varFilterInput$data <- all_exchanges.df %>% 
+        filter(Gene=="SATB2", 
+               AA_pos == protein_pos_sel,
+               AA_ref == protein_ref_sel,
+               AA_alt == protein_alt_sel) 
+      
+      #For clinvar significance
+      varFilterInputClinvar$data <- clinvar.df %>% 
+        filter(Gene=="SATB2", 
+               AA_pos == varFilterInput$data$AA_pos[1],
+               AA_ref == varFilterInput$data$AA_ref[1],
+               AA_alt == varFilterInput$data$AA_alt[1])
+      
+    }else{
+      varFilterInput$data <- tibble(input = input$Protein)
+    }
     
   })
   
-  # update cDNA input according to user search input , not 100% precise as many option may be possible 
+  #Updates after gene change 
   
-   
-  observeEvent(input$search_var_p, {
-    updateNumericInputIcon(
-      session = session,
-      inputId = c("search_cDNA_pos"),
-      value = c(unique(varFilterInput$data$cDNA_pos)[1])
-    )
-
-    updatePickerInput(
-      session = session,
-      inputId = c("search_Allele"),
-      choices = c(unique(varFilterInput$data$Allele)[1])
-    )
-
-    updatePickerInput(
-      session = session,
-      inputId = c("search_cDNA_alt"),
-      selected = c(unique(varFilterInput$data$cDNA_alt))
-                   
-    )
-     
-  })
+  # observeEvent("SATB2", {
+  # 
+  #   filtered_cDNA_pos <- all_exchanges.df %>% filter(cDNA_pos == input$search_cDNA_pos, Gene == "SATB2")
+  #   
+  # 
+  #   updatePickerInput(session = session, inputId = "search_Allele",
+  #                     choices = unique(filtered_cDNA_pos$Allele))
+  # 
+  #   updatePickerInput(session = session, inputId = "search_cDNA_alt",
+  #                     choices = if(all(is.na(filtered_cDNA_pos$cDNA_alt))){NA}else{unique(filtered_cDNA_pos$cDNA_alt[!is.na(filtered_cDNA_pos$cDNA_alt)])},
+  #                     selected = filtered_cDNA_pos$cDNA_alt[1])
+  # 
+  #   updatePickerInput(session = session, inputId = "search_AA_alt",
+  #                     choices = all_exchanges.df %>% filter(Gene == "SATB2", AA_pos == filtered_cDNA_pos$AA_pos[1]) %>% .$AA_alt %>% unique(),
+  #                     selected = filtered_cDNA_pos %>% filter(cDNA_alt == cDNA_alt[1]) %>% .$AA_alt)
+  # 
+  #   updatePickerInput(session = session, inputId = "search_AA_ref",
+  #                     choices = filtered_cDNA_pos %>% filter(cDNA_alt == cDNA_alt[1]) %>% .$AA_ref,
+  #                     selected = filtered_cDNA_pos %>% filter(cDNA_alt == cDNA_alt[1]) %>% .$AA_ref)
+  # })
+  #   
+  # #Updates after DNA change 
+  # 
+  # observeEvent(input$search_cDNA_pos, {
+  # 
+  #   filtered_cDNA_pos <- all_exchanges.df %>% filter(cDNA_pos == input$search_cDNA_pos, Gene == "SATB2")
+  #   filtered_cDNA_pos_aa <- all_exchanges.df %>% filter(AA_pos == filtered_cDNA_pos$AA_pos, Gene == "SATB2")
+  # 
+  #   updatePickerInput(session = session, inputId = "search_Allele",
+  #                     choices = unique(filtered_cDNA_pos$Allele))
+  # 
+  #   updatePickerInput(session = session, inputId = "search_cDNA_alt",
+  #                     choices = if(all(is.na(filtered_cDNA_pos$cDNA_alt))){NA}else{unique(filtered_cDNA_pos$cDNA_alt[!is.na(filtered_cDNA_pos$cDNA_alt)])},
+  #                     selected = "A")
+  # 
+  #   updateNumericInputIcon(session = session, inputId = "search_AA_pos",
+  #                     value = if(all(is.na(filtered_cDNA_pos$AA_pos))){NA}else{unique(filtered_cDNA_pos$AA_pos[!is.na(filtered_cDNA_pos$AA_pos)])})
+  # 
+  #   updatePickerInput(session = session, inputId = "search_AA_ref",
+  #                     choices = unique(filtered_cDNA_pos_aa$AA_ref))
+  # 
+  #   updatePickerInput(session = session, inputId = "search_AA_alt",
+  #                     choices = unique(filtered_cDNA_pos_aa$AA_alt))
+  # 
+  # })
+  # 
+  # observeEvent(input$search_cDNA_alt, {
+  # 
+  #   filtered_cDNA_pos <- all_exchanges.df %>% filter(cDNA_pos == input$search_cDNA_pos, Gene == "SATB2", cDNA_alt == input$search_cDNA_alt)
+  # 
+  #   updatePickerInput(session = session, inputId = "search_AA_alt",
+  #                     selected = unique(filtered_cDNA_pos$AA_alt))
+  # 
+  # })
+  # 
+  # #Updates after AA change
+  # observeEvent(input$search_AA_alt, {
+  #   filtered_AA_alt <- all_exchanges.df %>% filter(AA_pos == input$search_AA_pos, Gene == "SATB2", AA_alt == input$search_AA_alt)
+  # 
+  #   updatePickerInput(session = session,
+  #                     inputId = c("get_var_type"),
+  #                     choices = c(unique(filtered_AA_alt$Vartype)),
+  #                     selected = c(unique(filtered_AA_alt$Vartype)))
+  # })
+  # 
+  # observeEvent(input$search_AA_pos, {
+  # 
+  #   filtered_AA_pos <- all_exchanges.df %>% filter(AA_pos == input$search_AA_pos, Gene == "SATB2")
+  # 
+  #   updatePickerInput(session = session, inputId = "search_AA_ref",
+  #                     choices = sort(unique(filtered_AA_pos$AA_ref)))
+  # 
+  #   updatePickerInput(session = session, inputId = "search_AA_alt",
+  #                     choices = unique(filtered_AA_pos$AA_alt))
+  #   
+  # })
+  # 
+  # ## Actions once the search button is pressed 
+  # 
+  # varFilterInput <- reactiveValues(data=NULL)
+  # 
+  # varFilterInputClinvar <- reactiveValues(data=NULL)
+  # 
+  # observeEvent(input$search_var_c, {
+  #   varFilterInput$data <- all_exchanges.df %>% filter(Gene=="SATB2") %>% filter(cDNA_pos==input$search_cDNA_pos) %>%
+  #     filter(Allele==input$search_Allele) %>% filter(cDNA_alt==input$search_cDNA_alt)
+  #   
+  #   varFilterInputClinvar$data <- clinvar.df %>% filter(Gene=="SATB2") %>% filter(AA_pos==input$search_AA_pos) %>%
+  #     filter(AA_ref==input$search_AA_ref) %>% filter(AA_alt==input$search_AA_alt)
+  #   
+  # })
+  # 
+  # observeEvent(input$search_var_p, {
+  #   varFilterInput$data <- all_exchanges.df %>% filter(Gene=="SATB2") %>% filter(AA_pos==input$search_AA_pos) %>%
+  #     filter(AA_ref==input$search_AA_ref) %>% filter(AA_alt==input$search_AA_alt)
+  #   
+  #   varFilterInputClinvar$data <- clinvar.df %>% filter(Gene=="SATB2") %>% filter(AA_pos==input$search_AA_pos) %>%
+  #     filter(AA_ref==input$search_AA_ref) %>% filter(AA_alt==input$search_AA_alt)
+  #   
+  # })
+  # 
+  # # update cDNA input according to user search input , not 100% precise as many option may be possible 
+  # 
+  #  
+  # observeEvent(input$search_var_p, {
+  #   updateNumericInputIcon(
+  #     session = session,
+  #     inputId = c("search_cDNA_pos"),
+  #     value = c(unique(varFilterInput$data$cDNA_pos)[1])
+  #   )
+  # 
+  #   updatePickerInput(
+  #     session = session,
+  #     inputId = c("search_Allele"),
+  #     choices = c(unique(varFilterInput$data$Allele)[1])
+  #   )
+  # 
+  #   updatePickerInput(
+  #     session = session,
+  #     inputId = c("search_cDNA_alt"),
+  #     selected = c(unique(varFilterInput$data$cDNA_alt))
+  #                  
+  #   )
+  #    
+  # })
   
   
   ##ClinVar variant interpretation
@@ -855,7 +1199,6 @@ shinyServer(function(input, output, session) {
 ##### Variant Information #####
   
   output$geneBox1 <- renderValueBox({
-    print(varFilterInput$data)
     
     valueBox(
       value = tags$p(paste0("Gene: ",unique(varFilterInput$data$Gene)),style = "font-size:50%"), 
@@ -931,7 +1274,6 @@ shinyServer(function(input, output, session) {
   output$patientTable <- DT::renderDataTable({
     
     print(varFilterInput$data)
-  
     
     validate(
       need(!plyr::empty(varFilterInput$data),
@@ -944,6 +1286,43 @@ shinyServer(function(input, output, session) {
       select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in),
     colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
     options = list(dom = 't', scrollY = TRUE), escape=FALSE)
+  })
+  
+  output$patientTable_nonsense <- DT::renderDataTable({
+    
+    #print(varFilterInput$data)
+    
+    validate(
+      need(!plyr::empty(varFilterInput$data),
+           "There is no data that matches your filters.")) 
+    
+    print(varFilterInput$data$input)
+    
+    if(!is.null(varFilterInput$data$input)){
+      
+      print(varFilterInput$data$input)
+    
+      AA_ref_sel <- str_sub(varFilterInput$data$input,3,5)
+      AA_pos_sel <- str_extract(varFilterInput$data$input,"[0-9]+")
+      
+      table_filt.df <- Patient_data.df %>% 
+        filter(AA_pos == AA_pos_sel,
+               AA_ref == AA_ref_sel,
+               AA_alt == "Stop") 
+    }else{
+      
+      print(varFilterInput$data$cDNA_input)
+      
+      table_filt.df <- Patient_data.df %>% 
+        filter(Original_cDNA_change == varFilterInput$data$cDNA_input)
+      
+    }
+    
+    datatable(table_filt.df %>% 
+                #!is.na(Published_in)) %>%
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in),
+              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
+              options = list(dom = 't', scrollY = TRUE), escape=FALSE)
   })
   
   observe_helpers(withMathJax = TRUE)
@@ -1081,7 +1460,7 @@ shinyServer(function(input, output, session) {
              margin = list(b = 160)) %>%
       config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
   
-    subplot(plotty1,plotty2,plotty3, nrows = 1,titleY = T) %>% 
+    subplot(plotty1,plotty2,plotty3, nrows = 1,titleY = T,margin = 0.05) %>% 
       layout(annotations = list(
         list(x = 0.1 , y = 1.1, text = "Cleft Palate", showarrow = F, xref='paper', yref='paper'),
         list(x = 0.5 , y = 1.1, text = "Total words spoken", showarrow = F, xref='paper', yref='paper'),
