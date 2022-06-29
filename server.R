@@ -1295,12 +1295,9 @@ shinyServer(function(input, output, session) {
     validate(
       need(!plyr::empty(varFilterInput$data),
            "There is no data that matches your filters.")) 
-    
-    print(varFilterInput$data$input)
+
     
     if(!is.null(varFilterInput$data$input)){
-      
-      print(varFilterInput$data$input)
     
       AA_ref_sel <- str_sub(varFilterInput$data$input,3,5)
       AA_pos_sel <- str_extract(varFilterInput$data$input,"[0-9]+")
@@ -1310,8 +1307,6 @@ shinyServer(function(input, output, session) {
                AA_ref == AA_ref_sel,
                AA_alt == "Stop") 
     }else{
-      
-      print(varFilterInput$data$cDNA_input)
       
       table_filt.df <- Patient_data.df %>% 
         filter(Original_cDNA_change == varFilterInput$data$cDNA_input)

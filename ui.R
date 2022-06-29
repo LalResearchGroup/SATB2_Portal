@@ -50,7 +50,7 @@ landing_bannername = "banner01_italic.png"
 
 #Tabs 
 
-landing_tab1 = p(HTML(paste0("Features and genetics of ", em("SATB2"), "-Asssociated syndrome")))
+landing_tab1 = p(HTML(paste0("Features and genetics of ", em("SATB2"), "-Associated syndrome")))
 landing_tab2 = p("Resources for families and caregivers\n     ",
                  br(),
                  br())
@@ -1073,7 +1073,7 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                         p(research_geno_transcripts , align="center", style=sub_style),
                                                         br()
                                                  ),
-                                                 column(5,
+                                                 column(8, offset = 2,
                                                         addSpinner(color = spinner_color,
                                                                    r3dmolOutput(
                                                                      outputId = "threeDmolGene_all",
