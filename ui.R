@@ -167,9 +167,14 @@ var_possible_phenotype <- c("Epilepsy + ID", "Epilepsy without ID",
 
 var_patient_info_title <- p("Individuals with the same variant in the SATB2 Portal",
                             tippy(icon("question-circle"),
-                                  tooltip = h5(HTML(paste0("Variant collection:")),
-                                               HTML(paste0("<ul><li>Zarate et al.,????</li>")),
-                                               HTML(paste0("<li>Internal variant database (unpublished)</li>")), align = "left"),
+                                  tooltip = h5(HTML(paste0("The ", strong(em("SATB2")), strong(" mutation database "), "is an aggregate of the following sources, as of June 22, 2022:")),
+                                               br(),br(),
+                                               HTML(paste0("<ul><li>Zarate et al., 2019 (n = 49; PMID:31021519)</li>")),
+                                               HTML(paste0("<li>Zarate et al., 2018 (n = 46; PMID:29436146)</li>")),
+                                               HTML(paste0("<li>Bengani et al., 2017 (n = 11; PMID:28151491)</li>")),
+                                               HTML(paste0("<li>ClinVar (n = 44)</li>")),
+                                               HTML(paste0("<li>Internal variant database (n = 123; unpublished)</li>")),
+                                               HTML(paste0("<li>Others</li>")), align = "left"),
                                                            animation = "scale", theme = "light"))
 var_patient_info_abb <- "Abnl: abnormal; BMD: bone mineral density; CP: cleft palate"
 
@@ -188,7 +193,7 @@ research_geno_transcripts <- p("The following transcript was used:",em("SATB2"),
                                br(),
                                "H: Helix",
                                br(),
-                               "PTV: Protein Truncating Variant")
+                               "Null: Protein Truncating Variant")
 
 #Datasets required for research tab 
 Patient_data.df <- read_delim("data/SATB2_Patient_variants_v1.txt", delim = "\t") 
@@ -842,7 +847,7 @@ tabPanel(title = "Families", value = "familyTab",
                                                                                                         HTML(paste0("<ul><li>Single nucleotide exchange: c.301C>T</li>",
                                                                                                                     "<li>Inframe deletion/insertion/duplication: c.301delCCC</li>",
                                                                                                                     "<li>Frameshift deletion/insertion/duplication: c.1176dupA</li>",
-                                                                                                                    "<li>Preliminary Stopp: c.2134C>T</li>",
+                                                                                                                    "<li>Preliminary Stop: c.2134C>T</li>",
                                                                                                                     "<li>Splice variant: c.4581+3A>T</li>")),
                                                                                                         align = "left"),
                                                                                            animation = "scale",
@@ -1250,7 +1255,8 @@ tabPanel(title = "About",
                                            column(3,
                                                   panel(style="height: 230px;",heading = "Clinical & Genetic Data",
                                                         div(style="height: 100%;",
-                                                            p(strong("Yuri Zarate")))
+                                                            p(strong("Yuri Zarate")),
+                                                            p("Katherine Bosanko"))
                                                         # )),
                                                         # 
                                                         # column(2,

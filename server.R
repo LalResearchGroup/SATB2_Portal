@@ -1801,10 +1801,10 @@ shinyServer(function(input, output, session) {
   
   output$Genotype_legend_plot <- renderPlot({
     
-    legend <- data.frame(x=c(1,11,21), y=c(1, 1, 1), text=c("Missense", "   PTV", "Control"))
+    legend <- data.frame(x=c(1,11,21), y=c(1, 1, 1), text=c("Missense", "   Null", "Control"))
     plot <- ggplot(legend, aes(x=x, y=y, color=text))+
       geom_point(size = 6)+
-      scale_color_manual(values = c("Missense"="#D55E00","   PTV"="#0072B2","Control" ="#000000"))+
+      scale_color_manual(values = c("Missense"="#D55E00","   Null"="#0072B2","Control" ="#000000"))+
       ylim(c(0,2))+
       xlim(c(0,40))+
       theme_void()+
