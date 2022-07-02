@@ -19,6 +19,7 @@ library(bio3d)
 library(RColorBrewer)
 library(plyr)
 library(ggwordcloud)
+library(generics)
 
 ############## FUNCTIONS, STYLE ############
 
@@ -655,7 +656,7 @@ all_exchanges.df <- read_delim("data/master_table_exchanges.txt",delim = "\t") %
   left_join(Domain_data.df %>% distinct(Aln_pos,Domain,Domain_color)) %>% 
   mutate(AA_ref = aaa(AA_ref),
          AA_alt = convert_aa(AA_alt),
-         Vartype = ifelse(Vartype == "Stop Gained","Nonsense", Vartype))
+         Vartype = ifelse(Vartype == "Stop Gained","Stop-gain", Vartype))
 
 #Load master table 
 master.df <- read_delim("data/master_table.txt", delim = "\t") 
@@ -713,10 +714,13 @@ Patient_data.df <- read_delim("data/SATB2_Patient_variants_v1.txt", delim = "\t"
          #AA_alt_complex = ifelse(Vartype == "Missense",AA_alt,AA_alt_complex),
          cDNA = ifelse(!is.na(cDNA_pos), paste0("c.",cDNA_pos,cDNA_ref,">",cDNA_alt), "Not available"),
          #Protein = paste0("p.",AA_ref,AA_pos,AA_alt_complex),
-         Protein = Original_AA_change)
+         Protein = Original_AA_change) %>% 
+  mutate(rowID = 1:nrow(.)) %>% 
+  na_if("N/A") %>% 
+  mutate(Age_walk_months = as.numeric(Age_walk_months))##used to ensure intersect of res_mod/ resmod_ini does a proper job
 
 Patient_data_missense_only.df <- Patient_data.df %>% 
-  filter(Vartype == "Missense") #%>% 
+  filter(Vartype == "Missense") 
  # mutate(AA_alt = three_to_one_aa(AA_alt))
 
 Control_data.df <- read_delim("data/gnomad_variants.txt", delim = "\t") %>% 
@@ -752,7 +756,7 @@ clinvar.df <- read_delim("data/Clinvar_links_SATB2.txt", delim = "\t")
   ##add here the colors for all phenotypes 
   basic_phenotype_colors <- c("Female"="#F97EE5","Male"="#0404B1",
                                   " Yes" ="#F97EE5", "No"= "#0404B1", "Yes" = "#F97EE5",
-                                  "None" = "#9191fd" ,"1 to 10"= "#4747fb" ,"10 to 50" = "#0404b1","Greater than 50" ="#02026a")
+                                  " None" = "#9191fd","None" = "#9191fd" ,"1 to 10"= "#4747fb" ,"10 to 50" = "#0404b1","Greater than 50" ="#02026a")
   
   basic_phenotype_colors_ID <- c("black","grey","#994714")
   
@@ -942,10 +946,8 @@ shinyServer(function(input, output, session) {
     output$value <- renderText({ variant_conseq })
     
     output$vartype <- reactive({
-      g <- ifelse(variant_conseq == "Missense","Missense",
-             ifelse(variant_conseq %in% c("Frameshift Insertion", "Frameshift Deletion","Frameshift Duplication", "splice-site", "Nonsense"),"Nonsense","Other"))
-      
-      print(g)
+      ifelse(variant_conseq == "Missense","Missense",
+             ifelse(variant_conseq %in% c("Frameshift Insertion", "Frameshift Deletion","Frameshift Duplication", "splice-site", "Nonsense","Stop-gain","Stop-loss"),"Nonsense","Other"))
     })
     
     outputOptions(output, 'vartype', suspendWhenHidden = FALSE)
@@ -984,8 +986,6 @@ shinyServer(function(input, output, session) {
                AA_alt == varFilterInput$data$AA_alt[1])
     }else{
       
-      print("test")
-      
       varFilterInput$data <-tibble(cDNA_input = input$cDNA, Gene = "SATB2")
       
     }
@@ -998,10 +998,14 @@ shinyServer(function(input, output, session) {
     
     output$value <- renderText({ variant_conseq })
     
-    output$vartype <- renderText({
+    print(variant_conseq)
+    
+    output$vartype <- reactive({
       ifelse(variant_conseq == "Missense","Missense",
-             ifelse(variant_conseq %in% c("Frameshift Insertion", "Frameshift Deletion","Frameshift Duplication", "splice-site", "Stop-gain","Nonsense"),"Nonsense","Other"))
+             ifelse(variant_conseq %in% c("Frameshift Insertion", "Frameshift Deletion","Frameshift Duplication", "splice-site", "Nonsense","Stop-gain","Stop-loss"),"Nonsense","Other"))
     })
+    
+    outputOptions(output, 'vartype', suspendWhenHidden = FALSE)
     
     output$consequenceBox <- renderValueBox({
       valueBox(
@@ -1320,6 +1324,38 @@ shinyServer(function(input, output, session) {
               options = list(dom = 't', scrollY = TRUE), escape=FALSE)
   })
   
+  output$patientTable_other <- DT::renderDataTable({
+    
+    #print(varFilterInput$data)
+    
+    validate(
+      need(!plyr::empty(varFilterInput$data),
+           "There is no data that matches your filters.")) 
+    
+    
+    if(!is.null(varFilterInput$data$input)){
+      
+      AA_ref_sel <- str_sub(varFilterInput$data$input,3,5)
+      AA_pos_sel <- str_extract(varFilterInput$data$input,"[0-9]+")
+      
+      table_filt.df <- Patient_data.df %>% 
+        filter(AA_pos == AA_pos_sel,
+               AA_ref == AA_ref_sel,
+               AA_alt == "Stop") 
+    }else{
+      
+      table_filt.df <- Patient_data.df %>% 
+        filter(Original_cDNA_change == varFilterInput$data$cDNA_input)
+      
+    }
+    
+    datatable(table_filt.df %>% 
+                #!is.na(Published_in)) %>%
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in),
+              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
+              options = list(dom = 't', scrollY = TRUE), escape=FALSE)
+  })
+  
   observe_helpers(withMathJax = TRUE)
   
   output$comparePlot <- renderPlotly({
@@ -1331,6 +1367,7 @@ shinyServer(function(input, output, session) {
     
 
     z <- Patient_data.df %>%
+      filter(Vartype == "Missense") %>% 
       filter(case_when(
         input$compareButtons =="Variant Type" ~ Vartype ==varFilterInput$data$Vartype,
         input$compareButtons =="Protein region" ~ Domain==varFilterInput$data$Domain,
@@ -1471,11 +1508,301 @@ shinyServer(function(input, output, session) {
     ))
     
     z <- Patient_data.df %>%
+      filter(Vartype == "Missense") %>% 
       filter(case_when(
         input$compareButtons =="Variant Type" ~ Vartype ==varFilterInput$data$Vartype,
         input$compareButtons =="Protein region" ~ Domain==varFilterInput$data$Domain,
         #input$compareButtons == "Functional Consequence" ~ CALL == varFilterInput$data$CALL,
         input$compareButtons =="Amino Acid Position" ~ AA_pos==varFilterInput$data$AA_pos)) 
+    
+    
+    datatable(z %>% 
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in), 
+              extensions = "Buttons", 
+              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
+              options = list(dom = 'Brtip',
+                             buttons = c('csv', 'excel'), pageLength=100, scrollY = "350px"), escape = FALSE)
+    
+  })
+  
+  ##Nonsense ####
+  output$comparePlot_nonsense <- renderPlotly({
+    
+    z <- Patient_data.df %>% 
+      filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift"))
+    
+    selected_data.df <- z %>% 
+      dplyr::rename(phenotype_sel = Cleft_palate) %>% 
+      select(phenotype_sel) %>%
+      arrange(phenotype_sel) %>% 
+      filter(!is.na(phenotype_sel)) %>% 
+      group_by(phenotype_sel) %>% 
+      dplyr::summarise(n = n()) %>% 
+      assign("save",.,envir = .GlobalEnv)
+    
+    all_data.df <- Patient_data.df %>% 
+      dplyr::rename(phenotype_sel = Cleft_palate) %>% 
+      select(phenotype_sel) %>%
+      arrange(phenotype_sel) %>% 
+      filter(!is.na(phenotype_sel)) %>% 
+      group_by(phenotype_sel) %>% 
+      dplyr::summarise(n = n()) 
+    
+    n_tot_y <- ifelse(length(selected_data.df$n[which(selected_data.df == "Yes")]) != 0,selected_data.df$n[which(selected_data.df == "Yes")],0)
+    
+    n_tot_n <- ifelse(length(selected_data.df$n[which(selected_data.df == "No")]) != 0,selected_data.df$n[which(selected_data.df == "No")],0)
+    
+    plot1_input.df <- tibble(phenotype_sel = c("Yes","No"), n_tot = c(n_tot_y,n_tot_n), per = c(n_tot_y/all_data.df$n[which(all_data.df$phenotype_sel == "Yes")]*100,n_tot_n/all_data.df$n[which(all_data.df$phenotype_sel == "No")]*100))
+    
+    plotty1 <- plot_ly(data = plot1_input.df, 
+                       x = ~ phenotype_sel, 
+                       y = ~ round(per, digits = 2), 
+                       color = ~ phenotype_sel, 
+                       colors = basic_phenotype_colors,
+                       type = "bar", 
+                       hoverinfo = "text", showlegend = FALSE,
+                       text= ~ paste0(round(n_tot, digits = 2), " (" ,n_tot," individuals)")) %>% 
+      layout(title="", 
+             font=plotly_font,
+             xaxis = list(title="",showline = T, tickangle = 45),
+             yaxis = list(title="Share of individuals (%)",showline = T),
+             margin = list(b = 160)) %>%
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  
+    
+    
+    selected_data.df <- z %>% 
+      dplyr::rename(phenotype_sel = Total_speech) %>% 
+      select(phenotype_sel) %>%
+      arrange(phenotype_sel) %>% 
+      filter(!is.na(phenotype_sel)) %>% 
+      mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
+      group_by(phenotype_sel) %>% 
+      dplyr::summarise(n = n()) %>% 
+      assign("save",.,envir = .GlobalEnv)
+    
+    all_data.df <- Patient_data.df %>% 
+      dplyr::rename(phenotype_sel = Total_speech) %>% 
+      select(phenotype_sel) %>%
+      arrange(phenotype_sel) %>% 
+      filter(!is.na(phenotype_sel)) %>% 
+      mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
+      group_by(phenotype_sel) %>% 
+      dplyr::summarise(n = n())
+    
+    n_tot_none <- ifelse(length(selected_data.df$n[which(selected_data.df == "None")]) != 0,selected_data.df$n[which(selected_data.df == "None")],0)
+    
+    n_tot_1_10 <- ifelse(length(selected_data.df$n[which(selected_data.df == "1 to 10")]) != 0,selected_data.df$n[which(selected_data.df == "1 to 10")],0)
+    
+    n_tot_10_50 <- ifelse(length(selected_data.df$n[which(selected_data.df == "10 to 50")]) != 0,selected_data.df$n[which(selected_data.df == "10 to 50")],0)
+    
+    n_tot_g50 <- ifelse(length(selected_data.df$n[which(selected_data.df == "Greater than 50")]) != 0,selected_data.df$n[which(selected_data.df == "Greater than 50")],0)
+    
+    plot2_input.df <- tibble(phenotype_sel = c(" None","1 to 10","10 to 50","Greater than 50"), 
+                             n_tot = c(n_tot_none,n_tot_1_10,n_tot_10_50,n_tot_g50), 
+                             per = c(n_tot_none/all_data.df$n[which(all_data.df$phenotype_sel == "None")]*100,
+                                     n_tot_1_10/all_data.df$n[which(all_data.df$phenotype_sel == "1 to 10")]*100,
+                                     n_tot_10_50/all_data.df$n[which(all_data.df$phenotype_sel == "10 to 50")]*100,
+                                     n_tot_g50/all_data.df$n[which(all_data.df$phenotype_sel == "Greater than 50")]*100))
+    
+    plotty2 <- plot_ly(data = plot2_input.df, 
+                       x = ~ phenotype_sel, 
+                       y = ~ round(per, digits = 2), 
+                       color = ~ phenotype_sel, 
+                       colors = basic_phenotype_colors,
+                       type = "bar", 
+                       hoverinfo = "text", showlegend = FALSE,
+                       text= ~ paste0(round(n_tot, digits = 2), " (" ,n_tot," individuals)")) %>% 
+      layout(title="", 
+             font=plotly_font,
+             xaxis = list(title="",showline = T, tickangle = 45),
+             yaxis = list(title="Share of individuals (%)",showline = T),
+             margin = list(b = 160)) %>%
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  
+    
+    
+    plotty3 <- plot_ly(data =z %>% 
+                         dplyr::rename(Onset_days = Age_first_word_months) %>% 
+                         mutate(p_variant = paste0("p.",AA_ref,AA_pos,AA_alt)) %>% 
+                         filter(!is.na(Onset_days)) %>% 
+                         ungroup() %>% 
+                         assign("save",.,envir = .GlobalEnv),
+                       y = ~Onset_days, type = "box",x = "",
+                       boxpoints = "all", jitter = 0.3,
+                       pointpos = 0, hoverinfo = "text", showlegend = FALSE,
+                       fillcolor = "rgba(31,119,180,0.5)",
+                       boxpoints = 'all', marker = list (color = "#1f77b4"), line = list (color = "#1f77b4"),
+                       text= ~paste0(round(Onset_days, digits = 2), " months, ", Protein)) %>% 
+      layout(font=plotly_font,  
+             title="",
+             xaxis = list(title="", tickangle = 45, showline = T),
+             yaxis = list(
+               title = "Age first words (months)",
+               tickmode = "array",
+               showline = T
+             ),
+             margin = list(b = 160)) %>%
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
+    
+    subplot(plotty1,plotty2,plotty3, nrows = 1,titleY = T,margin = 0.05) %>% 
+      layout(annotations = list(
+        list(x = 0.1 , y = 1.1, text = "Cleft Palate", showarrow = F, xref='paper', yref='paper'),
+        list(x = 0.5 , y = 1.1, text = "Total words spoken", showarrow = F, xref='paper', yref='paper'),
+        list(x = 0.9 , y = 1.1, text = "Age at first word (months)", showarrow = F, xref='paper', yref='paper'))
+      )
+  })
+
+  
+  #Nonsense
+  output$compareTable_nonsense <- DT::renderDataTable({
+    
+    z <- Patient_data.df %>% 
+      filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift"))
+  
+    
+    datatable(z %>% 
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in), 
+              extensions = "Buttons", 
+              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
+              options = list(dom = 'Brtip',
+                             buttons = c('csv', 'excel'), pageLength=100, scrollY = "350px"), escape = FALSE)
+    
+  })
+  
+  ##other Variant ####
+  ##Nonsense ####
+  output$comparePlot_other <- renderPlotly({
+    
+    z <- Patient_data.df %>% 
+      filter(!(Vartype %in% c("Missense","Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")))  
+    
+    selected_data.df <- z %>% 
+    dplyr::rename(phenotype_sel = Cleft_palate) %>% 
+      select(phenotype_sel) %>%
+      arrange(phenotype_sel) %>% 
+      filter(!is.na(phenotype_sel)) %>% 
+      group_by(phenotype_sel) %>% 
+      dplyr::summarise(n = n()) %>% 
+      assign("save",.,envir = .GlobalEnv)
+    
+    all_data.df <- Patient_data.df %>% 
+      dplyr::rename(phenotype_sel = Cleft_palate) %>% 
+      select(phenotype_sel) %>%
+      arrange(phenotype_sel) %>% 
+      filter(!is.na(phenotype_sel)) %>% 
+      group_by(phenotype_sel) %>% 
+      dplyr::summarise(n = n()) 
+    
+    n_tot_y <- ifelse(length(selected_data.df$n[which(selected_data.df == "Yes")]) != 0,selected_data.df$n[which(selected_data.df == "Yes")],0)
+    
+    n_tot_n <- ifelse(length(selected_data.df$n[which(selected_data.df == "No")]) != 0,selected_data.df$n[which(selected_data.df == "No")],0)
+    
+    plot1_input.df <- tibble(phenotype_sel = c("Yes","No"), n_tot = c(n_tot_y,n_tot_n), per = c(n_tot_y/all_data.df$n[which(all_data.df$phenotype_sel == "Yes")]*100,n_tot_n/all_data.df$n[which(all_data.df$phenotype_sel == "No")]*100))
+    
+    plotty1 <- plot_ly(data = plot1_input.df, 
+                       x = ~ phenotype_sel, 
+                       y = ~ round(per, digits = 2), 
+                       color = ~ phenotype_sel, 
+                       colors = basic_phenotype_colors,
+                       type = "bar", 
+                       hoverinfo = "text", showlegend = FALSE,
+                       text= ~ paste0(round(n_tot, digits = 2), " (" ,n_tot," individuals)")) %>% 
+      layout(title="", 
+             font=plotly_font,
+             xaxis = list(title="",showline = T, tickangle = 45),
+             yaxis = list(title="Share of individuals (%)",showline = T),
+             margin = list(b = 160)) %>%
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  
+    
+    
+    selected_data.df <- z %>% 
+      dplyr::rename(phenotype_sel = Total_speech) %>% 
+      select(phenotype_sel) %>%
+      arrange(phenotype_sel) %>% 
+      filter(!is.na(phenotype_sel)) %>% 
+      mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
+      group_by(phenotype_sel) %>% 
+      dplyr::summarise(n = n()) %>% 
+      assign("save",.,envir = .GlobalEnv)
+    
+    all_data.df <- Patient_data.df %>% 
+      dplyr::rename(phenotype_sel = Total_speech) %>% 
+      select(phenotype_sel) %>%
+      arrange(phenotype_sel) %>% 
+      filter(!is.na(phenotype_sel)) %>% 
+      mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
+      group_by(phenotype_sel) %>% 
+      dplyr::summarise(n = n())
+    
+    n_tot_none <- ifelse(length(selected_data.df$n[which(selected_data.df == "None")]) != 0,selected_data.df$n[which(selected_data.df == "None")],0)
+    
+    n_tot_1_10 <- ifelse(length(selected_data.df$n[which(selected_data.df == "1 to 10")]) != 0,selected_data.df$n[which(selected_data.df == "1 to 10")],0)
+    
+    n_tot_10_50 <- ifelse(length(selected_data.df$n[which(selected_data.df == "10 to 50")]) != 0,selected_data.df$n[which(selected_data.df == "10 to 50")],0)
+    
+    n_tot_g50 <- ifelse(length(selected_data.df$n[which(selected_data.df == "Greater than 50")]) != 0,selected_data.df$n[which(selected_data.df == "Greater than 50")],0)
+    
+    plot2_input.df <- tibble(phenotype_sel = c(" None","1 to 10","10 to 50","Greater than 50"), 
+                             n_tot = c(n_tot_none,n_tot_1_10,n_tot_10_50,n_tot_g50), 
+                             per = c(n_tot_none/all_data.df$n[which(all_data.df$phenotype_sel == "None")]*100,
+                                     n_tot_1_10/all_data.df$n[which(all_data.df$phenotype_sel == "1 to 10")]*100,
+                                     n_tot_10_50/all_data.df$n[which(all_data.df$phenotype_sel == "10 to 50")]*100,
+                                     n_tot_g50/all_data.df$n[which(all_data.df$phenotype_sel == "Greater than 50")]*100))
+    
+    plotty2 <- plot_ly(data = plot2_input.df, 
+                       x = ~ phenotype_sel, 
+                       y = ~ round(per, digits = 2), 
+                       color = ~ phenotype_sel, 
+                       colors = basic_phenotype_colors,
+                       type = "bar", 
+                       hoverinfo = "text", showlegend = FALSE,
+                       text= ~ paste0(round(n_tot, digits = 2), " (" ,n_tot," individuals)")) %>% 
+      layout(title="", 
+             font=plotly_font,
+             xaxis = list(title="",showline = T, tickangle = 45),
+             yaxis = list(title="Share of individuals (%)",showline = T),
+             margin = list(b = 160)) %>%
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  
+    
+    
+    plotty3 <- plot_ly(data =z %>% 
+                         dplyr::rename(Onset_days = Age_first_word_months) %>% 
+                         mutate(p_variant = paste0("p.",AA_ref,AA_pos,AA_alt)) %>% 
+                         filter(!is.na(Onset_days)) %>% 
+                         ungroup() %>% 
+                         assign("save",.,envir = .GlobalEnv),
+                       y = ~Onset_days, type = "box",x = "",
+                       boxpoints = "all", jitter = 0.3,
+                       pointpos = 0, hoverinfo = "text", showlegend = FALSE,
+                       fillcolor = "rgba(31,119,180,0.5)",
+                       boxpoints = 'all', marker = list (color = "#1f77b4"), line = list (color = "#1f77b4"),
+                       text= ~paste0(round(Onset_days, digits = 2), " months, ", Protein)) %>% 
+      layout(font=plotly_font,  
+             title="",
+             xaxis = list(title="", tickangle = 45, showline = T),
+             yaxis = list(
+               title = "Age first words (months)",
+               tickmode = "array",
+               showline = T
+             ),
+             margin = list(b = 160)) %>%
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
+    
+    subplot(plotty1,plotty2,plotty3, nrows = 1,titleY = T,margin = 0.05) %>% 
+      layout(annotations = list(
+        list(x = 0.1 , y = 1.1, text = "Cleft Palate", showarrow = F, xref='paper', yref='paper'),
+        list(x = 0.5 , y = 1.1, text = "Total words spoken", showarrow = F, xref='paper', yref='paper'),
+        list(x = 0.9 , y = 1.1, text = "Age at first word (months)", showarrow = F, xref='paper', yref='paper'))
+      )
+  })
+  
+  
+  #Nonsense
+  output$compareTable_other <- DT::renderDataTable({
+    
+    
+    z <- Patient_data.df %>% 
+      filter(!(Vartype %in% c("Missense","Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift"))) 
+    
     
     
     datatable(z %>% 
@@ -1698,24 +2025,31 @@ shinyServer(function(input, output, session) {
   
   #####Research #####
   # Filter for subset of variants
-  res_mod <- callModule(
+  res_mod_ini <- callModule(
     module = selectizeGroupServer,
     id = "research-filters",
     data = Patient_data.df %>% filter(Vartype != "Intronic"),
-    vars = c("Vartype",  "AA_alt", "Domain","Clinical_seizures","Cleft_palate","Total_speech", "Abnormal_brainMRI")
+    vars = c("Vartype",  "AA_alt", "Domain")
+  )
+  
+  res_mod <- callModule(
+    module = selectizeGroupServer,
+    id = "research-filters2",
+    data = res_mod_ini(),
+    vars = c("Clinical_seizures","Cleft_palate","Total_speech", "Abnormal_brainMRI")
   )
   
   output$filtered_n <- renderText({
-    x <- nrow(res_mod())
+    x <- nrow(generics::intersect(res_mod(),res_mod_ini()))
     x <- paste("n = ", x)
     return(x)
   })
   
   # Table with displayed variants
   output$subsetTable <- DT::renderDataTable({
-    req(res_mod())
+    req(generics::intersect(res_mod(),res_mod_ini()))
 
-     z <- res_mod() 
+     z <- generics::intersect(res_mod(),res_mod_ini()) 
      
     patient_table <- datatable(z %>% 
                                  select(Transcript,Gene, Domain, cDNA, Protein, Phenotype, Onset_days,functional_effect, Published_in) , 
@@ -1742,6 +2076,10 @@ shinyServer(function(input, output, session) {
 
   output$Genotype_overview_plot <- renderPlotly({
     
+    validate(need(
+      nrow(generics::intersect(res_mod(),res_mod_ini())) >0,
+      "There is no data that matches your filters."
+    ))
 
     # 2D lolliplot with ´SATB2 variants
     
@@ -1752,9 +2090,26 @@ shinyServer(function(input, output, session) {
                        end = max(AA_pos))  
     
 
+    Patient_miss.df <- generics::intersect(res_mod(),res_mod_ini()) %>% 
+      filter(Vartype == "Missense") %>% 
+      distinct(AA_pos,AA_ref,AA_alt)
+    
+    burden.df <- tibble(AA_pos= NA,patient_burden = NA, gnomad_burden = NA)
+    
+    for(i in 0:146){
+      
+      sel_aa <- (i*5-4):(i*5+4)
+      
+      pat_bur <- which(Patient_miss.df$AA_pos  %in% sel_aa)%>% length()
+      gno_bur <- which(Control_data.df$AA_pos  %in% sel_aa) %>% length()
+      
+      burden.df[(i+1),] <- list(i*5,pat_bur*-1,gno_bur*-1)
+      
+    }
+
     g <- ggplot(data=all_exchanges.df %>% 
                   distinct(AA_pos,Gene,Domain,Domain_color) %>% 
-                  left_join(res_mod() %>% 
+                  left_join(generics::intersect(res_mod(),res_mod_ini()) %>% 
                               filter(!is.na(AA_pos)) %>% 
                               select(Gene,Protein,AA_pos,Vartype,Original_cDNA_change) %>% 
                               mutate(Protein = ifelse(Vartype == "splice site",Original_cDNA_change,Protein)) %>% 
@@ -1763,38 +2118,53 @@ shinyServer(function(input, output, session) {
                               ungroup() %>% 
                               mutate(Protein_count =  paste0(" ",Protein,", Variant count ",var_count)) %>% 
                               group_by(Gene,AA_pos,Vartype) %>% 
-                              dplyr::summarise(Protein_final = paste(Protein_count, collapse = ";"))) %>% 
+                              dplyr::summarise(Protein_final = paste(Protein_count, collapse = "\n"))) %>% 
                   mutate(Vartype = ifelse(Vartype %in% c("Missense","PTV"),Vartype,
                                           ifelse(!is.na(Vartype),"Other",NA)))) +
-      geom_segment(aes(x=AA_pos, xend=AA_pos, y=2, yend=ifelse(Vartype=="Missense", 7,8)), colour="black")+
+      geom_segment(aes(x=AA_pos, xend=AA_pos, y=0.75, yend=ifelse(Vartype=="Missense", 7,8)), colour="black")+
       geom_point(aes(x=AA_pos, y=ifelse(Vartype=="Missense", 7,8), color=Vartype, text=Protein_final))+
-      geom_rect(data=research_genotype_domain.df, aes(xmin=start, xmax=end, ymin=2, ymax=2.5, fill=Domain, text=Domain))+
-      theme_classic()+
-      ylim(c(1.7,10))+
-      labs( x= "Amino acid sequence")+
+      geom_rect(data=research_genotype_domain.df, aes(xmin=start, xmax=end, ymin=0, ymax=0.75, fill=Domain, text=Domain))+
+      theme_classic(base_size = 15)+
+      
+      #burden
+      geom_hline(aes(yintercept=(0), alpha=1), colour="black", show.legend = F)  +
+      geom_hline(aes(yintercept=(-2), alpha=0.5), colour="black", linetype="dashed", show.legend = F)  +
+      geom_hline(aes(yintercept=(-4), alpha=0.5), colour="black", linetype="dashed", show.legend = F)  +
+      geom_hline(aes(yintercept=(-6), alpha=0.5), colour="black", linetype="dashed", show.legend = F)  +
+      geom_hline(aes(yintercept=(-8), alpha=0.5), colour="black", linetype="dashed", show.legend = F)  +
+      geom_hline(aes(yintercept=(-10), alpha=0.5), colour="black", linetype="dashed", show.legend = F)  +
+      #geom_line(data = burden.df,aes(x = AA_pos,y=gnomad_burden, col="gnomAD"),na.rm = T) +
+      geom_line(data = burden.df,aes(x = AA_pos,y=burden.df$patient_burden, col="Pathogenic"),na.rm = T) +
+      #geom_area(data = burden.df,aes(x = AA_pos,y=burden.df$gnomad_burden), fill="grey20", alpha=0.5) +
+      geom_area(data = burden.df,aes(x = AA_pos,y=burden.df$patient_burden), fill="#D55E00", alpha=0.8) +
+      
+      
+      scale_y_continuous(limits = c(-10,9), breaks = c(-10,-8,-6,-4,-2,0), labels = c(10,8,6,4,2,0))+
+      coord_cartesian(xlim = c(0,735), expand = 0)+
+      labs(x= "Amino acid sequence", 
+           y = "Missense burden")+
       scale_color_manual(values = lolliplot_fill_scheme)+
       scale_fill_manual(values = lolliplot_fill_scheme)+
       #facet_grid(Gene ~ .)+
       theme(
         text = element_text(size = 10),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        axis.text.y = element_blank(),
+        #axis.text.y = element_blank(),
+        #axis.title.x = element_blank(),
+        axis.title.y = element_text(hjust = 0.2),
         axis.ticks.y = element_blank(),
         axis.line.y = element_blank(),
         legend.position = "none")
     
-   
+    
     if (input$gnomad_m == TRUE) {
-      g <- g + geom_point(data=Control_data.df ,
-                          size=2, color = "black", aes(x=AA_pos, y=2, alpha=1, text=paste0("Position: ",AA_pos,", Allele count: ", Allele_count)))
+      g <- g + geom_line(data = burden.df,aes(x = AA_pos,y=gnomad_burden, col="gnomAD"),na.rm = T) +
+        geom_area(data = burden.df,aes(x = AA_pos,y=burden.df$gnomad_burden), fill="grey20", alpha=0.5) 
     }
     
 
     g <- ggplotly(g, tooltip = "text") %>%
       config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  %>%
-      layout(title="",font=plotly_font,
-             xaxis = list(title = "Amino acid sequence")
+      layout(title="",font=plotly_font
       )
 
   })
@@ -1804,7 +2174,7 @@ shinyServer(function(input, output, session) {
     legend <- data.frame(x=c(1,11,21), y=c(1, 1, 1), text=c("Missense", "   Null", "Control"))
     plot <- ggplot(legend, aes(x=x, y=y, color=text))+
       geom_point(size = 6)+
-      scale_color_manual(values = c("Missense"="#D55E00","   Null"="#0072B2","Control" ="#000000"))+
+      scale_color_manual(values = c("Missense"="#D55E00","   Null"="#0072B2","Control" ="#989898"))+
       ylim(c(0,2))+
       xlim(c(0,40))+
       theme_void()+
@@ -1819,12 +2189,12 @@ shinyServer(function(input, output, session) {
   output$threeDmolGene_all <- renderR3dmol({
     
     validate(need(
-      nrow(res_mod() %>% filter(Vartype == "Missense")) >0,
+      nrow(generics::intersect(res_mod(),res_mod_ini()) %>% filter(Vartype == "Missense")) >0,
       "There is no data that matches your filters."
     ))
     
     
-    variant.df <- res_mod() %>%
+    variant.df <- generics::intersect(res_mod(),res_mod_ini()) %>%
       filter(Vartype == "Missense") %>%
       mutate(label = "pathogenic") %>%
       group_by(AA_pos,AA_ref,Gene) %>%
@@ -1833,7 +2203,7 @@ shinyServer(function(input, output, session) {
     
     gnomad.df <- Control_data.df %>%
       group_by(AA_pos,AA_ref,Gene) %>%
-      filter(Domain %in% unique(res_mod() %>% .$Domain)) %>% 
+      filter(Domain %in% unique(generics::intersect(res_mod(),res_mod_ini()) %>% .$Domain)) %>% 
       dplyr::summarise(n_occ = n()) %>%
       select(AA_pos,AA_ref,n_occ,Gene)
     
@@ -1859,7 +2229,7 @@ shinyServer(function(input, output, session) {
       dplyr::summarise(var_mut = ifelse(n() >1,"mutiple",Gene))
     
     
-    sub_color <- c("red","black")
+    sub_color <- c("red","#989898")
     sub_scale <- c(1.2,0.8)
     struc_color <- "white"
     
@@ -1920,9 +2290,9 @@ shinyServer(function(input, output, session) {
   
   
   output$compareTableResearch <- DT::renderDataTable({
-    req(res_mod())
+    req(generics::intersect(res_mod(),res_mod_ini()))
     
-    z <- res_mod()
+    z <- generics::intersect(res_mod(),res_mod_ini())
     
     datatable(z %>% 
                 select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in), 
@@ -1934,9 +2304,9 @@ shinyServer(function(input, output, session) {
   })
   
   output$compareTableResearch2 <- DT::renderDataTable({
-    req(res_mod())
+    req(generics::intersect(res_mod(),res_mod_ini()))
     
-    z <- res_mod()
+    z <- generics::intersect(res_mod(),res_mod_ini())
     
     datatable(z %>% 
                 select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in), 
@@ -1950,8 +2320,13 @@ shinyServer(function(input, output, session) {
   ### Phenotype Interface ####
 
   output$research_phenotype1 <- renderPlotly({
+    
+    validate(need(
+      nrow(generics::intersect(res_mod(),res_mod_ini())) >0,
+      "There is no data that matches your filters."
+    ))
 
-    plot <- plot_ly(res_mod() %>% 
+    plot <- plot_ly(generics::intersect(res_mod(),res_mod_ini()) %>% 
                       dplyr::rename(phenotype_fac = Domain) %>% 
                       filter(phenotype_fac != "NA") %>% 
                       mutate(phenotype_fac =ifelse(phenotype_fac == "Yes"," Yes",phenotype_fac)) %>% 
@@ -1982,7 +2357,13 @@ shinyServer(function(input, output, session) {
   })
 
   output$research_phenotype2 <- renderPlotly({
-    plot <- plot_ly(res_mod() %>% 
+    
+    validate(need(
+      nrow(generics::intersect(res_mod(),res_mod_ini()) %>% filter(!is.na(Total_speech))) >0,
+      "There is no data that matches your filters."
+    ))
+    
+    plot <- plot_ly(generics::intersect(res_mod(),res_mod_ini()) %>% 
                      dplyr::rename(phenotype_fac = Total_speech) %>% 
                      filter(phenotype_fac != "NA") %>% 
                       filter(!is.na(phenotype_fac)) %>% 
@@ -2012,8 +2393,13 @@ shinyServer(function(input, output, session) {
   })
 
   output$research_phenotype3 <- renderPlotly({
+    
+    validate(need(
+      nrow(generics::intersect(res_mod(),res_mod_ini()) %>% filter(!is.na(Clinical_seizures))) >0,
+      "There is no data that matches your filters."
+    ))
 
-    plot <- plot_ly(res_mod() %>% 
+    plot <- plot_ly(generics::intersect(res_mod(),res_mod_ini()) %>% 
                       dplyr::rename(phenotype_fac = Clinical_seizures) %>% 
                       filter(phenotype_fac != "NA") %>% 
                       filter(!is.na(phenotype_fac)) %>% 
@@ -2043,7 +2429,13 @@ shinyServer(function(input, output, session) {
   })
   
   output$research_phenotype4 <- renderPlotly({
-    plot <- plot_ly(res_mod() %>% 
+    
+    validate(need(
+      nrow(generics::intersect(res_mod(),res_mod_ini()) %>% filter(!is.na(Dental_issues))) >0,
+      "There is no data that matches your filters."
+    ))
+    
+    plot <- plot_ly(generics::intersect(res_mod(),res_mod_ini()) %>% 
                       dplyr::rename(phenotype_fac = Dental_issues) %>% 
                       filter(phenotype_fac != "NA") %>% 
                       filter(!is.na(phenotype_fac)) %>% 
@@ -2074,7 +2466,13 @@ shinyServer(function(input, output, session) {
   })
   
   output$research_phenotype5 <- renderPlotly({
-    plot <- plot_ly(res_mod() %>% 
+    
+    validate(need(
+      nrow(generics::intersect(res_mod(),res_mod_ini()) %>% filter(!is.na(Behavior_anomalies))) >0,
+      "There is no data that matches your filters."
+    ))
+    
+    plot <- plot_ly(generics::intersect(res_mod(),res_mod_ini()) %>% 
                       dplyr::rename(phenotype_fac = Behavior_anomalies) %>% 
                       filter(phenotype_fac != "NA") %>% 
                       filter(!is.na(phenotype_fac)) %>% 
@@ -2105,7 +2503,13 @@ shinyServer(function(input, output, session) {
   })
   
   output$research_phenotype6 <- renderPlotly({
-    plot <- plot_ly(res_mod() %>% 
+    
+    validate(need(
+      nrow(generics::intersect(res_mod(),res_mod_ini()) %>% filter(!is.na(Sleep_problems))) >0,
+      "There is no data that matches your filters."
+    ))
+    
+    plot <- plot_ly(generics::intersect(res_mod(),res_mod_ini()) %>% 
                       dplyr::rename(phenotype_fac = Sleep_problems) %>% 
                       filter(phenotype_fac != "NA") %>% 
                       filter(!is.na(phenotype_fac)) %>% 
@@ -2139,7 +2543,7 @@ shinyServer(function(input, output, session) {
 
   output$research_functional1 <- renderPlotly({
     
-    data.df <- res_mod() %>% 
+    data.df <- generics::intersect(res_mod(),res_mod_ini()) %>% 
       rename(func_effect = "uptake") %>% 
       filter(!is.na(func_effect)) %>% 
       distinct(func_effect,AA_pos,AA_alt)
@@ -2172,7 +2576,7 @@ shinyServer(function(input, output, session) {
   
   output$research_functional2 <- renderPlotly({
     
-    data.df <- res_mod() %>% 
+    data.df <- generics::intersect(res_mod(),res_mod_ini()) %>% 
       rename(func_effect = "surface_exp") %>% 
       filter(!is.na(func_effect)) %>% 
       distinct(func_effect,AA_pos,AA_alt)
@@ -2206,7 +2610,7 @@ shinyServer(function(input, output, session) {
   
   output$research_functional3 <- renderPlotly({
     
-    data.df <- res_mod() %>% 
+    data.df <- generics::intersect(res_mod(),res_mod_ini()) %>% 
       rename(func_effect = "total_exp") %>% 
       filter(!is.na(func_effect)) %>% 
       distinct(func_effect,AA_pos,AA_alt)
@@ -2240,7 +2644,7 @@ shinyServer(function(input, output, session) {
   
   output$research_functional4 <- renderPlotly({
     
-    data.df <- res_mod() %>% 
+    data.df <- generics::intersect(res_mod(),res_mod_ini()) %>% 
       rename(func_effect = "relative_update_surface_exp") %>% 
       filter(!is.na(func_effect)) %>% 
       distinct(func_effect,AA_pos,AA_alt)
@@ -2274,7 +2678,7 @@ shinyServer(function(input, output, session) {
   
   output$research_functional5 <- renderPlotly({
     
-    data.df <- res_mod() %>% 
+    data.df <- generics::intersect(res_mod(),res_mod_ini()) %>% 
       rename(func_effect = "relative_surface_exp_tot_exp") %>% 
       filter(!is.na(func_effect)) %>% 
       distinct(func_effect,AA_pos,AA_alt)
@@ -2327,7 +2731,7 @@ shinyServer(function(input, output, session) {
   output$threeDmolfunctional <- renderR3dmol({
     
     
-    selection_data.df <- res_mod() 
+    selection_data.df <- generics::intersect(res_mod(),res_mod_ini()) 
     
     if(selection_data.df$Gene %>% unique() %>% length()== 4){
       

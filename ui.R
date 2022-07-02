@@ -176,6 +176,25 @@ var_patient_info_title <- p("Individuals with the same variant in the SATB2 Port
                                                HTML(paste0("<li>Internal variant database (n = 123; unpublished)</li>")),
                                                HTML(paste0("<li>Others</li>")), align = "left"),
                                                            animation = "scale", theme = "light"))
+
+var_patient_info_title_nonsense <- p(h4("Compare the selected variant to other nonsense variants",
+                            tippy(icon("question-circle"),
+                                  tooltip = h5("Nonsense variants include:",
+                                               HTML(paste0("<ul><li>Framshift variants</li>")),
+                                               HTML(paste0("<li>Stop-gain variants</li>")), 
+                                               HTML(paste0("<li>Stop-loss variants</li>")),
+                                               HTML(paste0("<li>Splice-site variants</li>")),align = "left"),
+                                  animation = "scale", theme = "light")))
+
+var_patient_info_title_other <- p(h4("Compare the selected variants neither classified as missense nor nonsese variants",
+                                     tippy(icon("question-circle"),
+                                           tooltip = h5("Variants included:",
+                                                        HTML(paste0("<ul><li>Any inframe deletion,inframe insertions or inframe duplications</li>")),
+                                                        HTML(paste0("<li>Intronic variants</li>")), 
+                                                        HTML(paste0("<li>Any complex variants, originated from a combination of different mutations</li>")),
+                                                        align = "left"),
+                                           animation = "scale", theme = "light")))
+
 var_patient_info_abb <- "Abnl: abnormal; BMD: bone mineral density; CP: cleft palate"
 
 
@@ -551,7 +570,7 @@ shinyUI(
                                        br(),
                                        fluidRow(align = "center",
                                                 column(6, box(title=div("Further Phenotypes", style = "font-size: 15px"), width=12, align="center",
-                                                              img(src = "worldcloud_phenotype_1.png", width = "100%"),
+                                                              img(src = "worldcloud_phenotype_1.png", width = "140%"),
                                                               footer = div("Frequently described phenotypes associated with SATB2"))),
                                                 column(12,
                                                        align="center",
@@ -843,7 +862,7 @@ tabPanel(title = "Families", value = "familyTab",
                                                               textInput(inputId = "cDNA", 
                                                                         label = p(h4("cDNA input",
                                                                                      tippy(icon("question-circle"),
-                                                                                           tooltip = h6(HTML(paste0("Variant input:")),
+                                                                                           tooltip = h6(HTML(paste0("Possible variant input (only single variants can be searched):")),
                                                                                                         HTML(paste0("<ul><li>Single nucleotide exchange: c.301C>T</li>",
                                                                                                                     "<li>Inframe deletion/insertion/duplication: c.301delCCC</li>",
                                                                                                                     "<li>Frameshift deletion/insertion/duplication: c.1176dupA</li>",
@@ -866,8 +885,9 @@ tabPanel(title = "Families", value = "familyTab",
                                                               textInput("Protein", 
                                                                         label = p(h4("Protein input",
                                                                                      tippy(icon("question-circle"),
-                                                                                           tooltip = h6(HTML(paste0("Variant input:")),
-                                                                                                        HTML(paste0("<ul><li>Only single amino acids exchanges are searchable: p.Trp40Ala</li>")),
+                                                                                           tooltip = h6(HTML(paste0("Variant input (Only single amino acids exchanges can be searched):")),
+                                                                                                        HTML(paste0("<ul><li>Trp40Ala:</li>",
+                                                                                                                    "<li>p.Gly116Stop</li>")),
                                                                                                         align = "left"),
                                                                                            animation = "scale",
                                                                                            theme = "light"))), 
@@ -925,7 +945,7 @@ tabPanel(title = "Families", value = "familyTab",
                   tabsetPanel(
                     tabPanel("Comparative Information",
                              br(),
-                             h4("Compare the selected variant with other similar variants."),
+                             h4("Compare the selected variant with other chosen missense variants."),
                              br(),
                              radioGroupButtons(inputId = "compareButtons",
                                                label = "Variants with the same:",
@@ -941,28 +961,6 @@ tabPanel(title = "Families", value = "familyTab",
                     DT::dataTableOutput(outputId = "compareTable")
                   )#,
             )))))
-#                   tabPanel("In silico scores",
-#                            br(),
-#                            #column(5,plotOutput(outputId = "paraz_legend", height = 30, width = 450)),
-#                            #column(12,div(width = "100%", plotlyOutput("paraz_legend"))),
-#                            column(4,
-#                                   "Paralog conservation score",
-#                                   align = "center",
-#                                   div(width = "100%", plotlyOutput("Var_analyis_paraz"))
-#                            ),
-#                            column(4,
-#                                   "Missense constraint score",
-#                                   align = "center",
-#                                   div(width = "100%", plotlyOutput("Var_analyis_mtr"))
-#                            ),
-#                            column(4,
-#                                   "Pathogenic variant enrichment",
-#                                   align = "center",
-#                                   div(width = "100%", plotlyOutput("Var_analyis_per"))
-#                            ),
-#                            column(12,plotOutput(outputId = "paraz_legend", height = 30, width = 600))
-
-
         ),
       conditionalPanel(
         condition = "output.vartype=='Nonsense'",
@@ -975,7 +973,42 @@ tabPanel(title = "Families", value = "familyTab",
                              DT::dataTableOutput(outputId = "patientTable_nonsense"),
                              br(), p(var_patient_info_abb, style=sub_style, align = "center")))#,
         ))),
+        fluidRow(
+          column(12,style='padding:30px;',
+                 fluidRow(
+                   panel(status="default",
+                         heading = var_patient_info_title_nonsense,
+                                    br(),
+                                    div(width = "100%", plotlyOutput("comparePlot_nonsense")),
+                                    br(),
+                                    br(),
+                                    DT::dataTableOutput(outputId = "compareTable_nonsense")
+                         ))))
+      ),
+      conditionalPanel(
+        condition = "output.vartype=='Other'",
+        fluidRow(
+          column(12,style='padding:30px;',
+                 fluidRow(
+                   panel(status="default",
+                         heading = "Patient information",
+                         box(title = var_patient_info_title, width = 12,
+                             DT::dataTableOutput(outputId = "patientTable_other"),
+                             br(), p(var_patient_info_abb, style=sub_style, align = "center")))#,
+                 ))),
+        fluidRow(
+          column(12,style='padding:30px;',
+                 fluidRow(
+                   panel(status="default",
+                         heading = var_patient_info_title_other,
+                         br(),
+                         div(width = "100%", plotlyOutput("comparePlot_other")),
+                         br(),
+                         br(),
+                         DT::dataTableOutput(outputId = "compareTable_other")
+                   ))))
       )
+      
 
                    )))
    ), # end variant analysis tab
@@ -990,7 +1023,7 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                           column(12,style='padding:15px;',
                                  panel(heading="Filter Registry", status="default",
                                        fluidRow(
-                                         column(12,
+                                         column(9,
                                                 selectizeGroupUI(
                                                   id = "research-filters",
                                                   btn_label = "Reset filters",
@@ -1015,7 +1048,13 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                       placeholder="all",
                                                       multiple = TRUE,
                                                       choices = unique(Patient_data.df$Domain)
-                                                    ),
+                                                    )))),
+                                            column(12),
+                                            column(12,
+                                                   selectizeGroupUI(
+                                                     id = "research-filters2",
+                                                     btn_label = "Reset filters ",
+                                                     params = list(
                                                     Clinical_seizures = list(
                                                       inputId = "Clinical_seizures",
                                                       title = p(strong("Seizures")),
