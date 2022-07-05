@@ -5,7 +5,7 @@ account: lal-portals
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5306673
-bundleId: 6054653
+bundleId: 6071003
 url: https://lal-portals.shinyapps.io/SATB2-Portal/
-when: 1656514063.9641
-lastSyncTime: 1656514063.9641
+when: 1657027333.49116
+lastSyncTime: 1657027333.49116
