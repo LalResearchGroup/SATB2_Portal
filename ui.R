@@ -571,7 +571,7 @@ shinyUI(
                                        fluidRow(align = "center",
                                                 column(6, box(title=div("Further Phenotypes", style = "font-size: 15px"), width=12, align="center",
                                                               img(src = "worldcloud_phenotype_1.png", width = "140%"),
-                                                              footer = div("Frequently described phenotypes associated with SATB2"))),
+                                                              footer = div("Frequently described phenotypes associated with ", em("SATB2")))),
                                                 column(12,
                                                        align="center",
                                                        p(basic_abbreviations1, style=sub_style))))
@@ -843,7 +843,7 @@ tabPanel(title = "Families", value = "familyTab",
                                                        column(3, 
                                                               br(),
                                                               br(),
-                                                              h3("Selected gene: SATB2"),
+                                                              h3("Selected gene: ", em("SATB2")),
                                                               h4("Transcript: ENST00000260926")
                                                               # pickerInput(
                                                               #   inputId = 'var_gene',
@@ -945,7 +945,7 @@ tabPanel(title = "Families", value = "familyTab",
                   tabsetPanel(
                     tabPanel("Comparative Information",
                              br(),
-                             h4("Compare the selected variant with other chosen missense variants."),
+                             h4("Compare the selected variant with other chosen missense variants"),
                              br(),
                              radioGroupButtons(inputId = "compareButtons",
                                                label = "Variants with the same:",
@@ -1096,9 +1096,9 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                12,
                                                br(),
                                                p(
-                                                 strong("Selected variants are displayed in 2D (lolliplot) and 3D (protein structure).",
+                                                 strong("Selected variants are displayed in 2D (lolliplot) and 3D (protein structure)",
                                                         tippy(icon("question-circle"),
-                                                              tooltip = h5(HTML(paste0("The missense burden is obtained by calculating the cummulated missense variant count in a sliding window of 9 protein residues. For details of the methods see Pérez-Palma et al, 2020")), align = "left"),
+                                                              tooltip = h5(HTML(paste0("The missense burden is obtained by calculating the cummulated missense variant count in a sliding window of 9 protein residues. For details of the methods see Pérez-Palma et al., 2020")), align = "left"),
                                                               animation = "scale",
                                                               theme = "light"))
                                                ),
@@ -1364,48 +1364,49 @@ tabPanel(title = "About",
                                            "that we can improve.")),
                                    panel(heading = "Data generation information", status = "default",
                                          about_data_generation)
-                          ),
-                          tabPanel(title = "Tutorials", value = "tutorialTab", #### Tutorials
-                                   fluidRow(
-                                     column(10, offset = 1,
-                                            panel(heading = "Tutorials (EXAMPLE)", status = "primary",
-                                                  div(align = "center",
-                                                      tabsetPanel(
-                                                        tabPanel("Basic Information",
-                                                                 column(8, offset = 2,
-                                                                        box(title= "",
-                                                                            align = "right",
-                                                                            width = 12,
-                                                                            embed_url(tut_basic_info) %>%
-                                                                              use_rounded() %>% use_align("center") %>% use_bs_responsive()
-                                                                        ))
-                                                        ),
-                                                        tabPanel("Families",
-                                                                 column(8, offset = 2,
-                                                                        box(title= "",
-                                                                            align = "right",
-                                                                            width = 12,
-                                                                            embed_url(tut_family) %>%
-                                                                              use_rounded() %>% use_align("center") %>% use_bs_responsive()
-                                                                        ))
-                                                        ),
-                                                        tabPanel("Variant Analysis",
-                                                                 column(8, offset = 2,
-                                                                        box(title= "",
-                                                                            align = "right",
-                                                                            width = 12,
-                                                                            embed_url(tut_variant_analysis) %>%
-                                                                              use_rounded() %>% use_align("center") %>% use_bs_responsive()
-                                                                        ))
-                                                        ),
-                                                        tabPanel("Genotype-Phenotype",
-                                                                 column(8, offset = 2,
-                                                                        box(title= "",
-                                                                            align = "right",
-                                                                            width = 12,
-                                                                            embed_url(tut_research) %>%
-                                                                              use_rounded() %>% use_align("center") %>% use_bs_responsive()
-                                                                        )))
-                                                      )))))
-                          ))))))
+                          )#,
+                          # tabPanel(title = "Tutorials", value = "tutorialTab", #### Tutorials
+                          #          fluidRow(
+                          #            column(10, offset = 1,
+                          #                   panel(heading = "Tutorials (EXAMPLE)", status = "primary",
+                          #                         div(align = "center",
+                          #                             tabsetPanel(
+                          #                               tabPanel("Basic Information",
+                          #                                        column(8, offset = 2,
+                          #                                               box(title= "",
+                          #                                                   align = "right",
+                          #                                                   width = 12,
+                          #                                                   embed_url(tut_basic_info) %>%
+                          #                                                     use_rounded() %>% use_align("center") %>% use_bs_responsive()
+                          #                                               ))
+                          #                               ),
+                          #                               tabPanel("Families",
+                          #                                        column(8, offset = 2,
+                          #                                               box(title= "",
+                          #                                                   align = "right",
+                          #                                                   width = 12,
+                          #                                                   embed_url(tut_family) %>%
+                          #                                                     use_rounded() %>% use_align("center") %>% use_bs_responsive()
+                          #                                               ))
+                          #                               ),
+                          #                               tabPanel("Variant Analysis",
+                          #                                        column(8, offset = 2,
+                          #                                               box(title= "",
+                          #                                                   align = "right",
+                          #                                                   width = 12,
+                          #                                                   embed_url(tut_variant_analysis) %>%
+                          #                                                     use_rounded() %>% use_align("center") %>% use_bs_responsive()
+                          #                                               ))
+                          #                               ),
+                          #                               tabPanel("Genotype-Phenotype",
+                          #                                        column(8, offset = 2,
+                          #                                               box(title= "",
+                          #                                                   align = "right",
+                          #                                                   width = 12,
+                          #                                                   embed_url(tut_research) %>%
+                          #                                                     use_rounded() %>% use_align("center") %>% use_bs_responsive()
+                          #                                               )))
+                          #                             )))))
+                          # )
+                          )))))
 )) # end ui
