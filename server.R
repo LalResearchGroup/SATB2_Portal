@@ -83,7 +83,7 @@ Phenotype_fac_1.fun <- function(phenotype,color_sel){
             dplyr::rename(phenotype_sel = phenotype) %>% 
             select(phenotype_sel) %>%
             arrange(phenotype_sel) %>% 
-            filter(!is.na(phenotype)) %>% 
+            filter(!is.na(phenotype_sel)) %>% 
             mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
             group_by(phenotype_sel) %>% 
             dplyr::summarise(n = n()) %>% 
@@ -1384,28 +1384,19 @@ shinyServer(function(input, output, session) {
       dplyr::rename(phenotype_sel = Cleft_palate) %>% 
       select(phenotype_sel) %>%
       arrange(phenotype_sel) %>% 
+      mutate(phenotype_sel = ifelse(phenotype_sel == "Yes"," Yes",phenotype_sel)) %>% 
       filter(!is.na(phenotype_sel)) %>% 
       group_by(phenotype_sel) %>% 
-      dplyr::summarise(n = n()) %>% 
-      assign("save",.,envir = .GlobalEnv)
+      dplyr::summarise(n_tot = n()) %>% 
+      ungroup() %>% 
+      mutate(prop = n_tot/sum(n_tot)*100) 
     
-    all_data.df <- Patient_data.df %>% 
-      dplyr::rename(phenotype_sel = Cleft_palate) %>% 
-      select(phenotype_sel) %>%
-      arrange(phenotype_sel) %>% 
-      filter(!is.na(phenotype_sel)) %>% 
-      group_by(phenotype_sel) %>% 
-      dplyr::summarise(n = n()) 
-    
-    n_tot_y <- ifelse(length(selected_data.df$n[which(selected_data.df == "Yes")]) != 0,selected_data.df$n[which(selected_data.df == "Yes")],0)
-    
-    n_tot_n <- ifelse(length(selected_data.df$n[which(selected_data.df == "No")]) != 0,selected_data.df$n[which(selected_data.df == "No")],0)
-    
-    plot1_input.df <- tibble(phenotype_sel = c("Yes","No"), n_tot = c(n_tot_y,n_tot_n), per = c(n_tot_y/all_data.df$n[which(all_data.df$phenotype_sel == "Yes")]*100,n_tot_n/all_data.df$n[which(all_data.df$phenotype_sel == "No")]*100))
-    
-    plotty1 <- plot_ly(data = plot1_input.df, 
+    plotty1 <- plot_ly(data = tibble(phenotype_sel = c(" Yes","No")) %>% 
+                         mutate(phenotype_sel = factor(phenotype_sel, levels = c(" Yes","No"))) %>% 
+                         left_join(selected_data.df) %>% 
+                         replace(is.na(.),0), 
                        x = ~ phenotype_sel, 
-                       y = ~ round(per, digits = 2), 
+                       y = ~ round(prop, digits = 2), 
                        color = ~ phenotype_sel, 
                        colors = basic_phenotype_colors,
                        type = "bar", 
@@ -1416,46 +1407,26 @@ shinyServer(function(input, output, session) {
              xaxis = list(title="",showline = T, tickangle = 45),
              yaxis = list(title="Share of individuals (%)",showline = T),
              margin = list(b = 160)) %>%
-      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  
-                       
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
+    
     
     selected_data.df <- z %>% 
       dplyr::rename(phenotype_sel = Total_speech) %>% 
       select(phenotype_sel) %>%
       arrange(phenotype_sel) %>% 
       filter(!is.na(phenotype_sel)) %>% 
-      mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
+      mutate(phenotype_sel = ifelse(phenotype_sel == "None"," None",phenotype_sel)) %>% 
       group_by(phenotype_sel) %>% 
-      dplyr::summarise(n = n()) %>% 
-      assign("save",.,envir = .GlobalEnv)
+      dplyr::summarise(n_tot = n()) %>% 
+      ungroup() %>% 
+      mutate(prop = n_tot/sum(n_tot)*100) 
     
-    all_data.df <- Patient_data.df %>% 
-      dplyr::rename(phenotype_sel = Total_speech) %>% 
-      select(phenotype_sel) %>%
-      arrange(phenotype_sel) %>% 
-      filter(!is.na(phenotype_sel)) %>% 
-      mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
-      group_by(phenotype_sel) %>% 
-      dplyr::summarise(n = n())
-    
-    n_tot_none <- ifelse(length(selected_data.df$n[which(selected_data.df == "None")]) != 0,selected_data.df$n[which(selected_data.df == "None")],0)
-    
-    n_tot_1_10 <- ifelse(length(selected_data.df$n[which(selected_data.df == "1 to 10")]) != 0,selected_data.df$n[which(selected_data.df == "1 to 10")],0)
-    
-    n_tot_10_50 <- ifelse(length(selected_data.df$n[which(selected_data.df == "10 to 50")]) != 0,selected_data.df$n[which(selected_data.df == "10 to 50")],0)
-    
-    n_tot_g50 <- ifelse(length(selected_data.df$n[which(selected_data.df == "Greater than 50")]) != 0,selected_data.df$n[which(selected_data.df == "Greater than 50")],0)
-    
-    plot2_input.df <- tibble(phenotype_sel = c(" None","1 to 10","10 to 50","Greater than 50"), 
-                             n_tot = c(n_tot_none,n_tot_1_10,n_tot_10_50,n_tot_g50), 
-                             per = c(n_tot_none/all_data.df$n[which(all_data.df$phenotype_sel == "None")]*100,
-                                     n_tot_1_10/all_data.df$n[which(all_data.df$phenotype_sel == "1 to 10")]*100,
-                                     n_tot_10_50/all_data.df$n[which(all_data.df$phenotype_sel == "10 to 50")]*100,
-                                     n_tot_g50/all_data.df$n[which(all_data.df$phenotype_sel == "Greater than 50")]*100))
-    
-    plotty2 <- plot_ly(data = plot2_input.df, 
+    plotty2 <- plot_ly(data = tibble(phenotype_sel = c(" None","1 to 10","10 to 50","Greater than 50")) %>% 
+                         mutate(phenotype_sel = factor(phenotype_sel, levels = c(" None","1 to 10","10 to 50","Greater than 50"))) %>% 
+                         left_join(selected_data.df) %>% 
+                         replace(is.na(.),0), 
                        x = ~ phenotype_sel, 
-                       y = ~ round(per, digits = 2), 
+                       y = ~ round(prop, digits = 2), 
                        color = ~ phenotype_sel, 
                        colors = basic_phenotype_colors,
                        type = "bar", 
@@ -1466,7 +1437,7 @@ shinyServer(function(input, output, session) {
              xaxis = list(title="",showline = T, tickangle = 45),
              yaxis = list(title="Share of individuals (%)",showline = T),
              margin = list(b = 160)) %>%
-      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)   
     
     
     plotty3 <- plot_ly(data =z %>% 
@@ -1535,28 +1506,19 @@ shinyServer(function(input, output, session) {
       dplyr::rename(phenotype_sel = Cleft_palate) %>% 
       select(phenotype_sel) %>%
       arrange(phenotype_sel) %>% 
+      mutate(phenotype_sel = ifelse(phenotype_sel == "Yes"," Yes",phenotype_sel)) %>% 
       filter(!is.na(phenotype_sel)) %>% 
       group_by(phenotype_sel) %>% 
-      dplyr::summarise(n = n()) %>% 
-      assign("save",.,envir = .GlobalEnv)
+      dplyr::summarise(n_tot = n()) %>% 
+      ungroup() %>% 
+      mutate(prop = n_tot/sum(n_tot)*100) 
     
-    all_data.df <- Patient_data.df %>% 
-      dplyr::rename(phenotype_sel = Cleft_palate) %>% 
-      select(phenotype_sel) %>%
-      arrange(phenotype_sel) %>% 
-      filter(!is.na(phenotype_sel)) %>% 
-      group_by(phenotype_sel) %>% 
-      dplyr::summarise(n = n()) 
-    
-    n_tot_y <- ifelse(length(selected_data.df$n[which(selected_data.df == "Yes")]) != 0,selected_data.df$n[which(selected_data.df == "Yes")],0)
-    
-    n_tot_n <- ifelse(length(selected_data.df$n[which(selected_data.df == "No")]) != 0,selected_data.df$n[which(selected_data.df == "No")],0)
-    
-    plot1_input.df <- tibble(phenotype_sel = c("Yes","No"), n_tot = c(n_tot_y,n_tot_n), per = c(n_tot_y/all_data.df$n[which(all_data.df$phenotype_sel == "Yes")]*100,n_tot_n/all_data.df$n[which(all_data.df$phenotype_sel == "No")]*100))
-    
-    plotty1 <- plot_ly(data = plot1_input.df, 
+    plotty1 <- plot_ly(data = tibble(phenotype_sel = c(" Yes","No")) %>% 
+                         mutate(phenotype_sel = factor(phenotype_sel, levels = c(" Yes","No"))) %>% 
+                         left_join(selected_data.df) %>% 
+                         replace(is.na(.),0), 
                        x = ~ phenotype_sel, 
-                       y = ~ round(per, digits = 2), 
+                       y = ~ round(prop, digits = 2), 
                        color = ~ phenotype_sel, 
                        colors = basic_phenotype_colors,
                        type = "bar", 
@@ -1567,7 +1529,7 @@ shinyServer(function(input, output, session) {
              xaxis = list(title="",showline = T, tickangle = 45),
              yaxis = list(title="Share of individuals (%)",showline = T),
              margin = list(b = 160)) %>%
-      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
     
     
     selected_data.df <- z %>% 
@@ -1575,38 +1537,18 @@ shinyServer(function(input, output, session) {
       select(phenotype_sel) %>%
       arrange(phenotype_sel) %>% 
       filter(!is.na(phenotype_sel)) %>% 
-      mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
+      mutate(phenotype_sel = ifelse(phenotype_sel == "None"," None",phenotype_sel)) %>% 
       group_by(phenotype_sel) %>% 
-      dplyr::summarise(n = n()) %>% 
-      assign("save",.,envir = .GlobalEnv)
+      dplyr::summarise(n_tot = n()) %>% 
+      ungroup() %>% 
+      mutate(prop = n_tot/sum(n_tot)*100) 
     
-    all_data.df <- Patient_data.df %>% 
-      dplyr::rename(phenotype_sel = Total_speech) %>% 
-      select(phenotype_sel) %>%
-      arrange(phenotype_sel) %>% 
-      filter(!is.na(phenotype_sel)) %>% 
-      mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
-      group_by(phenotype_sel) %>% 
-      dplyr::summarise(n = n())
-    
-    n_tot_none <- ifelse(length(selected_data.df$n[which(selected_data.df == "None")]) != 0,selected_data.df$n[which(selected_data.df == "None")],0)
-    
-    n_tot_1_10 <- ifelse(length(selected_data.df$n[which(selected_data.df == "1 to 10")]) != 0,selected_data.df$n[which(selected_data.df == "1 to 10")],0)
-    
-    n_tot_10_50 <- ifelse(length(selected_data.df$n[which(selected_data.df == "10 to 50")]) != 0,selected_data.df$n[which(selected_data.df == "10 to 50")],0)
-    
-    n_tot_g50 <- ifelse(length(selected_data.df$n[which(selected_data.df == "Greater than 50")]) != 0,selected_data.df$n[which(selected_data.df == "Greater than 50")],0)
-    
-    plot2_input.df <- tibble(phenotype_sel = c(" None","1 to 10","10 to 50","Greater than 50"), 
-                             n_tot = c(n_tot_none,n_tot_1_10,n_tot_10_50,n_tot_g50), 
-                             per = c(n_tot_none/all_data.df$n[which(all_data.df$phenotype_sel == "None")]*100,
-                                     n_tot_1_10/all_data.df$n[which(all_data.df$phenotype_sel == "1 to 10")]*100,
-                                     n_tot_10_50/all_data.df$n[which(all_data.df$phenotype_sel == "10 to 50")]*100,
-                                     n_tot_g50/all_data.df$n[which(all_data.df$phenotype_sel == "Greater than 50")]*100))
-    
-    plotty2 <- plot_ly(data = plot2_input.df, 
+    plotty2 <- plot_ly(data = tibble(phenotype_sel = c(" None","1 to 10","10 to 50","Greater than 50")) %>% 
+                         mutate(phenotype_sel = factor(phenotype_sel, levels = c(" None","1 to 10","10 to 50","Greater than 50"))) %>% 
+                         left_join(selected_data.df) %>% 
+                         replace(is.na(.),0), 
                        x = ~ phenotype_sel, 
-                       y = ~ round(per, digits = 2), 
+                       y = ~ round(prop, digits = 2), 
                        color = ~ phenotype_sel, 
                        colors = basic_phenotype_colors,
                        type = "bar", 
@@ -1617,7 +1559,7 @@ shinyServer(function(input, output, session) {
              xaxis = list(title="",showline = T, tickangle = 45),
              yaxis = list(title="Share of individuals (%)",showline = T),
              margin = list(b = 160)) %>%
-      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
     
     
     plotty3 <- plot_ly(data =z %>% 
@@ -1676,31 +1618,22 @@ shinyServer(function(input, output, session) {
       filter(!(Vartype %in% c("Missense","Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")))  
     
     selected_data.df <- z %>% 
-    dplyr::rename(phenotype_sel = Cleft_palate) %>% 
-      select(phenotype_sel) %>%
-      arrange(phenotype_sel) %>% 
-      filter(!is.na(phenotype_sel)) %>% 
-      group_by(phenotype_sel) %>% 
-      dplyr::summarise(n = n()) %>% 
-      assign("save",.,envir = .GlobalEnv)
-    
-    all_data.df <- Patient_data.df %>% 
       dplyr::rename(phenotype_sel = Cleft_palate) %>% 
       select(phenotype_sel) %>%
       arrange(phenotype_sel) %>% 
+      mutate(phenotype_sel = ifelse(phenotype_sel == "Yes"," Yes",phenotype_sel)) %>% 
       filter(!is.na(phenotype_sel)) %>% 
       group_by(phenotype_sel) %>% 
-      dplyr::summarise(n = n()) 
+      dplyr::summarise(n_tot = n()) %>% 
+      ungroup() %>% 
+      mutate(prop = n_tot/sum(n_tot)*100) 
     
-    n_tot_y <- ifelse(length(selected_data.df$n[which(selected_data.df == "Yes")]) != 0,selected_data.df$n[which(selected_data.df == "Yes")],0)
-    
-    n_tot_n <- ifelse(length(selected_data.df$n[which(selected_data.df == "No")]) != 0,selected_data.df$n[which(selected_data.df == "No")],0)
-    
-    plot1_input.df <- tibble(phenotype_sel = c("Yes","No"), n_tot = c(n_tot_y,n_tot_n), per = c(n_tot_y/all_data.df$n[which(all_data.df$phenotype_sel == "Yes")]*100,n_tot_n/all_data.df$n[which(all_data.df$phenotype_sel == "No")]*100))
-    
-    plotty1 <- plot_ly(data = plot1_input.df, 
+    plotty1 <- plot_ly(data = tibble(phenotype_sel = c(" Yes","No")) %>% 
+                         mutate(phenotype_sel = factor(phenotype_sel, levels = c(" Yes","No"))) %>% 
+                         left_join(selected_data.df) %>% 
+                         replace(is.na(.),0), 
                        x = ~ phenotype_sel, 
-                       y = ~ round(per, digits = 2), 
+                       y = ~ round(prop, digits = 2), 
                        color = ~ phenotype_sel, 
                        colors = basic_phenotype_colors,
                        type = "bar", 
@@ -1711,7 +1644,7 @@ shinyServer(function(input, output, session) {
              xaxis = list(title="",showline = T, tickangle = 45),
              yaxis = list(title="Share of individuals (%)",showline = T),
              margin = list(b = 160)) %>%
-      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
     
     
     selected_data.df <- z %>% 
@@ -1719,38 +1652,18 @@ shinyServer(function(input, output, session) {
       select(phenotype_sel) %>%
       arrange(phenotype_sel) %>% 
       filter(!is.na(phenotype_sel)) %>% 
-      mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
+      mutate(phenotype_sel = ifelse(phenotype_sel == "None"," None",phenotype_sel)) %>% 
       group_by(phenotype_sel) %>% 
-      dplyr::summarise(n = n()) %>% 
-      assign("save",.,envir = .GlobalEnv)
+      dplyr::summarise(n_tot = n()) %>% 
+      ungroup() %>% 
+      mutate(prop = n_tot/sum(n_tot)*100) 
     
-    all_data.df <- Patient_data.df %>% 
-      dplyr::rename(phenotype_sel = Total_speech) %>% 
-      select(phenotype_sel) %>%
-      arrange(phenotype_sel) %>% 
-      filter(!is.na(phenotype_sel)) %>% 
-      mutate(phenotype_sel = factor(phenotype_sel, levels = c("None","1 to 10","10 to 50","Greater than 50"))) %>% 
-      group_by(phenotype_sel) %>% 
-      dplyr::summarise(n = n())
-    
-    n_tot_none <- ifelse(length(selected_data.df$n[which(selected_data.df == "None")]) != 0,selected_data.df$n[which(selected_data.df == "None")],0)
-    
-    n_tot_1_10 <- ifelse(length(selected_data.df$n[which(selected_data.df == "1 to 10")]) != 0,selected_data.df$n[which(selected_data.df == "1 to 10")],0)
-    
-    n_tot_10_50 <- ifelse(length(selected_data.df$n[which(selected_data.df == "10 to 50")]) != 0,selected_data.df$n[which(selected_data.df == "10 to 50")],0)
-    
-    n_tot_g50 <- ifelse(length(selected_data.df$n[which(selected_data.df == "Greater than 50")]) != 0,selected_data.df$n[which(selected_data.df == "Greater than 50")],0)
-    
-    plot2_input.df <- tibble(phenotype_sel = c(" None","1 to 10","10 to 50","Greater than 50"), 
-                             n_tot = c(n_tot_none,n_tot_1_10,n_tot_10_50,n_tot_g50), 
-                             per = c(n_tot_none/all_data.df$n[which(all_data.df$phenotype_sel == "None")]*100,
-                                     n_tot_1_10/all_data.df$n[which(all_data.df$phenotype_sel == "1 to 10")]*100,
-                                     n_tot_10_50/all_data.df$n[which(all_data.df$phenotype_sel == "10 to 50")]*100,
-                                     n_tot_g50/all_data.df$n[which(all_data.df$phenotype_sel == "Greater than 50")]*100))
-    
-    plotty2 <- plot_ly(data = plot2_input.df, 
+    plotty2 <- plot_ly(data = tibble(phenotype_sel = c(" None","1 to 10","10 to 50","Greater than 50")) %>% 
+                         mutate(phenotype_sel = factor(phenotype_sel, levels = c(" None","1 to 10","10 to 50","Greater than 50"))) %>% 
+                         left_join(selected_data.df) %>% 
+                         replace(is.na(.),0), 
                        x = ~ phenotype_sel, 
-                       y = ~ round(per, digits = 2), 
+                       y = ~ round(prop, digits = 2), 
                        color = ~ phenotype_sel, 
                        colors = basic_phenotype_colors,
                        type = "bar", 
@@ -1761,7 +1674,7 @@ shinyServer(function(input, output, session) {
              xaxis = list(title="",showline = T, tickangle = 45),
              yaxis = list(title="Share of individuals (%)",showline = T),
              margin = list(b = 160)) %>%
-      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)  
+      config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
     
     
     plotty3 <- plot_ly(data =z %>% 
