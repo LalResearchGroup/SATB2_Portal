@@ -1096,7 +1096,11 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                12,
                                                br(),
                                                p(
-                                                 strong("Selected variants are displayed in 2D (lolliplot) and 3D (protein structure).")
+                                                 strong("Selected variants are displayed in 2D (lolliplot) and 3D (protein structure).",
+                                                        tippy(icon("question-circle"),
+                                                              tooltip = h5(HTML(paste0("The missense burden is obtained by calculating the cummulated missense variant count in a sliding window of 9 protein residues. For details of the methods see Pérez-Palma et al, 2020")), align = "left"),
+                                                              animation = "scale",
+                                                              theme = "light"))
                                                ),
                                                fluidRow(
                                                  column(7,
