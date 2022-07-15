@@ -1289,7 +1289,7 @@ shinyServer(function(input, output, session) {
                        #!is.na(Published_in)) %>%
       select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in),
     colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
-    options = list(dom = 't', scrollY = TRUE), escape=FALSE)
+    options = list(dom = 't', pageLength=100, scrollY = "350px"), escape=FALSE)
   })
   
   output$patientTable_nonsense <- DT::renderDataTable({
