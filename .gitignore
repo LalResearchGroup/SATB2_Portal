@@ -10,3 +10,6 @@ rsconnect/shinyapps.io/lal-portals/SATB2-Portal.dcf
 *.dcf
 *.pper
 .Rproj.user/shared/notebooks/paths
+.DS_Store
+*.pper
+*.pper
