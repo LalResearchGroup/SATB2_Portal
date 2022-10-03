@@ -646,119 +646,6 @@ three_to_one_aa <- function(sequence){
     return()
   
 }
-
-map_pheno_score_var_analysis_miss <- function(selected_data.df,select_var, selected_value){
-  
-  plot_ly(data = rbind(Patient_data.df %>% 
-                         mutate(label = "All",
-                                color_sel = "grey"),
-                       Patient_data.df %>% 
-                         filter(AA_pos == selected_data.df$AA_pos[1]) %>% 
-                         mutate(label = "Same position",
-                                color_sel = "orange"),
-                       Patient_data.df %>% 
-                         filter(Domain == selected_data.df$Domain[1]) %>% 
-                         mutate(label = "Same domain",
-                                color_sel = "red"),
-                       Patient_data.df %>% 
-                         filter(Vartype == selected_data.df$Vartype[1]) %>% 
-                         mutate(label = "Same variant type",
-                                color_sel = "blue")) %>% 
-            dplyr::rename(sele_var = select_var) %>% 
-            filter(!is.na(sele_var)) %>% 
-            select(sele_var,label,color_sel) %>% 
-            rbind(tibble(sele_var = selected_value,
-                         label = "Custom patient score",
-                         color_sel = "black")) %>% 
-            mutate(sele_var = as.numeric(sele_var),
-                   label = factor(label, levels = c("All","Same variant type","Same domain","Same position", "Custom patient score"))),
-          y = ~sele_var,
-          x = ~label,
-          color = ~label,
-          colors = c("grey","orange","red","blue","black"),
-          type = "box",
-          boxpoints = "all",
-          jitter = "0.3",
-          pointpos = 0) %>% 
-    #add_trace(type = "scatter", y= selected_value, x = "Own score") %>% 
-    layout(title=paste("Score:",select_var), 
-           font=plotly_font,
-           xaxis = list(title="",showline = T, tickangle = 45),
-           yaxis = list(title=select_var,showline = T),
-           margin = list(t = 50),
-           showlegend = FALSE) %>%
-    config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
-}
-
-map_pheno_score_var_analysis_non <- function(selected_data.df,select_var, selected_value){
-  
-  plot_ly(data = rbind(Patient_data.df %>% 
-                         mutate(label = "All",
-                                color_sel = "grey"),
-                       Patient_data.df %>% 
-                         filter(Vartype == selected_data.df$Vartype[1]) %>% 
-                         mutate(label = "Same variant type",
-                                color_sel = "blue")) %>% 
-            dplyr::rename(sele_var = select_var) %>% 
-            filter(!is.na(sele_var)) %>% 
-            select(sele_var,label,color_sel) %>% 
-            rbind(tibble(sele_var = selected_value,
-                         label = "Custom patient score",
-                         color_sel = "black")) %>% 
-            mutate(sele_var = as.numeric(sele_var),
-                   label = factor(label, levels = c("All","Same variant type","Custom patient score"))),
-          y = ~sele_var,
-          x = ~label,
-          color = ~label,
-          colors = c("grey","orange","black"),
-          type = "box",
-          boxpoints = "all",
-          jitter = "0.3",
-          pointpos = 0) %>% 
-    #add_trace(type = "scatter", y= selected_value, x = "Own score") %>% 
-    layout(title=paste("Score:",select_var), 
-           font=plotly_font,
-           xaxis = list(title="",showline = T, tickangle = 45),
-           yaxis = list(title=select_var,showline = T),
-           margin = list(t = 50),
-           showlegend = FALSE) %>%
-    config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
-}
-
-map_pheno_score <- function(selected_data.df,select_var){
-  
-  range_var <- Patient_data.df %>% 
-    dplyr::rename(sele_var = select_var) %>% 
-    filter(!is.na(sele_var)) %>% 
-    .$sele_var %>% unique()
-  
-  var_max <- max(range_var)
-  var_min <- min(range_var)
-  
-  plot_ly(data = rbind(Patient_data.df %>% 
-                         mutate(label = "All",
-                                color_sel = "grey"),
-                       selected_data.df %>% 
-                         mutate(label = "Filtered data",
-                                color_sel = "orange")) %>% 
-            dplyr::rename(sele_var = select_var) %>% 
-            filter(!is.na(sele_var)) %>% 
-            mutate(sele_var = as.numeric(sele_var)),
-          y = ~sele_var,
-          x = ~label,
-          color = ~label,
-          colors = c("grey","orange"),
-          type = "box",
-          boxpoints = "all",
-          jitter = "0.3",
-          pointpos = 0) %>% 
-    layout(title=paste("Score:",select_var), 
-           font=plotly_font,
-           xaxis = list(title="",showline = T, tickangle = 45),
-           yaxis = list(title=select_var,showline = T),
-           margin = list(t = 50)) %>%
-    config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
-}
 ############## DATA ############
 #Load domain data 
 Domain_data.df <- read_delim("data/Domain.txt", delim = "\t") %>% 
@@ -809,7 +696,7 @@ Domain_gene.df <- master.df %>%
 #   select(AA_pos,AA_alt,uptake,surface_exp,total_exp,relative_update_surface_exp,relative_surface_exp_tot_exp)
 
 #Load patient and control data 
-Patient_data.df <- read_delim("data/SATB2_Patient_variants_v2.txt", delim = "\t") %>% 
+Patient_data.df <- read_delim("data/SATB2_Patient_variants_v1.txt", delim = "\t") %>% 
   select(-Transcript) %>% 
   mutate(AA_pos = as.numeric(AA_pos)) %>% 
   #this ensures that splice cite mutation are shown in the genotype overview plot
@@ -830,11 +717,7 @@ Patient_data.df <- read_delim("data/SATB2_Patient_variants_v2.txt", delim = "\t"
          Protein = Original_AA_change) %>% 
   mutate(rowID = 1:nrow(.)) %>% 
   na_if("N/A") %>% 
-  dplyr::rename(Neurodevelopmental_total = "Neurodevelopmental total",
-         Systemic_total = "Systemic total",
-         Total = "Total ") %>% 
-  mutate(Age_walk_months = as.numeric(Age_walk_months),
-         Cleft_palate = ifelse(Cleft_palate == "No ","No",Cleft_palate))##used to ensure intersect of res_mod/ resmod_ini does a proper job
+  mutate(Age_walk_months = as.numeric(Age_walk_months))##used to ensure intersect of res_mod/ resmod_ini does a proper job
 
 Patient_data_missense_only.df <- Patient_data.df %>% 
   filter(Vartype == "Missense") 
@@ -1475,95 +1358,6 @@ shinyServer(function(input, output, session) {
   
   observe_helpers(withMathJax = TRUE)
   
-  #Phenoscores variant anaylsis ####
-  output$pheno_score_va_total <- renderText({
-    
-    paste0("Total: ",
-           sum(c(input$clinical1,input$clinical2,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric()))
-  })
-  
-  output$pheno_score_va_clinical <- renderText({
-    
-    paste0("Clinical: ",
-           sum(c(input$clinical1,input$clinical2,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9) %>% as.numeric()))
-  })
-  
-  output$pheno_score_va_neuro <- renderText({
-    
-    paste0("Neurodevelopmental: ", 
-           sum(c(input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric()))
-  })
-  
-  output$pheno_score_pl_total <- renderPlotly({
-    
-    selected_value <- sum(c(input$clinical1,input$clinical2,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
-    
-    map_pheno_score_var_analysis_miss(varFilterInput$data,"Total", selected_value)
-    
-  })
-  
-  output$pheno_score_pl_neuro <- renderPlotly({
-    
-    selected_value <- sum(c(input$clinical1,input$clinical2,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
-    
-    map_pheno_score_var_analysis_miss(varFilterInput$data,"Neurodevelopmental_total", selected_value)
-    
-  })
-  
-  output$pheno_score_pl_systemic <- renderPlotly({
-    
-    selected_value <- sum(c(input$clinical1,input$clinical2,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
-    
-    map_pheno_score_var_analysis_miss(varFilterInput$data,"Systemic_total", selected_value)
-    
-  })
-  
-  #pheno score nonsense ####
-  output$pheno_score_va_total_non <- renderText({
-    
-    paste0("Total: ",
-           sum(c(input$clinical1_non,input$clinical2_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non, input$neuro1_non,input$neuro2_non,input$neuro3_non,input$neuro4_non,input$neuro5_non,input$neuro6_non) %>% as.numeric()))
-  })
-  
-  output$pheno_score_va_clinical_non <- renderText({
-    
-    paste0("Clinical: ",
-           sum(c(input$clinical1_non,input$clinical2_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non) %>% as.numeric()))
-  })
-  
-  output$pheno_score_va_neuro_non <- renderText({
-    
-    paste0("Neurodevelopmental: ", 
-           sum(c(input$neuro1_non,input$neuro2_non,input$neuro3_non,input$neuro4_non,input$neuro5_non,input$neuro6_non) %>% as.numeric()))
-  })
-  
-  output$pheno_score_pl_total_non <- renderPlotly({
-    
-    selected_value <- sum(c(input$clinical1_non,input$clinical2_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non, input$neuro1_non,input$neuro2_non,input$neuro3_non,input$neuro4_non,input$neuro5_non,input$neuro6_non) %>% as.numeric())
-    
-    map_pheno_score_var_analysis_non(Patient_data.df %>% 
-                                       filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")),"Total", selected_value)
-    
-  })
-  
-  output$pheno_score_pl_neuro_non <- renderPlotly({
-    
-    selected_value <- sum(c(input$neuro1_non,input$neuro2_non,input$neuro3_non,input$neuro4_non,input$neuro5_non,input$neuro6_non) %>% as.numeric())
-    
-    map_pheno_score_var_analysis_non(Patient_data.df %>% 
-                                       filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")),"Neurodevelopmental_total", selected_value)
-    
-  })
-  
-  output$pheno_score_pl_systemic_non <- renderPlotly({
-    
-    selected_value <- sum(c(input$clinical1_non,input$clinical2_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non) %>% as.numeric())
-    
-    map_pheno_score_var_analysis_non(Patient_data.df %>% 
-                                       filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")),"Systemic_total", selected_value)
-    
-  })
-  
   output$comparePlot <- renderPlotly({
     
     validate(need(
@@ -2148,86 +1942,27 @@ shinyServer(function(input, output, session) {
     module = selectizeGroupServer,
     id = "research-filters",
     data = Patient_data.df %>% filter(Vartype != "Intronic"),
-    vars = c("Vartype")
+    vars = c("Vartype",  "AA_alt", "Domain")
   )
   
-  res_mod_ini2 <- callModule(
+  res_mod <- callModule(
     module = selectizeGroupServer,
     id = "research-filters2",
-    data = Patient_data.df,
-    vars = c("AA_alt")
+    data = res_mod_ini(),
+    vars = c("Clinical_seizures","Cleft_palate","Total_speech", "Abnormal_brainMRI")
   )
-  
-  res_mod_ini3 <- callModule(
-    module = selectizeGroupServer,
-    id = "research-filters3",
-    data = Patient_data.df,
-    vars = c("Domain")
-  )
-  
-  res_mod_ini4 <- callModule(
-    module = selectizeGroupServer,
-    id = "research-filters4",
-    data = Patient_data.df,
-    vars = c("Clinical_seizures")
-  )
-
-  res_mod_ini5 <- callModule(
-    module = selectizeGroupServer,
-    id = "research-filters5",
-    data = Patient_data.df,
-    vars = c("Cleft_palate")
-  )
-  
-  res_mod_ini6 <- callModule(
-    module = selectizeGroupServer,
-    id = "research-filters6",
-    data = Patient_data.df,
-    vars = c("Total_speech")
-  )
-  
-  res_mod_ini7 <- callModule(
-    module = selectizeGroupServer,
-    id = "research-filters7",
-    data = Patient_data.df,
-    vars = c( "Abnormal_brainMRI")
-  )
-    
-  research_filt_data <- function(filter, systemic,neurodevelopmental,total){
-    
-    sel_data.df <- generics::intersect(res_mod_ini(),res_mod_ini2()) %>% 
-      generics::intersect(.,res_mod_ini3()) %>% 
-      generics::intersect(.,res_mod_ini4()) %>% 
-      generics::intersect(.,res_mod_ini5()) %>% 
-      generics::intersect(.,res_mod_ini6()) %>% 
-      generics::intersect(.,res_mod_ini7())
-    
-    if(filter == T){
-      out.df <- sel_data.df %>% 
-        filter(Systemic_total %in% seq(systemic[1],systemic[2]),
-               Neurodevelopmental_total %in% seq(neurodevelopmental[1], neurodevelopmental[2]),
-               Total %in% seq(total[1], total[2]))
-      
-      return(out.df)
-    }else{
-      return(sel_data.df)
-      
-    }
-    
-  }
   
   output$filtered_n <- renderText({
-    
-    x <- nrow(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total))
+    x <- nrow(generics::intersect(res_mod(),res_mod_ini()))
     x <- paste("n = ", x)
     return(x)
   })
   
   # Table with displayed variants
   output$subsetTable <- DT::renderDataTable({
-    req(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total))
+    req(generics::intersect(res_mod(),res_mod_ini()))
 
-     z <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) 
+     z <- generics::intersect(res_mod(),res_mod_ini()) 
      
     patient_table <- datatable(z %>% 
                                  select(Transcript,Gene, Domain, cDNA, Protein, Phenotype, Onset_days,functional_effect, Published_in) , 
@@ -2255,7 +1990,7 @@ shinyServer(function(input, output, session) {
   output$Genotype_overview_plot <- renderPlotly({
     
     validate(need(
-      nrow(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total)) >0,
+      nrow(generics::intersect(res_mod(),res_mod_ini())) >0,
       "There is no data that matches your filters."
     ))
 
@@ -2268,7 +2003,7 @@ shinyServer(function(input, output, session) {
                        end = max(AA_pos))  
     
 
-    Patient_miss.df <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+    Patient_miss.df <- generics::intersect(res_mod(),res_mod_ini()) %>% 
       filter(Vartype == "Missense") %>% 
       distinct(AA_pos,AA_ref,AA_alt)
     
@@ -2287,7 +2022,7 @@ shinyServer(function(input, output, session) {
 
     g <- ggplot(data=all_exchanges.df %>% 
                   distinct(AA_pos,Gene,Domain,Domain_color) %>% 
-                  left_join(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+                  left_join(generics::intersect(res_mod(),res_mod_ini()) %>% 
                               filter(!is.na(AA_pos)) %>% 
                               select(Gene,Protein,AA_pos,Vartype,Original_cDNA_change) %>% 
                               mutate(Protein = ifelse(Vartype == "splice site",Original_cDNA_change,Protein)) %>% 
@@ -2367,12 +2102,12 @@ shinyServer(function(input, output, session) {
   output$threeDmolGene_all <- renderR3dmol({
     
     validate(need(
-      nrow(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% filter(Vartype == "Missense")) >0,
+      nrow(generics::intersect(res_mod(),res_mod_ini()) %>% filter(Vartype == "Missense")) >0,
       "There is no data that matches your filters."
     ))
     
     
-    variant.df <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>%
+    variant.df <- generics::intersect(res_mod(),res_mod_ini()) %>%
       filter(Vartype == "Missense") %>%
       mutate(label = "pathogenic") %>%
       group_by(AA_pos,AA_ref,Gene) %>%
@@ -2381,7 +2116,7 @@ shinyServer(function(input, output, session) {
     
     gnomad.df <- Control_data.df %>%
       group_by(AA_pos,AA_ref,Gene) %>%
-      filter(Domain %in% unique(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% .$Domain)) %>% 
+      filter(Domain %in% unique(generics::intersect(res_mod(),res_mod_ini()) %>% .$Domain)) %>% 
       dplyr::summarise(n_occ = n()) %>%
       select(AA_pos,AA_ref,n_occ,Gene)
     
@@ -2468,9 +2203,9 @@ shinyServer(function(input, output, session) {
   
   
   output$compareTableResearch <- DT::renderDataTable({
-    req(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total))
+    req(generics::intersect(res_mod(),res_mod_ini()))
     
-    z <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total)
+    z <- generics::intersect(res_mod(),res_mod_ini())
     
     datatable(z %>% 
                 select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in), 
@@ -2482,9 +2217,9 @@ shinyServer(function(input, output, session) {
   })
   
   output$compareTableResearch2 <- DT::renderDataTable({
-    req(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total))
+    req(generics::intersect(res_mod(),res_mod_ini()))
     
-    z <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total)
+    z <- generics::intersect(res_mod(),res_mod_ini())
     
     datatable(z %>% 
                 select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in), 
@@ -2496,26 +2231,15 @@ shinyServer(function(input, output, session) {
   })
 
   ### Phenotype Interface ####
-  
-  output$pheno_detail <- renderText({"no"})
-  
-  observeEvent(input$pheno_detail, {
-    
-    output$pheno_detail <- reactive({
-      ifelse(input$pheno_detail == T,"yes","no")})
-    
-  })
-    
-  outputOptions(output, "pheno_detail", suspendWhenHidden = FALSE) 
 
   output$research_phenotype1 <- renderPlotly({
     
     validate(need(
-      nrow(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total)) >0,
+      nrow(generics::intersect(res_mod(),res_mod_ini())) >0,
       "There is no data that matches your filters."
     ))
 
-    plot <- plot_ly(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+    plot <- plot_ly(generics::intersect(res_mod(),res_mod_ini()) %>% 
                       dplyr::rename(phenotype_fac = Domain) %>% 
                       filter(phenotype_fac != "NA") %>% 
                       mutate(phenotype_fac =ifelse(phenotype_fac == "Yes"," Yes",phenotype_fac)) %>% 
@@ -2548,11 +2272,11 @@ shinyServer(function(input, output, session) {
   output$research_phenotype2 <- renderPlotly({
     
     validate(need(
-      nrow(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% filter(!is.na(Total_speech))) >0,
+      nrow(generics::intersect(res_mod(),res_mod_ini()) %>% filter(!is.na(Total_speech))) >0,
       "There is no data that matches your filters."
     ))
     
-    plot <- plot_ly(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+    plot <- plot_ly(generics::intersect(res_mod(),res_mod_ini()) %>% 
                      dplyr::rename(phenotype_fac = Total_speech) %>% 
                      filter(phenotype_fac != "NA") %>% 
                       filter(!is.na(phenotype_fac)) %>% 
@@ -2584,11 +2308,11 @@ shinyServer(function(input, output, session) {
   output$research_phenotype3 <- renderPlotly({
     
     validate(need(
-      nrow(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% filter(!is.na(Clinical_seizures))) >0,
+      nrow(generics::intersect(res_mod(),res_mod_ini()) %>% filter(!is.na(Clinical_seizures))) >0,
       "There is no data that matches your filters."
     ))
 
-    plot <- plot_ly(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+    plot <- plot_ly(generics::intersect(res_mod(),res_mod_ini()) %>% 
                       dplyr::rename(phenotype_fac = Clinical_seizures) %>% 
                       filter(phenotype_fac != "NA") %>% 
                       filter(!is.na(phenotype_fac)) %>% 
@@ -2620,11 +2344,11 @@ shinyServer(function(input, output, session) {
   output$research_phenotype4 <- renderPlotly({
     
     validate(need(
-      nrow(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% filter(!is.na(Dental_issues))) >0,
+      nrow(generics::intersect(res_mod(),res_mod_ini()) %>% filter(!is.na(Dental_issues))) >0,
       "There is no data that matches your filters."
     ))
     
-    plot <- plot_ly(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+    plot <- plot_ly(generics::intersect(res_mod(),res_mod_ini()) %>% 
                       dplyr::rename(phenotype_fac = Dental_issues) %>% 
                       filter(phenotype_fac != "NA") %>% 
                       filter(!is.na(phenotype_fac)) %>% 
@@ -2657,11 +2381,11 @@ shinyServer(function(input, output, session) {
   output$research_phenotype5 <- renderPlotly({
     
     validate(need(
-      nrow(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% filter(!is.na(Behavior_anomalies))) >0,
+      nrow(generics::intersect(res_mod(),res_mod_ini()) %>% filter(!is.na(Behavior_anomalies))) >0,
       "There is no data that matches your filters."
     ))
     
-    plot <- plot_ly(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+    plot <- plot_ly(generics::intersect(res_mod(),res_mod_ini()) %>% 
                       dplyr::rename(phenotype_fac = Behavior_anomalies) %>% 
                       filter(phenotype_fac != "NA") %>% 
                       filter(!is.na(phenotype_fac)) %>% 
@@ -2694,11 +2418,11 @@ shinyServer(function(input, output, session) {
   output$research_phenotype6 <- renderPlotly({
     
     validate(need(
-      nrow(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% filter(!is.na(Sleep_problems))) >0,
+      nrow(generics::intersect(res_mod(),res_mod_ini()) %>% filter(!is.na(Sleep_problems))) >0,
       "There is no data that matches your filters."
     ))
     
-    plot <- plot_ly(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+    plot <- plot_ly(generics::intersect(res_mod(),res_mod_ini()) %>% 
                       dplyr::rename(phenotype_fac = Sleep_problems) %>% 
                       filter(phenotype_fac != "NA") %>% 
                       filter(!is.na(phenotype_fac)) %>% 
@@ -2727,67 +2451,12 @@ shinyServer(function(input, output, session) {
     
     
   })
-  
-  ##Pheno_scores
-  output$Phenotype_score1 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Total")
-  })
-  output$Phenotype_score2 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Neurodevelopmental_total")
-  })
-  output$Phenotype_score3 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Systemic_total")
-  })
-  output$Phenotype_score4 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Adaptive/Cognition")
-  })
-  output$Phenotype_score5 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Verbal")
-  })
-  output$Phenotype_score6 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Expressive ")
-  })
-  output$Phenotype_score7 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Ambulation")
-  })
-  output$Phenotype_score8 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Behavior")
-  })
-  output$Phenotype_score9 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Sleep ")
-  })
-  output$Phenotype_score10 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Palate")
-  })
-  output$Phenotype_score11 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Sialorrhea")
-  })
-  output$Phenotype_score12 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Strabismus")
-  })
-  output$Phenotype_score13 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Scoliosis")
-  })
-  output$Phenotype_score14 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Muscle Tone")
-  })
-  output$Phenotype_score15 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Bone Health")
-  })
-  output$Phenotype_score16 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Growth/Feeding")
-  })
-  output$Phenotype_score17 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Seizures")
-  })
-  output$Phenotype_score18 <- renderPlotly({
-    map_pheno_score(research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total),"Dental")
-  })
+
   ### Functional Interface
 
   output$research_functional1 <- renderPlotly({
     
-    data.df <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+    data.df <- generics::intersect(res_mod(),res_mod_ini()) %>% 
       rename(func_effect = "uptake") %>% 
       filter(!is.na(func_effect)) %>% 
       distinct(func_effect,AA_pos,AA_alt)
@@ -2820,7 +2489,7 @@ shinyServer(function(input, output, session) {
   
   output$research_functional2 <- renderPlotly({
     
-    data.df <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+    data.df <- generics::intersect(res_mod(),res_mod_ini()) %>% 
       rename(func_effect = "surface_exp") %>% 
       filter(!is.na(func_effect)) %>% 
       distinct(func_effect,AA_pos,AA_alt)
@@ -2854,7 +2523,7 @@ shinyServer(function(input, output, session) {
   
   output$research_functional3 <- renderPlotly({
     
-    data.df <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+    data.df <- generics::intersect(res_mod(),res_mod_ini()) %>% 
       rename(func_effect = "total_exp") %>% 
       filter(!is.na(func_effect)) %>% 
       distinct(func_effect,AA_pos,AA_alt)
@@ -2888,7 +2557,7 @@ shinyServer(function(input, output, session) {
   
   output$research_functional4 <- renderPlotly({
     
-    data.df <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+    data.df <- generics::intersect(res_mod(),res_mod_ini()) %>% 
       rename(func_effect = "relative_update_surface_exp") %>% 
       filter(!is.na(func_effect)) %>% 
       distinct(func_effect,AA_pos,AA_alt)
@@ -2922,7 +2591,7 @@ shinyServer(function(input, output, session) {
   
   output$research_functional5 <- renderPlotly({
     
-    data.df <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) %>% 
+    data.df <- generics::intersect(res_mod(),res_mod_ini()) %>% 
       rename(func_effect = "relative_surface_exp_tot_exp") %>% 
       filter(!is.na(func_effect)) %>% 
       distinct(func_effect,AA_pos,AA_alt)
@@ -2975,7 +2644,7 @@ shinyServer(function(input, output, session) {
   output$threeDmolfunctional <- renderR3dmol({
     
     
-    selection_data.df <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) 
+    selection_data.df <- generics::intersect(res_mod(),res_mod_ini()) 
     
     if(selection_data.df$Gene %>% unique() %>% length()== 4){
       

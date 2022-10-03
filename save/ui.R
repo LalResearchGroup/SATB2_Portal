@@ -215,22 +215,15 @@ research_geno_transcripts <- p("The following transcript was used:",em("SATB2"),
                                "Null: Protein Truncating Variant")
 
 #Datasets required for research tab 
-Patient_data.df <- read_delim("data/SATB2_Patient_variants_v2.txt", delim = "\t") 
+Patient_data.df <- read_delim("data/SATB2_Patient_variants_v1.txt", delim = "\t") 
 # %>%
-
-Patient_data_pheno_score.df <- Patient_data.df %>% 
-  dplyr::rename(Neurodevelopmental_total = "Neurodevelopmental total",
-                Systemic_total = "Systemic total",
-                Total = "Total ",
-                Expressive = `Expressive `) %>% 
-  filter(!is.na(Total))
   # rename(Sz_onset = "Age at seizure onset (months)",
   #        Epilepsy = "Epilepsy") %>% 
   # rename(Autism = "Autistic traits",
   #        Epilepsy_syndrome = "Epilepsy Syndrome Classification",
   #        ID_after_sz_onset = "Cognitive Level AFTER Seizure Onset")
 
-Patient_data_missense.df <- read_delim("data/SATB2_Patient_variants_v2.txt", delim = "\t") %>% 
+Patient_data_missense.df <- read_delim("data/SATB2_Patient_variants_v1.txt", delim = "\t") %>% 
   mutate(Sex = as.factor(Sex)) %>% 
   filter(Vartype == "Missense")
 
@@ -966,124 +959,7 @@ tabPanel(title = "Families", value = "familyTab",
                     br(),
                     br(),
                     DT::dataTableOutput(outputId = "compareTable")
-                  ),
-                  tabPanel("Phenotype scores",
-                           br(),
-                           fluidRow(
-                              h3("Compare phenotype scores to other individuals"),
-                              box(title="Set phenotype scores for your patient ", 
-                                  collapsible = TRUE, 
-                                  collapsed = TRUE, 
-                                  width = 12,
-                                  p(h4("Neurodevelopmental scores")),
-                                  column(3,
-                                         selectInput("neuro1",
-                                                     "Adaptive/Cognition:",
-                                                     c(unique(Patient_data_pheno_score.df$`Adaptive/Cognition` %>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("neuro2",
-                                                     "Verbal",
-                                                     c(unique(Patient_data_pheno_score.df$Verbal%>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("neuro3",
-                                                     "Expressive",
-                                                     c(unique(Patient_data_pheno_score.df$Expressive%>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("neuro4",
-                                                     "Ambulation",
-                                                     c(unique(Patient_data_pheno_score.df$Ambulation%>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("neuro5",
-                                                     "Behavior",
-                                                     c(unique(Patient_data_pheno_score.df$Behavior%>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("neuro6",
-                                                     "Sleep",
-                                                     c(unique(Patient_data_pheno_score.df$`Sleep `%>% sort())),
-                                                     0)
-                                  ),
-                                  column(12, align = "left",
-                                    p(h4("Clinical scores"))),
-                                  column(3,
-                                         selectInput("clinical1",
-                                                     "Palate",
-                                                     c(unique(Patient_data_pheno_score.df$Palate %>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("clinical2",
-                                                     "Sleep ",
-                                                     c(unique(Patient_data_pheno_score.df$`Sleep ` %>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("clinical3",
-                                                     "Sialorrhea",
-                                                     c(unique(Patient_data_pheno_score.df$Sialorrhea %>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("clinical4",
-                                                     "Strabismus",
-                                                     c(unique(Patient_data_pheno_score.df$Strabismus %>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("clinical5",
-                                                     "Scoliosis",
-                                                     c(unique(Patient_data_pheno_score.df$Scoliosis %>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("clinical6",
-                                                     "Muscle Tone",
-                                                     c(unique(Patient_data_pheno_score.df$`Muscle Tone` %>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("clinical7",
-                                                     "Bone Health",
-                                                     c(unique(Patient_data_pheno_score.df$`Bone Health` %>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("clinical8",
-                                                     "Growth/Feeding",
-                                                     c(unique(Patient_data_pheno_score.df$`Growth/Feeding` %>% sort())),
-                                                     0)
-                                  ),
-                                  column(3,
-                                         selectInput("clinical9",
-                                                     "Seizures",
-                                                     c(unique(Patient_data_pheno_score.df$Seizures %>% sort())),
-                                                     0)
-                                  )),
-                                box(width = 12,
-                                    p(h4("Score comparison:")),
-                                    column(4, textOutput(outputId = "pheno_score_va_total"),
-                                           tags$head(tags$style("#pheno_score_va_total{font-size: 20px}"))),
-                                    column(4, textOutput(outputId = "pheno_score_va_clinical"),
-                                           tags$head(tags$style("#pheno_score_va_clinical{font-size: 20px}"))),
-                                    column(4, textOutput(outputId = "pheno_score_va_neuro"),
-                                           tags$head(tags$style("#pheno_score_va_neuro{font-size: 20px}"))),
-                                    column(4, plotlyOutput(outputId = "pheno_score_pl_total")),
-                                    column(4, plotlyOutput(outputId = "pheno_score_pl_neuro")),
-                                    column(4, plotlyOutput(outputId = "pheno_score_pl_systemic"))
-                                )
-                              )
-                           
-                    
-                  )
+                  )#,
             )))))
         ),
       conditionalPanel(
@@ -1098,140 +974,16 @@ tabPanel(title = "Families", value = "familyTab",
                              br(), p(var_patient_info_abb, style=sub_style, align = "center")))#,
         ))),
         fluidRow(
-            panel(status="default",
-                  heading = "Custom variant analysis",
-              tabsetPanel(
-                tabPanel("Comparative Information",
-                  column(12,style='padding:30px;',
-                         fluidRow(
-                           h4(var_patient_info_title_nonsense),
-                                            br(),
-                                            div(width = "100%", plotlyOutput("comparePlot_nonsense")),
-                                            br(),
-                                            br(),
-                                            DT::dataTableOutput(outputId = "compareTable_nonsense")
-                                 ))),
-                tabPanel("Phenotype scores",
-                         br(),
-                         column(12,style='padding:30px;',
-                           fluidRow(
-                             h3("Compare phenotype scores to other individuals"),
-                             box(title="Set phenotype scores for your patient ", 
-                                 collapsible = TRUE, 
-                                 collapsed = TRUE, 
-                                 width = 12,
-                                 p(h4("Neurodevelopmental scores")),
-                                 column(3,
-                                        selectInput("neuro1_non",
-                                                    "Adaptive/Cognition:",
-                                                    c(unique(Patient_data_pheno_score.df$`Adaptive/Cognition` %>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("neuro2_non",
-                                                    "Verbal",
-                                                    c(unique(Patient_data_pheno_score.df$Verbal%>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("neuro3_non",
-                                                    "Expressive",
-                                                    c(unique(Patient_data_pheno_score.df$Expressive%>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("neuro4_non",
-                                                    "Ambulation",
-                                                    c(unique(Patient_data_pheno_score.df$Ambulation%>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("neuro5_non",
-                                                    "Behavior",
-                                                    c(unique(Patient_data_pheno_score.df$Behavior%>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("neuro6_non",
-                                                    "Sleep",
-                                                    c(unique(Patient_data_pheno_score.df$`Sleep `%>% sort())),
-                                                    0)
-                                 ),
-                                 column(12, align = "left",
-                                        p(h4("Clinical scores"))),
-                                 column(3,
-                                        selectInput("clinical1_non",
-                                                    "Palate",
-                                                    c(unique(Patient_data_pheno_score.df$Palate %>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("clinical2_non",
-                                                    "Sleep ",
-                                                    c(unique(Patient_data_pheno_score.df$`Sleep ` %>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("clinical3_non",
-                                                    "Sialorrhea",
-                                                    c(unique(Patient_data_pheno_score.df$Sialorrhea %>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("clinical4_non",
-                                                    "Strabismus",
-                                                    c(unique(Patient_data_pheno_score.df$Strabismus %>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("clinical5_non",
-                                                    "Scoliosis",
-                                                    c(unique(Patient_data_pheno_score.df$Scoliosis %>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("clinical6_non",
-                                                    "Muscle Tone",
-                                                    c(unique(Patient_data_pheno_score.df$`Muscle Tone` %>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("clinical7_non",
-                                                    "Bone Health",
-                                                    c(unique(Patient_data_pheno_score.df$`Bone Health` %>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("clinical8_non",
-                                                    "Growth/Feeding",
-                                                    c(unique(Patient_data_pheno_score.df$`Growth/Feeding` %>% sort())),
-                                                    0)
-                                 ),
-                                 column(3,
-                                        selectInput("clinical9_non",
-                                                    "Seizures",
-                                                    c(unique(Patient_data_pheno_score.df$Seizures %>% sort())),
-                                                    0)
-                                 )),
-                             box(width = 12,
-                                 p(h4("Score comparison:")),
-                                 column(4, textOutput(outputId = "pheno_score_va_total_non"),
-                                        tags$head(tags$style("#pheno_score_va_total_non{font-size: 20px}"))),
-                                 column(4, textOutput(outputId = "pheno_score_va_clinical_non"),
-                                        tags$head(tags$style("#pheno_score_va_clinical_non{font-size: 20px}"))),
-                                 column(4, textOutput(outputId = "pheno_score_va_neuro_non"),
-                                        tags$head(tags$style("#pheno_score_va_neuro_non{font-size: 20px}"))),
-                                 column(4, plotlyOutput(outputId = "pheno_score_pl_total_non")),
-                                 column(4, plotlyOutput(outputId = "pheno_score_pl_neuro_non")),
-                                 column(4, plotlyOutput(outputId = "pheno_score_pl_systemic_non"))
-                             )
-                                 ))
-                                 
-                             ))
-                
-                
-              )
-          )
+          column(12,style='padding:30px;',
+                 fluidRow(
+                   panel(status="default",
+                         heading = var_patient_info_title_nonsense,
+                                    br(),
+                                    div(width = "100%", plotlyOutput("comparePlot_nonsense")),
+                                    br(),
+                                    br(),
+                                    DT::dataTableOutput(outputId = "compareTable_nonsense")
+                         ))))
       ),
       conditionalPanel(
         condition = "output.vartype=='Other'",
@@ -1265,15 +1017,13 @@ tabPanel(title = "Families", value = "familyTab",
 
 tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of top menu
          fluidRow(
-           column(12, 
+           column(10, offset = 1,
                   panel(heading = "Analyse your variants", status = "danger",
                         fluidRow(
-                          column(3,style='padding:15px;',
-                                 panel(heading="Filter input", status="default",
+                          column(12,style='padding:15px;',
+                                 panel(heading="Filter Registry", status="default",
                                        fluidRow(
-                                         column(12, align = "left",
-                                                p(h4("Genetic filter"))),
-                                         column(12,
+                                         column(9,
                                                 selectizeGroupUI(
                                                   id = "research-filters",
                                                   btn_label = "Reset filters",
@@ -1284,24 +1034,14 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                       placeholder="all",
                                                       multiple = TRUE,
                                                       choices = unique(Patient_data.df$Vartype)
-                                                    )))),
-                                         column(12,
-                                                selectizeGroupUI(
-                                                  id = "research-filters2",
-                                                  btn_label = "Reset filters",
-                                                  params = list(
+                                                    ),
                                                     aachange = list(
                                                       inputId = "AA_alt",
                                                       title = p(strong("Amino Acid Change")),
                                                       placeholder="all",
                                                       multiple = TRUE,
                                                       choices = unique(Patient_data.df$AA_alt)
-                                                    )))),
-                                         column(12,
-                                                selectizeGroupUI(
-                                                  id = "research-filters3",
-                                                  btn_label = "Reset filters",
-                                                  params = list(
+                                                    ),
                                                     domain = list(
                                                       inputId = "Domain",
                                                       title = p(strong("Protein region")),
@@ -1309,79 +1049,41 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                       multiple = TRUE,
                                                       choices = unique(Patient_data.df$Domain)
                                                     )))),
-                                          column(12, align = "left",
-                                                 p(h4("Phenotype filter"))),
-                                          column(12,
-                                                 selectizeGroupUI(
-                                                   id = "research-filters4",
-                                                   btn_label = "Reset filters ",
-                                                   params = list(
-                                                  Clinical_seizures = list(
-                                                    inputId = "Clinical_seizures",
-                                                    title = p(strong("Seizures")),
-                                                    placeholder="all",
-                                                    choices = unique(Patient_data.df$Clinical_seizures)
-                                                  )))),
-                                         column(12,
-                                                selectizeGroupUI(
-                                                  id = "research-filters5",
-                                                  btn_label = "Reset filters ",
-                                                  params = list(
+                                            column(12),
+                                            column(12,
+                                                   selectizeGroupUI(
+                                                     id = "research-filters2",
+                                                     btn_label = "Reset filters ",
+                                                     params = list(
+                                                    Clinical_seizures = list(
+                                                      inputId = "Clinical_seizures",
+                                                      title = p(strong("Seizures")),
+                                                      placeholder="all",
+                                                      choices = unique(Patient_data.df$Clinical_seizures)
+                                                    ),
                                                     Cleft_palate = list(
                                                       inputId = "Cleft_palate",
                                                       title = p(strong("Cleft palate")),
                                                       placeholder="all",
                                                       choices = unique(Patient_data.df$Cleft_palate)
-                                                    )))),
-                                         column(12,
-                                                selectizeGroupUI(
-                                                  id = "research-filters6",
-                                                  btn_label = "Reset filters ",
-                                                  params = list(
+                                                    ),
                                                     Total_speech = list(
                                                       inputId = "Total_speech",
                                                       title = p(strong("Total speech")),
                                                       placeholder="all",
                                                       choices = unique(Patient_data.df$Total_speech)
-                                                    )))),
-                                         column(12,
-                                                selectizeGroupUI(
-                                                  id = "research-filters6",
-                                                  btn_label = "Reset filters ",
-                                                  params = list(
+                                                    ),
                                                     Abnormal_brainMRI= list(
                                                       inputId = "Abnormal_brainMRI",
                                                       title = p(strong("Abnormal Brain MRI"),
-                                                      placeholder="all",
-                                                      choices = unique(Patient_data.df$Abnormal_brainMRI),
-                                                      multiple = TRUE)
-                                                    )))),
-                                         column(12, align = "left",
-                                                p(h4("Phenotype-score filter")),
-                                                materialSwitch(
-                                                  inputId = "phenoscore_filt",
-                                                  label = "Apply phenotype-score filter",
-                                                  status = "primary",
-                                                  right = T,
-                                                  inline = T
-                                                )),
-                                         column(12, 
-                                                sliderInput("systemic",
-                                                            h5("Systemic"), 
-                                                            min = 0, max = 22, value = c(0, 22))),
-                                         column(12, 
-                                                sliderInput("neurodevelopmental",
-                                                            h5("Neurodevelopmental"), 
-                                                            min = 0, max = 25, value = c(0, 25))),
-                                         column(12, 
-                                                sliderInput("total",
-                                                            h5("Total phenotype score"), 
-                                                            min = 0, max = 50, value = c(0, 50)))
-                                         
-                                         
-                                         ))),
-                      #  fluidRow(
-                          column(8,style='padding:15px;',
+                                                                placeholder="all",
+                                                                choices = unique(Patient_data.df$Abnormal_brainMRI),
+                                                                multiple = TRUE
+                                                      ))
+                                                  )),
+                                         ))))),
+                        fluidRow(
+                          column(12,style='padding:15px;',
                                  panel(status = "default",heading = "Custom variant exploration",
                                        div(textOutput(outputId = "filtered_n"),
                                            br(),
@@ -1445,63 +1147,28 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                            )),
                                          
                                          tabPanel("Phenotype Interface",
-                                                 
-                                                    br(),
-                                                    fluidRow(
-                                                      column(12, align = "justify", plotlyOutput("research_phenotype1"))),
                                                   br(),
-                                                  materialSwitch(
-                                                    inputId = "pheno_detail",
-                                                    label = "Display phenotype scores instead",
-                                                    status = "primary",
-                                                    right = T,
-                                                    inline = T
+                                                  fluidRow(
+                                                    column(12, align = "justify", plotlyOutput("research_phenotype1"))),
+                                                  fluidRow(
+                                                    column(6,align="justify", plotlyOutput("research_phenotype2")),
+                                                    column(6,align="justify", plotlyOutput("research_phenotype3"))
                                                   ),
-                                                  conditionalPanel(
-                                                    condition = "output.pheno_detail!='yes'",
-                                                    fluidRow(
-                                                      column(6,align="justify", plotlyOutput("research_phenotype2")),
-                                                      column(6,align="justify", plotlyOutput("research_phenotype3"))
-                                                    ),
-                                                    fluidRow(
-                                                      column(6,align="justify", plotlyOutput("research_phenotype4")),
-                                                      column(6,align="justify", plotlyOutput("research_phenotype5"))
-                                                    ),
-                                                    fluidRow(
-                                                      column(6,align="justify", plotlyOutput("research_phenotype6"))
-                                                    ),
-                                                    fluidRow(
-                                                      column(12, 
-                                                             panel(heading = strong("Display variants"), status = "default",
-                                                                   DT::dataTableOutput(outputId = "compareTableResearch2")
-                                                                  )
-                                                             )
-                                                            )
+                                                  fluidRow(
+                                                    column(6,align="justify", plotlyOutput("research_phenotype4")),
+                                                    column(6,align="justify", plotlyOutput("research_phenotype5"))
                                                   ),
-                                                  conditionalPanel(
-                                                    condition = "output.pheno_detail=='yes'",
-                                                    fluidRow(
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score1")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score2")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score3")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score4")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score5")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score6")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score7")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score8")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score9")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score10")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score11")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score12")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score13")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score14")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score15")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score16")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score17")),
-                                                      column(4, align = "justify", plotlyOutput("Phenotype_score18")),
-                                                      
-                                                    )
-                                                  ))
+                                                  fluidRow(
+                                                    column(6,align="justify", plotlyOutput("research_phenotype6"))
+                                                  ),
+                                                  fluidRow(
+                                                    column(12, 
+                                                           panel(heading = strong("Display variants"), status = "default",
+                                                                 DT::dataTableOutput(outputId = "compareTableResearch2")
+                                                                )
+                                                           )
+                                                          )
+                                                  )
            ))))
                   )))
       ), #end research tab
