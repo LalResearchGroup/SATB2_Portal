@@ -1011,7 +1011,7 @@ tabPanel(title = "Families", value = "familyTab",
                                                                            theme = "light"))),
                                   column(3,
                                          selectInput("neuro1",
-                                                     "Adaptive/Cognition:",
+                                                     p("Adaptive/Cognition:", tippy(icon("question-circle"), tooltip = h5(HTML(paste0("jashdja")), align = "left"), animation = "scale", theme = "light")),
                                                      c(unique(Patient_data_pheno_score.df$`Adaptive/Cognition` %>% sort())),
                                                      0)
                                   ),
