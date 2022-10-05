@@ -1943,9 +1943,8 @@ shinyServer(function(input, output, session) {
     
     
     paraz_mtr_input.df <- paraz_mtr.df %>% 
-      filter(Gene == varFilterInput$data$Gene[1]) %>% 
-      left_join(Patient_data_missense_only.df %>% filter(Gene == varFilterInput$data$Gene[1], Vartype == "Missense") %>% mutate(p = 1) %>% select(p, AA_pos)) %>% 
-      left_join(Control_data.df %>% filter(Gene == varFilterInput$data$Gene[1]) %>% mutate(g = 1) %>% select(g, AA_pos)) %>% 
+      left_join(Patient_data_missense_only.df %>% filter(Vartype == "Missense") %>% mutate(p = 1) %>% select(p, AA_pos)) %>% 
+      left_join(Control_data.df %>% mutate(g = 1) %>% select(g, AA_pos)) %>% 
       replace(is.na(.),0) %>% 
       assign("save",.,envir = .GlobalEnv) %>% 
       filter(p == 1) %>% 
@@ -1956,15 +1955,16 @@ shinyServer(function(input, output, session) {
     col2 <- "darkblue"
     
     plot <- plot_ly(colors=c(col1, col2)) %>% 
-      add_boxplot(data = paraz_mtr_input.df %>% filter(Gene == varFilterInput$data$Gene[1], g == "pathogenic"),
-                  y = ~Paraz_score, type = "box", x= 0,
-                  color = I(col1)) %>% 
-      add_trace(y = ~ paraz_mtr_input.df %>% filter(Gene == varFilterInput$data$Gene[1], g == "control") %>%  .$Paraz_score,
+      add_trace(data = paraz_mtr_input.df %>% filter(g == "pathogenic"),
+                y = ~Paraz_score, type = "box", x= 0, 
+                boxpoints = "all", pointpos = 0,jitter = 0.8,
+                color = I(col1)) %>% 
+      add_trace(y = ~ paraz_mtr_input.df %>% filter(g == "control") %>%  .$Paraz_score,
                 type = "box", x = 1,
+                boxpoints = "all", pointpos = 0,jitter = 0.8,
                 color = I(col2)) %>% 
-      add_trace(data = paraz_mtr.df%>%
-                  filter(Gene == varFilterInput$data$Gene[1],
-                         AA_pos == varFilterInput$data$AA_pos[1]) ,
+      add_trace(data = paraz_mtr.df %>%
+                  filter(AA_pos == varFilterInput$data$AA_pos[1]) ,
                 y = ~Paraz_score, x = 0.5,
                 marker = list(color = "black",
                               size = 15),
@@ -1977,7 +1977,7 @@ shinyServer(function(input, output, session) {
                    yend = 0,
                    line = list(color = 'gray', width = 4, dash = 'dot')) %>% 
       layout(yaxis = list(title = "Paraz-score"),
-             xaxis = list(title = varFilterInput$data$Gene[1],
+             xaxis = list(title = "",
                           zeroline = FALSE,
                           showline = FALSE,
                           showticklabels = FALSE,
@@ -1994,7 +1994,7 @@ shinyServer(function(input, output, session) {
   
   output$paraz_legend <- renderPlot({
     
-    legend <- data.frame(x=c(1,4,7), y=c(3,3,3), text=c("Pathogenic variants", "Control variants", "Selected variant"))
+    legend <- data.frame(x=c(1,4,7), y=c(3,3,3), text=factor(c("Pathogenic variants", "Selected variant","Control variants")))
     plot <- ggplot(legend, aes(x=x, y=y, color=text))+
       geom_point(size = 8)+
       scale_color_manual(values = c("darkblue","darkred","black"))+
@@ -2040,9 +2040,11 @@ shinyServer(function(input, output, session) {
     plot_ly(colors=c(col1, col2)) %>% 
       add_boxplot(data = paraz_mtr_input.df %>% filter(Gene == varFilterInput$data$Gene[1], g == "pathogenic"),
                   y = ~MTR_score, type = "box", x= 0,
+                  boxpoints = "all", pointpos = 0,jitter = 0.8,
                   color = I(col1)) %>% 
       add_trace(y = ~ paraz_mtr_input.df %>% filter(Gene == varFilterInput$data$Gene[1], g == "control") %>%  .$MTR_score,
                 type = "box", x = 1,
+                boxpoints = "all", pointpos = 0,jitter = 0.8,
                 color = I(col2)) %>% 
       add_trace(data = paraz_mtr_gene.df%>% 
                   filter(AA_pos == varFilterInput$data$AA_pos[1]), 
@@ -2073,7 +2075,7 @@ shinyServer(function(input, output, session) {
                text = "Lowest 5% MTR-score",
                textposition = "middle right") %>% 
       layout(yaxis = list(title = "MTR-score"),
-             xaxis = list(title = varFilterInput$data$Gene[1],
+             xaxis = list(title = "",
                           zeroline = FALSE,
                           showline = FALSE,
                           showticklabels = FALSE,
@@ -2109,9 +2111,11 @@ shinyServer(function(input, output, session) {
     plot <- plot_ly(colors=c(col1, col2)) %>% 
       add_boxplot(data = per_input.df %>% filter(g == "pathogenic"),
                   y = ~odds, type = "box", x= 0,
+                  boxpoints = "all", pointpos = 0,jitter = 0.8,
                   color = I(col1)) %>% 
       add_trace(y = ~ per_input.df %>% filter(g == "control") %>%  .$odds,
                 type = "box", x = 1,
+                boxpoints = "all", pointpos = 0,jitter = 0.8,
                 color = I(col2)) %>% 
       add_trace(data = per2d_for_var_analysis.df %>%
                   filter(AA_pos == varFilterInput$data$AA_pos[1],
@@ -2128,7 +2132,7 @@ shinyServer(function(input, output, session) {
                    yend = 0,
                    line = list(color = 'gray', width = 4, dash = 'dot')) %>% 
       layout(yaxis = list(title = "Fold enrichment of pathogenic variants (log2)"),
-             xaxis = list(title = varFilterInput$data$Gene[1],
+             xaxis = list(title = "",
                           zeroline = FALSE,
                           showline = FALSE,
                           showticklabels = FALSE,
