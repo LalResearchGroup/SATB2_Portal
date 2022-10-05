@@ -781,19 +781,19 @@ Domain_gene.df <- master.df %>%
   ungroup()
 
 
-# #PER-2D
-# per_family2d.df <- read_delim("data/per2d_genewise.txt", delim = "\t")
-# 
-# per2d_for_var_analysis.df <- read_delim("data/per2d_genewise.txt", delim = "\t")
-# 
-# per2d.df <- read_delim("data/per2d_genewise.txt", delim = "\t") %>% 
-#   mutate(Hotzone_2D = ifelse(per == "PER","PER","No-PER")) %>% 
-#   select(Hotzone_2D,AA_pos,pvalue,odds) %>% 
-#   rename(pvalue_per3d = "pvalue",
-#          odds_per3d = "odds")
+#PER-2D
+per_family2d.df <- read_delim("data/per2d_genewise.txt", delim = "\t")
+
+per2d_for_var_analysis.df <- read_delim("data/per2d_genewise.txt", delim = "\t")
+
+per2d.df <- read_delim("data/per2d_genewise.txt", delim = "\t") %>%
+  mutate(Hotzone_2D = ifelse(per == "PER","PER","No-PER")) %>%
+  select(Hotzone_2D,AA_pos,pvalue,odds) #%>%
+  # rename(pvalue_per3d = "pvalue",
+  #        odds_per3d = "odds")
 # #PER-3D
-# per3d.df <- read_delim("data/per3d.txt", delim = "\t") %>% 
-#   select(PER3D,AA_pos,pvalue,odds) %>% 
+# per3d.df <- read_delim("data/per3d.txt", delim = "\t") %>%
+#   select(PER3D,AA_pos,pvalue,odds) %>%
 #   rename(pvalue_per2d  = "pvalue",
 #          odds_per2d  = "odds")
 
@@ -841,15 +841,15 @@ Patient_data_missense_only.df <- Patient_data.df %>%
  # mutate(AA_alt = three_to_one_aa(AA_alt))
 
 Control_data.df <- read_delim("data/gnomad_variants.txt", delim = "\t") %>% 
-  mutate(AA_ref = aaa(AA_ref)) %>% #,
-         #AA_alt = convert_aa(AA_alt)) %>%
+  mutate(AA_ref = aaa(AA_ref),
+         AA_alt = aaa(AA_alt)) %>%
   # left_join(per3d.df) %>% 
-  # left_join(per2d.df) %>% 
+  left_join(per2d.df) %>%
   left_join(Domain_gene.df %>% distinct(Domain,Gene,AA_pos,Domain_color), by = c("AA_pos" = "AA_pos","Gene" = "Gene")) 
 
 #Load Scores
 #Paraz/MTR
-# paraz_mtr.df <- read_delim("data/mtr_paraz_slc6a1.txt",delim = "\t")
+paraz_mtr.df <- read_delim("data/mtr_paraz_satb2.txt",delim = "\t")
 
 #hotzones3D on structure 
 #PER3D_struc.df <- read_delim("data/pdb/6j8e_varburden.txt", delim = "\t")
@@ -1694,9 +1694,9 @@ shinyServer(function(input, output, session) {
     
     
     datatable(z %>% 
-                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in), 
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in), 
               extensions = "Buttons", 
-              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
+              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
                              buttons = c('csv', 'excel'), pageLength=100, scrollY = "350px"), escape = FALSE)
     
@@ -1808,9 +1808,9 @@ shinyServer(function(input, output, session) {
   
     
     datatable(z %>% 
-                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in), 
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in), 
               extensions = "Buttons", 
-              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
+              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
                              buttons = c('csv', 'excel'), pageLength=100, scrollY = "350px"), escape = FALSE)
     
@@ -2473,9 +2473,9 @@ shinyServer(function(input, output, session) {
     z <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total)
     
     datatable(z %>% 
-                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in), 
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in), 
               extensions = "Buttons", 
-              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
+              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
                              buttons = c('csv', 'excel'), pageLength=100, scrollY = "350px"), escape = FALSE)
     
@@ -2487,9 +2487,9 @@ shinyServer(function(input, output, session) {
     z <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total)
     
     datatable(z %>% 
-                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in), 
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in), 
               extensions = "Buttons", 
-              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
+              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
                              buttons = c('csv', 'excel'), pageLength=100, scrollY = "350px"), escape = FALSE)
     
