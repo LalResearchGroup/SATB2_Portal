@@ -681,7 +681,7 @@ map_pheno_score_var_analysis_miss <- function(selected_data.df,select_var, selec
           jitter = "0.3",
           pointpos = 0) %>% 
     #add_trace(type = "scatter", y= selected_value, x = "Own score") %>% 
-    layout(title=paste("Score:",select_var), 
+    layout(title=paste("",select_var), 
            font=plotly_font,
            xaxis = list(title="",showline = T, tickangle = 45),
            yaxis = list(title=select_var,showline = T),
@@ -716,7 +716,7 @@ map_pheno_score_var_analysis_non <- function(selected_data.df,select_var, select
           jitter = "0.3",
           pointpos = 0) %>% 
     #add_trace(type = "scatter", y= selected_value, x = "Own score") %>% 
-    layout(title=paste("Score:",select_var), 
+    layout(title=paste("",select_var), 
            font=plotly_font,
            xaxis = list(title="",showline = T, tickangle = 45),
            yaxis = list(title=select_var,showline = T),
@@ -752,7 +752,7 @@ map_pheno_score <- function(selected_data.df,select_var){
           boxpoints = "all",
           jitter = "0.3",
           pointpos = 0) %>% 
-    layout(title=paste("Score:",select_var), 
+    layout(title=paste("",select_var), 
            font=plotly_font,
            xaxis = list(title="",showline = T, tickangle = 45),
            yaxis = list(title=select_var,showline = T),
@@ -1479,13 +1479,13 @@ shinyServer(function(input, output, session) {
   output$pheno_score_va_total <- renderText({
     
     paste0("Total: ",
-           sum(c(input$clinical1,input$clinical2,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric()))
+           sum(c(input$clinical1,input$clinical10,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric()))
   })
   
   output$pheno_score_va_clinical <- renderText({
     
-    paste0("Clinical: ",
-           sum(c(input$clinical1,input$clinical2,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9) %>% as.numeric()))
+    paste0("Systemic: ",
+           sum(c(input$clinical1,input$clinical10,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9) %>% as.numeric()))
   })
   
   output$pheno_score_va_neuro <- renderText({
@@ -1496,7 +1496,7 @@ shinyServer(function(input, output, session) {
   
   output$pheno_score_pl_total <- renderPlotly({
     
-    selected_value <- sum(c(input$clinical1,input$clinical2,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
+    selected_value <- sum(c(input$clinical1,input$clinical10,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
     
     map_pheno_score_var_analysis_miss(varFilterInput$data,"Total", selected_value)
     
@@ -1504,7 +1504,7 @@ shinyServer(function(input, output, session) {
   
   output$pheno_score_pl_neuro <- renderPlotly({
     
-    selected_value <- sum(c(input$clinical1,input$clinical2,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
+    selected_value <- sum(c(input$clinical1,input$clinical10,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
     
     map_pheno_score_var_analysis_miss(varFilterInput$data,"Neurodevelopmental_total", selected_value)
     
@@ -1512,7 +1512,7 @@ shinyServer(function(input, output, session) {
   
   output$pheno_score_pl_systemic <- renderPlotly({
     
-    selected_value <- sum(c(input$clinical1,input$clinical2,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
+    selected_value <- sum(c(input$clinical1,input$clinical10,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
     
     map_pheno_score_var_analysis_miss(varFilterInput$data,"Systemic_total", selected_value)
     
@@ -1522,13 +1522,13 @@ shinyServer(function(input, output, session) {
   output$pheno_score_va_total_non <- renderText({
     
     paste0("Total: ",
-           sum(c(input$clinical1_non,input$clinical2_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non, input$neuro1_non,input$neuro2_non,input$neuro3_non,input$neuro4_non,input$neuro5_non,input$neuro6_non) %>% as.numeric()))
+           sum(c(input$clinical1_non,input$clinical10_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non, input$neuro1_non,input$neuro2_non,input$neuro3_non,input$neuro4_non,input$neuro5_non,input$neuro6_non) %>% as.numeric()))
   })
   
   output$pheno_score_va_clinical_non <- renderText({
     
-    paste0("Clinical: ",
-           sum(c(input$clinical1_non,input$clinical2_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non) %>% as.numeric()))
+    paste0("Systemic: ",
+           sum(c(input$clinical1_non,input$clinical10_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non) %>% as.numeric()))
   })
   
   output$pheno_score_va_neuro_non <- renderText({
@@ -1539,7 +1539,7 @@ shinyServer(function(input, output, session) {
   
   output$pheno_score_pl_total_non <- renderPlotly({
     
-    selected_value <- sum(c(input$clinical1_non,input$clinical2_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non, input$neuro1_non,input$neuro2_non,input$neuro3_non,input$neuro4_non,input$neuro5_non,input$neuro6_non) %>% as.numeric())
+    selected_value <- sum(c(input$clinical1_non,input$clinical10_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non, input$neuro1_non,input$neuro2_non,input$neuro3_non,input$neuro4_non,input$neuro5_non,input$neuro6_non) %>% as.numeric())
     
     map_pheno_score_var_analysis_non(Patient_data.df %>% 
                                        filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")),"Total", selected_value)
@@ -1557,7 +1557,7 @@ shinyServer(function(input, output, session) {
   
   output$pheno_score_pl_systemic_non <- renderPlotly({
     
-    selected_value <- sum(c(input$clinical1_non,input$clinical2_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non) %>% as.numeric())
+    selected_value <- sum(c(input$clinical1_non,input$clinical10_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non) %>% as.numeric())
     
     map_pheno_score_var_analysis_non(Patient_data.df %>% 
                                        filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")),"Systemic_total", selected_value)
