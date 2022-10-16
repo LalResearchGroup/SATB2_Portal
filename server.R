@@ -20,6 +20,7 @@ library(RColorBrewer)
 library(plyr)
 library(ggwordcloud)
 library(generics)
+library(shinyjs)
 
 ############## FUNCTIONS, STYLE ############
 
@@ -647,7 +648,7 @@ three_to_one_aa <- function(sequence){
   
 }
 
-map_pheno_score_var_analysis_miss <- function(selected_data.df,select_var, selected_value){
+map_pheno_score_var_analysis_miss <- function(selected_data.df,select_var, selected_value,title_sel){
   
   plot_ly(data = rbind(Patient_data.df %>% 
                          mutate(label = "All",
@@ -681,16 +682,16 @@ map_pheno_score_var_analysis_miss <- function(selected_data.df,select_var, selec
           jitter = "0.3",
           pointpos = 0) %>% 
     #add_trace(type = "scatter", y= selected_value, x = "Own score") %>% 
-    layout(title=paste("",select_var), 
+    layout(title=paste("",title_sel), 
            font=plotly_font,
            xaxis = list(title="",showline = T, tickangle = 45),
-           yaxis = list(title=select_var,showline = T),
+           yaxis = list(title=title_sel,showline = T),
            margin = list(t = 50),
            showlegend = FALSE) %>%
     config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
 }
 
-map_pheno_score_var_analysis_non <- function(selected_data.df,select_var, selected_value){
+map_pheno_score_var_analysis_non <- function(selected_data.df,select_var, selected_value, title_sel){
   
   plot_ly(data = rbind(Patient_data.df %>% 
                          mutate(label = "All",
@@ -716,10 +717,10 @@ map_pheno_score_var_analysis_non <- function(selected_data.df,select_var, select
           jitter = "0.3",
           pointpos = 0) %>% 
     #add_trace(type = "scatter", y= selected_value, x = "Own score") %>% 
-    layout(title=paste("",select_var), 
+    layout(title=paste("",title_sel), 
            font=plotly_font,
            xaxis = list(title="",showline = T, tickangle = 45),
-           yaxis = list(title=select_var,showline = T),
+           yaxis = list(title=title_sel,showline = T),
            margin = list(t = 50),
            showlegend = FALSE) %>%
     config(modeBarButtonsToRemove = goodbye, displaylogo = FALSE)
@@ -1406,7 +1407,8 @@ shinyServer(function(input, output, session) {
                        #!is.na(Published_in)) %>%
       select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in),
     colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
-    options = list(dom = 't', pageLength=100, scrollY = "350px"), escape=FALSE)
+    options = list(dom = 'rtip', scrollX = TRUE,
+                   scrollY = "250px", escape = FALSE))
   })
   
   output$patientTable_nonsense <- DT::renderDataTable({
@@ -1438,7 +1440,9 @@ shinyServer(function(input, output, session) {
                 #!is.na(Published_in)) %>%
                 select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in),
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
-              options = list(dom = 't', scrollY = TRUE), escape=FALSE)
+              options = list(dom = 'rtip',
+                             scrollX = TRUE,
+                             scrollY = "250px", escape = FALSE))
   })
   
   output$patientTable_other <- DT::renderDataTable({
@@ -1470,27 +1474,67 @@ shinyServer(function(input, output, session) {
                 #!is.na(Published_in)) %>%
                 select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in),
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
-              options = list(dom = 't', scrollY = TRUE), escape=FALSE)
+              options = list(dom = 'rtip',
+                             scrollX = TRUE,
+                             scrollY = "250px", escape = FALSE))
   })
   
   observe_helpers(withMathJax = TRUE)
   
   #Phenoscores variant anaylsis ####
+
+  
+  observeEvent(input$switch_pheno_box1,{
+    box1_collapsed = F
+    if (!is.null(input$iscollapsebox1)){
+      box1_collapsed <- input$iscollapsebox1
+    }
+    if (input$switch_pheno_box1 == TRUE){
+      print(1)
+      # if you want to open B1
+      if (box1_collapsed){
+        js$collapse("pheno_box_1")}
+    } else if (input$switch_pheno_box1 == FALSE){
+      print(2)
+      if (!box1_collapsed){
+        js$collapse("pheno_box_1")}
+    }
+  })
+  
+  observeEvent(input$switch_pheno_box2,{
+    box2_collapsed = F
+    if (!is.null(input$iscollapsebox2)){
+      box2_collapsed <- input$iscollapsebox2
+    }
+    if (input$switch_pheno_box2 == TRUE){
+      print(1)
+      # if you want to open B1
+      if (box2_collapsed){
+        js$collapse("pheno_box_2")}
+    } else if (input$switch_pheno_box2 == FALSE){
+      print(2)
+      if (!box2_collapsed){
+        js$collapse("pheno_box_2")}
+    }
+  })
+  
+  
+  
   output$pheno_score_va_total <- renderText({
     
-    paste0("Total: ",
+    paste0("Total score: ",
            sum(c(input$clinical1,input$clinical10,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric()))
   })
   
   output$pheno_score_va_clinical <- renderText({
     
-    paste0("Systemic: ",
+    paste0("Systemic score: ",
            sum(c(input$clinical1,input$clinical10,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9) %>% as.numeric()))
   })
   
   output$pheno_score_va_neuro <- renderText({
     
-    paste0("Neurodevelopmental: ", 
+    paste0("Neurodevelopmental score: ", 
            sum(c(input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric()))
   })
   
@@ -1498,42 +1542,42 @@ shinyServer(function(input, output, session) {
     
     selected_value <- sum(c(input$clinical1,input$clinical10,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
     
-    map_pheno_score_var_analysis_miss(varFilterInput$data,"Total", selected_value)
+    map_pheno_score_var_analysis_miss(varFilterInput$data,"Total", selected_value,"Total score")
     
   })
   
   output$pheno_score_pl_neuro <- renderPlotly({
     
-    selected_value <- sum(c(input$clinical1,input$clinical10,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
+    selected_value <- sum(c(input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
     
-    map_pheno_score_var_analysis_miss(varFilterInput$data,"Neurodevelopmental_total", selected_value)
+    map_pheno_score_var_analysis_miss(varFilterInput$data,"Neurodevelopmental_total", selected_value,"Neurodevelopmental score")
     
   })
   
   output$pheno_score_pl_systemic <- renderPlotly({
     
-    selected_value <- sum(c(input$clinical1,input$clinical10,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9, input$neuro1,input$neuro2,input$neuro3,input$neuro4,input$neuro5,input$neuro6) %>% as.numeric())
+    selected_value <- sum(c(input$clinical1,input$clinical10,input$clinical3,input$clinical4,input$clinical5,input$clinical6,input$clinical7,input$clinical8,input$clinical9) %>% as.numeric())
     
-    map_pheno_score_var_analysis_miss(varFilterInput$data,"Systemic_total", selected_value)
+    map_pheno_score_var_analysis_miss(varFilterInput$data,"Systemic_total", selected_value,"Systemic score")
     
   })
   
   #pheno score nonsense ####
   output$pheno_score_va_total_non <- renderText({
     
-    paste0("Total: ",
+    paste0("Total score: ",
            sum(c(input$clinical1_non,input$clinical10_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non, input$neuro1_non,input$neuro2_non,input$neuro3_non,input$neuro4_non,input$neuro5_non,input$neuro6_non) %>% as.numeric()))
   })
   
   output$pheno_score_va_clinical_non <- renderText({
     
-    paste0("Systemic: ",
+    paste0("Systemic score: ",
            sum(c(input$clinical1_non,input$clinical10_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non) %>% as.numeric()))
   })
   
   output$pheno_score_va_neuro_non <- renderText({
     
-    paste0("Neurodevelopmental: ", 
+    paste0("Neurodevelopmental score: ", 
            sum(c(input$neuro1_non,input$neuro2_non,input$neuro3_non,input$neuro4_non,input$neuro5_non,input$neuro6_non) %>% as.numeric()))
   })
   
@@ -1542,7 +1586,7 @@ shinyServer(function(input, output, session) {
     selected_value <- sum(c(input$clinical1_non,input$clinical10_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non, input$neuro1_non,input$neuro2_non,input$neuro3_non,input$neuro4_non,input$neuro5_non,input$neuro6_non) %>% as.numeric())
     
     map_pheno_score_var_analysis_non(Patient_data.df %>% 
-                                       filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")),"Total", selected_value)
+                                       filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")),"Total", selected_value, "Total score")
     
   })
   
@@ -1551,7 +1595,7 @@ shinyServer(function(input, output, session) {
     selected_value <- sum(c(input$neuro1_non,input$neuro2_non,input$neuro3_non,input$neuro4_non,input$neuro5_non,input$neuro6_non) %>% as.numeric())
     
     map_pheno_score_var_analysis_non(Patient_data.df %>% 
-                                       filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")),"Neurodevelopmental_total", selected_value)
+                                       filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")),"Neurodevelopmental_total", selected_value, "Neurodevelopmental score")
     
   })
   
@@ -1560,7 +1604,7 @@ shinyServer(function(input, output, session) {
     selected_value <- sum(c(input$clinical1_non,input$clinical10_non,input$clinical3_non,input$clinical4_non,input$clinical5_non,input$clinical6_non,input$clinical7_non,input$clinical8_non,input$clinical9_non) %>% as.numeric())
     
     map_pheno_score_var_analysis_non(Patient_data.df %>% 
-                                       filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")),"Systemic_total", selected_value)
+                                       filter(Vartype %in% c("Frameshift","Nonsense","splice site","Stop-gain") | str_detect(Vartype,"Frameshift")),"Systemic_total", selected_value, "Systemic score")
     
   })
   
@@ -1697,8 +1741,9 @@ shinyServer(function(input, output, session) {
                 select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in), 
               extensions = "Buttons", 
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
-              options = list(dom = 'Brtip',
-                             buttons = c('csv', 'excel'), pageLength=100, scrollY = "350px"), escape = FALSE)
+              options = list(dom = 'rtip',
+                             scrollX = TRUE,
+                             scrollY = "250px", escape = FALSE))
     
   })
   
@@ -1812,7 +1857,8 @@ shinyServer(function(input, output, session) {
               extensions = "Buttons", 
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
-                             buttons = c('csv', 'excel'), pageLength=100, scrollY = "350px"), escape = FALSE)
+                             buttons = c('csv', 'excel'), scrollX = TRUE,
+                             scrollY = "250px", escape = FALSE))
     
   })
   
@@ -1929,7 +1975,8 @@ shinyServer(function(input, output, session) {
               extensions = "Buttons", 
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
               options = list(dom = 'Brtip',
-                             buttons = c('csv', 'excel'), pageLength=100, scrollY = "350px"), escape = FALSE)
+                             buttons = c('csv', 'excel'), scrollX = TRUE,
+                             scrollY = "250px", escape = FALSE))
     
   })
   
@@ -2235,17 +2282,17 @@ shinyServer(function(input, output, session) {
      
     patient_table <- datatable(z %>% 
                                  select(Transcript,Gene, Domain, cDNA, Protein, Phenotype, Onset_days,functional_effect, Published_in) , 
-                               extensions = "Buttons",
+                               #extensions = "Buttons",
                                colnames = c("Transcript","Gene", "Domain"," cDNA", "Protein", phenotype_name1,phenotype_name2, "Functional Consequence","Source"), 
-                               escape=FALSE,
-                               options = list(dom = 'Brtip',buttons = c('csv', 'excel'), pageLength=300, scrollY = "350px"))
+                               #escape=FALSE,
+                               options = list(paging = F))
 
     annotation_table <-  datatable(z %>% 
                                      select(Transcript,Gene, Domain, cDNA, Protein, Phenotype, Onset_days,functional_effect, Published_in), 
-                                   extensions = "Buttons",
+                                   #extensions = "Buttons",
                                    colnames = c("Transcript","Gene", "Domain"," cDNA", "Protein", phenotype_name1,phenotype_name2, "Functional Consequence","Source"), 
-                                   escape=FALSE,
-                                   options = list(dom = 'Brtip',buttons = c('csv', 'excel'), pageLength=300, scrollY = "350px"))
+                                  # escape=FALSE,
+                                   options = list(paging = F))
 
     if (input$patientFunSwitch == FALSE) {
       return(patient_table)
@@ -2481,7 +2528,8 @@ shinyServer(function(input, output, session) {
               extensions = "Buttons", 
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
-                             buttons = c('csv', 'excel'), pageLength=100, scrollY = "350px"), escape = FALSE)
+                             buttons = c('csv', 'excel'), scrollX = TRUE,
+                             scrollY = "250px", escape = FALSE))
     
   })
   
@@ -2495,7 +2543,8 @@ shinyServer(function(input, output, session) {
               extensions = "Buttons", 
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
-                             buttons = c('csv', 'excel'), pageLength=100, scrollY = "350px"), escape = FALSE)
+                             buttons = c('csv', 'excel'), scrollX = TRUE,
+                             scrollY = "250px", escape = FALSE))
     
   })
 
