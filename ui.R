@@ -430,8 +430,10 @@ shinyUI(
               fluidRow(
                 column(4, offset = 2, align = "center",
                        p("Visit our other Portals:", style = "font-size:14px;", align = "center", style = "font-size:14px;"),
-                       p(shiny::a("SCN-Portal", href="http://scn-portal.broadinstitute.org/", target = '_blank'), "& ",
-                         shiny::a("GRIN-Portal", href="http://grin-portal.broadinstitute.org/", target = '_blank'),
+                       p(shiny::a("SCN-Portal", href="http://scn-portal.broadinstitute.org/", target = '_blank'), "/ ",
+                         shiny::a("GRIN-Portal", href="http://grin-portal.broadinstitute.org/", target = '_blank'), "/ ",
+                         shiny::a("SLC6A1-Portal", href="http://slc6a1-portal.broadinstitute.org/", target = '_blank'), "/ ",
+                         shiny::a("NDD-CNV Portal", href="http://ndd-cnv-portal.broadinstitute.org/", target = '_blank'),
                          style = "font-size:12px;")
                 ),
                 column(4, align = "center",
