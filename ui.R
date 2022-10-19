@@ -1619,6 +1619,7 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                column(12, 
                                                       panel(heading = strong("Display variants"), status = "default",
                                                             DT::dataTableOutput(outputId = "compareTableResearch"),
+                                                            br(), p(var_patient_info_abb, style=sub_style, align = "center"),
                                                       ))
                                              )
                                            )),
@@ -1652,7 +1653,8 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                     fluidRow(
                                                       column(12, 
                                                              panel(heading = strong("Display variants"), status = "default",
-                                                                   DT::dataTableOutput(outputId = "compareTableResearch2")
+                                                                   DT::dataTableOutput(outputId = "compareTableResearch2"),
+                                                                   br(), p(var_patient_info_abb, style=sub_style, align = "center")
                                                                   )
                                                              )
                                                             )
