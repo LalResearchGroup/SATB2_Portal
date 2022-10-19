@@ -1,7 +1,8 @@
-.Rproj.user
+.Rproj.user/*
 .Rhistory
 .RData
 .Ruserdata
+rsconnect/*
 .Rproj.user/005170FD/sources/prop/INDEX
 .DS_Store
 *.dcf

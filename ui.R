@@ -985,7 +985,8 @@ tabPanel(title = "Families", value = "familyTab",
                     div(width = "100%", plotlyOutput("comparePlot")),
                     br(),
                     br(),
-                    DT::dataTableOutput(outputId = "compareTable")
+                    DT::dataTableOutput(outputId = "compareTable"), # variant table
+                    br(), p(var_patient_info_abb, style=sub_style, align = "center") # abbreviations for variant table
                   ),
                   tabPanel("Phenotype scores", 
                            shinyjs:::useShinyjs(), 
