@@ -1405,7 +1405,9 @@ shinyServer(function(input, output, session) {
                 filter(AA_pos==varFilterInput$data$AA_pos[1]) %>%
                 filter(AA_alt == varFilterInput$data$AA_alt[1]) %>% 
                        #!is.na(Published_in)) %>%
-      select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in),
+      select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in)%>% 
+        mutate_all(as.character) %>% 
+        replace(is.na(.),"NA"),
     colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
     options = list(dom = 'rtip', scrollX = TRUE,
                    scrollY = "250px", escape = FALSE))
@@ -1438,7 +1440,9 @@ shinyServer(function(input, output, session) {
     
     datatable(table_filt.df %>% 
                 #!is.na(Published_in)) %>%
-                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in),
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in)%>% 
+                mutate_all(as.character) %>% 
+                replace(is.na(.),"NA"),
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
               options = list(dom = 'rtip',
                              scrollX = TRUE,
@@ -1472,7 +1476,9 @@ shinyServer(function(input, output, session) {
     
     datatable(table_filt.df %>% 
                 #!is.na(Published_in)) %>%
-                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in),
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in)%>% 
+                mutate_all(as.character) %>% 
+                replace(is.na(.),"NA"),
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
               options = list(dom = 'rtip',
                              scrollX = TRUE,
@@ -1738,7 +1744,9 @@ shinyServer(function(input, output, session) {
     
     
     datatable(z %>% 
-                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in), 
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in) %>% 
+                mutate_all(as.character) %>% 
+                replace(is.na(.),"NA"), 
               extensions = "Buttons", 
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'rtip',
@@ -1853,7 +1861,9 @@ shinyServer(function(input, output, session) {
   
     
     datatable(z %>% 
-                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in), 
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in)%>% 
+                mutate_all(as.character) %>% 
+                replace(is.na(.),"NA"), 
               extensions = "Buttons", 
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
@@ -1973,7 +1983,9 @@ shinyServer(function(input, output, session) {
     datatable(z %>% 
                 select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Published_in), 
               extensions = "Buttons", 
-              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
+              colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link")%>% 
+                mutate_all(as.character) %>% 
+                replace(is.na(.),"NA"),
               options = list(dom = 'Brtip',
                              buttons = c('csv', 'excel'), scrollX = TRUE,
                              scrollY = "250px", escape = FALSE))
@@ -2281,14 +2293,18 @@ shinyServer(function(input, output, session) {
      z <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total) 
      
     patient_table <- datatable(z %>% 
-                                 select(Transcript,Gene, Domain, cDNA, Protein, Phenotype, Onset_days,functional_effect, Published_in) , 
+                                 select(Transcript,Gene, Domain, cDNA, Protein, Phenotype, Onset_days,functional_effect, Published_in)%>% 
+                                 mutate_all(as.character) %>% 
+                                 replace(is.na(.),"NA") , 
                                #extensions = "Buttons",
                                colnames = c("Transcript","Gene", "Domain"," cDNA", "Protein", phenotype_name1,phenotype_name2, "Functional Consequence","Source"), 
                                #escape=FALSE,
                                options = list(paging = F))
 
     annotation_table <-  datatable(z %>% 
-                                     select(Transcript,Gene, Domain, cDNA, Protein, Phenotype, Onset_days,functional_effect, Published_in), 
+                                     select(Transcript,Gene, Domain, cDNA, Protein, Phenotype, Onset_days,functional_effect, Published_in)%>% 
+                                     mutate_all(as.character) %>% 
+                                     replace(is.na(.),"NA"), 
                                    #extensions = "Buttons",
                                    colnames = c("Transcript","Gene", "Domain"," cDNA", "Protein", phenotype_name1,phenotype_name2, "Functional Consequence","Source"), 
                                   # escape=FALSE,
@@ -2524,7 +2540,9 @@ shinyServer(function(input, output, session) {
     z <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total)
     
     datatable(z %>% 
-                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in), 
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in)%>% 
+                mutate_all(as.character) %>% 
+                replace(is.na(.),"NA"), 
               extensions = "Buttons", 
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
@@ -2539,7 +2557,9 @@ shinyServer(function(input, output, session) {
     z <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total)
     
     datatable(z %>% 
-                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in), 
+                select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in)%>% 
+                mutate_all(as.character) %>% 
+                replace(is.na(.),"NA"), 
               extensions = "Buttons", 
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
