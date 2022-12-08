@@ -568,7 +568,7 @@ map_var_3d <- function(data,Gene_sel,gnomad_bool,pdb_sel,structure_coordinates,s
   variant.df <- variant.df %>%
     left_join(structure.df,by = c("AA_pos" = "Uniprot_position","AA_ref" = "Aminoacid","Gene" = "gene")) %>%
     mutate(struc_cov = ifelse(is.na(Position_in_structure),"no","yes")) %>%  #this column constraints the information whether a variant can be displayed on the structure or not
-    filter(struc_cov == "yes")
+    filter(struc_cov == "yes") 
   
   gnomad.df <- gnomad.df %>%
     left_join(structure.df,by = c("AA_pos" = "Uniprot_position","AA_ref" = "Aminoacid","Gene" = "gene")) %>%
