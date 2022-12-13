@@ -1488,41 +1488,71 @@ shinyServer(function(input, output, session) {
   observe_helpers(withMathJax = TRUE)
   
   #Phenoscores variant anaylsis ####
+  
+  output$var_analysis_pheno <- renderText({ "dont show" })
+  
+  observeEvent(input$switch_pheno_box1, {
+    
+    output$var_analysis_pheno <- reactive({
+      ifelse(input$switch_pheno_box1 == T,"show func","dont show")
+    })
+    
+    outputOptions(output, 'var_analysis_pheno', suspendWhenHidden = FALSE)
+    
+  })
+  
+  
+  outputOptions(output, 'var_analysis_pheno', suspendWhenHidden = FALSE)
+  
+  output$var_analysis_pheno2 <- renderText({ "dont show" })
+  
+  observeEvent(input$switch_pheno_box2, {
+    
+    output$var_analysis_pheno2 <- reactive({
+      ifelse(input$switch_pheno_box2 == T,"show func","dont show")
+    })
+    
+    outputOptions(output, 'var_analysis_pheno2', suspendWhenHidden = FALSE)
+    
+  })
+  
+  
+  outputOptions(output, 'var_analysis_pheno', suspendWhenHidden = FALSE)
 
   
-  observeEvent(input$switch_pheno_box1,{
-    box1_collapsed = F
-    if (!is.null(input$iscollapsebox1)){
-      box1_collapsed <- input$iscollapsebox1
-    }
-    if (input$switch_pheno_box1 == TRUE){
-      print(1)
-      # if you want to open B1
-      if (box1_collapsed){
-        js$collapse("pheno_box_1")}
-    } else if (input$switch_pheno_box1 == FALSE){
-      print(2)
-      if (!box1_collapsed){
-        js$collapse("pheno_box_1")}
-    }
-  })
-  
-  observeEvent(input$switch_pheno_box2,{
-    box2_collapsed = F
-    if (!is.null(input$iscollapsebox2)){
-      box2_collapsed <- input$iscollapsebox2
-    }
-    if (input$switch_pheno_box2 == TRUE){
-      print(1)
-      # if you want to open B1
-      if (box2_collapsed){
-        js$collapse("pheno_box_2")}
-    } else if (input$switch_pheno_box2 == FALSE){
-      print(2)
-      if (!box2_collapsed){
-        js$collapse("pheno_box_2")}
-    }
-  })
+  # observeEvent(input$switch_pheno_box1,{
+  #   box1_collapsed = F
+  #   if (!is.null(input$iscollapsebox1)){
+  #     box1_collapsed <- input$iscollapsebox1
+  #   }
+  #   if (input$switch_pheno_box1 == TRUE){
+  #     print(1)
+  #     # if you want to open B1
+  #     if (box1_collapsed){
+  #       js$collapse("pheno_box_1")}
+  #   } else if (input$switch_pheno_box1 == FALSE){
+  #     print(2)
+  #     if (!box1_collapsed){
+  #       js$collapse("pheno_box_1")}
+  #   }
+  # })
+  # 
+  # observeEvent(input$switch_pheno_box2,{
+  #   box2_collapsed = F
+  #   if (!is.null(input$iscollapsebox2)){
+  #     box2_collapsed <- input$iscollapsebox2
+  #   }
+  #   if (input$switch_pheno_box2 == TRUE){
+  #     print(1)
+  #     # if you want to open B1
+  #     if (box2_collapsed){
+  #       js$collapse("pheno_box_2")}
+  #   } else if (input$switch_pheno_box2 == FALSE){
+  #     print(2)
+  #     if (!box2_collapsed){
+  #       js$collapse("pheno_box_2")}
+  #   }
+  # })
   
   
   
@@ -2540,6 +2570,7 @@ shinyServer(function(input, output, session) {
     z <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total)
     
     datatable(z %>% 
+                arrange(cDNA_pos) %>% 
                 select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in)%>% 
                 mutate_all(as.character) %>% 
                 replace(is.na(.),"NA"), 
@@ -2547,7 +2578,7 @@ shinyServer(function(input, output, session) {
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
                              buttons = c('csv', 'excel'), scrollX = TRUE,
-                             scrollY = "250px", escape = FALSE))
+                             scrollY = "250px"), escape = FALSE)
     
   })
   
@@ -2557,6 +2588,7 @@ shinyServer(function(input, output, session) {
     z <- research_filt_data(input$phenoscore_filt,input$systemic,input$neurodevelopmental,input$total)
     
     datatable(z %>% 
+                arrange(cDNA_pos) %>% 
                 select(Domain, Original_cDNA_change, Original_AA_change, Origin,Cleft_palate,Low_BMD,Abnormal_brainMRI,Age_walk_months,Age_first_word_months,Total_speech,Dental_issues,Clinical_seizures,Behavior_anomalies,Sleep_problems,Neurodevelopmental_total,Systemic_total,Total,Published_in)%>% 
                 mutate_all(as.character) %>% 
                 replace(is.na(.),"NA"), 
@@ -2564,7 +2596,7 @@ shinyServer(function(input, output, session) {
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
                              buttons = c('csv', 'excel'), scrollX = TRUE,
-                             scrollY = "250px", escape = FALSE))
+                             scrollY = "250px"), escape = FALSE)
     
   })
 

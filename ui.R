@@ -20,23 +20,23 @@ library(plyr)
 library(rsconnect)
 library(shinyjs)
 
-jscode <- "shinyjs.collapse = function(boxid) {
-$('#' + boxid).closest('.box').find('[data-widget=collapse]').click();
-}
-"
-
-collapseInput <- function(inputId, boxId) {
-  tags$script(
-    sprintf(
-      "$('#%s').closest('.box').on('hidden.bs.collapse', function () {Shiny.onInputChange('%s', true);})",
-      boxId, inputId
-    ),
-    sprintf(
-      "$('#%s').closest('.box').on('shown.bs.collapse', function () {Shiny.onInputChange('%s', false);})",
-      boxId, inputId
-    )
-  )
-}
+# jscode <- "shinyjs.collapse = function(boxid) {
+# $('#' + boxid).closest('.box').find('[data-widget=collapse]').click();
+# }
+# "
+# 
+# collapseInput <- function(inputId, boxId) {
+#   tags$script(
+#     sprintf(
+#       "$('#%s').closest('.box').on('hidden.bs.collapse', function () {Shiny.onInputChange('%s', true);})",
+#       boxId, inputId
+#     ),
+#     sprintf(
+#       "$('#%s').closest('.box').on('shown.bs.collapse', function () {Shiny.onInputChange('%s', false);})",
+#       boxId, inputId
+#     )
+#   )
+# }
 
 
 # CSS/STYLE/INFO #
@@ -991,8 +991,8 @@ tabPanel(title = "Families", value = "familyTab",
                     br(), p(var_patient_info_abb, style=sub_style, align = "center") # abbreviations for variant table
                   ),
                   tabPanel("Phenotype scores", 
-                           shinyjs:::useShinyjs(), 
-                           shinyjs:::extendShinyjs(text = jscode, functions = "collapse"),
+                           # shinyjs:::useShinyjs(), 
+                           # shinyjs:::extendShinyjs(text = jscode, functions = "collapse"),
                            fluidRow(
                              column(12,
                                     p(h4("First calculate the severity scores for the individual (Scores are only calculated for individuals 3 years and older)")),
@@ -1004,10 +1004,12 @@ tabPanel(title = "Families", value = "familyTab",
                                       inline = T
                                     )
                              ),
+                             conditionalPanel(
+                               condition = "output.var_analysis_pheno=='show func'",
                               box(
                                 title="",
-                                id = "pheno_box_1",
-                                collapsible = TRUE,
+                                #id = "pheno_box_1",
+                                #collapsible = TRUE,
                                 width = 12,
                                   h4("Neurodevelopmental scores"),
                                   column(3,
@@ -1214,8 +1216,9 @@ tabPanel(title = "Families", value = "familyTab",
                                                                          theme = "light")),
                                                      c(unique(Patient_data_pheno_score.df$Dental %>% sort())),
                                                      0)
-                              )),
-                           collapseInput(inputId = "iscollapsebox1", boxId = "pheno_box_1"),
+                              ))
+                              ),
+                           #collapseInput(inputId = "iscollapsebox1", boxId = "pheno_box_1"),
                                 box(width = 12,
                                     p(h4("Second, compare the selected phenotype scores with rated patients from the Portal:")),
                                     column(4, textOutput(outputId = "pheno_score_va_neuro"),
@@ -1282,8 +1285,8 @@ tabPanel(title = "Families", value = "familyTab",
                 tabPanel("Phenotype scores",
                          br(),
                          column(12,style='padding:30px;',
-                                shinyjs:::useShinyjs(), 
-                                shinyjs:::extendShinyjs(text = jscode, functions = "collapse"),
+                                # shinyjs:::useShinyjs(), 
+                                # shinyjs:::extendShinyjs(text = jscode, functions = "collapse"),
                                 fluidRow(
                                   column(12,
                                          p(h4("First calculate the severity scores for the individual")),
@@ -1295,10 +1298,13 @@ tabPanel(title = "Families", value = "familyTab",
                                            inline = T
                                          )
                                   ),
+                                  
+                                  conditionalPanel(
+                                    condition = "output.var_analysis_pheno2=='show func'",
                                   box(
                                     title="",
-                                    id = "pheno_box_2",
-                                    collapsible = TRUE,
+                                    #id = "pheno_box_2",
+                                    #collapsible = TRUE,
                                     width = 12,
                                  p(h4("Neurodevelopmental scores")),
                                  column(3,
@@ -1392,8 +1398,9 @@ tabPanel(title = "Families", value = "familyTab",
                                                     "Seizures",
                                                     c(unique(Patient_data_pheno_score.df$Seizures %>% sort())),
                                                     0)
-                                 )),
-                             collapseInput(inputId = "iscollapsebox2", boxId = "pheno_box_2"),
+                                 ))
+                                 ),
+                             #collapseInput(inputId = "iscollapsebox2", boxId = "pheno_box_2"),
                              box(width = 12,
                                  p(h4("Second, compare the selected phenotype scores with rated patients from the Portal:")),
                                  column(4, textOutput(outputId = "pheno_score_va_neuro_non"),
