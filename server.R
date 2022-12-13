@@ -1410,7 +1410,7 @@ shinyServer(function(input, output, session) {
         replace(is.na(.),"NA"),
     colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
     options = list(dom = 'rtip', scrollX = TRUE,
-                   scrollY = "250px", escape = FALSE))
+                   scrollY = "250px"), escape = FALSE)
   })
   
   output$patientTable_nonsense <- DT::renderDataTable({
