@@ -865,7 +865,7 @@ tabPanel(title = "Families", value = "familyTab",
          #      }"))),
          fluidRow(
            column(10, offset = 1,
-                  panel(heading = "Analyse your variants", status = "info",
+                  panel(heading = "Analyze your variants", status = "info",
                         
                         fluidRow(column(12,style='padding:30px;',
                                         fluidRow(panel(status="default", heading = "Enter variant",
@@ -1454,7 +1454,7 @@ tabPanel(title = "Families", value = "familyTab",
 tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of top menu
          fluidRow(
            column(12, 
-                  panel(heading = "Analyse your variants", status = "danger",
+                  panel(heading = "Analyze your variants", status = "danger",
                         fluidRow(
                           column(3,style='padding:15px;',
                                  panel(heading="Filter input", status="default",
