@@ -811,6 +811,7 @@ per2d.df <- read_delim("data/per2d_genewise.txt", delim = "\t") %>%
 
 #Load patient and control data 
 Patient_data.df <- read_delim("data/SATB2_Patient_variants_v2.txt", delim = "\t") %>% 
+  
   select(-Transcript) %>% 
   mutate(AA_pos = as.numeric(AA_pos)) %>% 
   #this ensures that splice cite mutation are shown in the genotype overview plot
@@ -841,9 +842,14 @@ Patient_data_missense_only.df <- Patient_data.df %>%
   filter(Vartype == "Missense") 
  # mutate(AA_alt = three_to_one_aa(AA_alt))
 
+download_data.df <- read_delim("data/SATB2_Patient_variants_v2.txt", delim = "\t") %>% 
+  select(1,2,13:ncol(.)) %>% 
+  mutate(Variant_Reference = str_remove_all(Variant_Reference,"�")) %>% 
+  select(-Published_in) 
+
 Control_data.df <- read_delim("data/gnomad_variants.txt", delim = "\t") %>% 
   mutate(AA_ref = aaa(AA_ref),
-         AA_alt = aaa(AA_alt)) %>%
+         AA_alt = aaa(AA_alt)) %>% 
   # left_join(per3d.df) %>% 
   left_join(per2d.df) %>%
   left_join(Domain_gene.df %>% distinct(Domain,Gene,AA_pos,Domain_color), by = c("AA_pos" = "AA_pos","Gene" = "Gene")) 
@@ -1779,9 +1785,9 @@ shinyServer(function(input, output, session) {
                 replace(is.na(.),"NA"), 
               extensions = "Buttons", 
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
-              options = list(dom = 'rtip',
-                             scrollX = TRUE,
-                             scrollY = "250px", escape = FALSE))
+              options = list(dom = 'Brtip',
+                             buttons = c('csv', 'excel'), scrollX = TRUE,
+                             scrollY = "250px"), escape = FALSE)
     
   })
   
@@ -1898,7 +1904,7 @@ shinyServer(function(input, output, session) {
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Severity score: Neurodevelpment total","Severity score: Systemic total", "Severity score: total","Link"),
               options = list(dom = 'Brtip',
                              buttons = c('csv', 'excel'), scrollX = TRUE,
-                             scrollY = "250px", escape = FALSE))
+                             scrollY = "250px"), escape = FALSE)
     
   })
   
@@ -2018,7 +2024,7 @@ shinyServer(function(input, output, session) {
                 replace(is.na(.),"NA"),
               options = list(dom = 'Brtip',
                              buttons = c('csv', 'excel'), scrollX = TRUE,
-                             scrollY = "250px", escape = FALSE))
+                             scrollY = "250px"), escape = FALSE)
     
   })
   
@@ -2235,6 +2241,31 @@ shinyServer(function(input, output, session) {
     
   })
   
+  ##download all data 
+  
+  output$downloadData_Missense <- downloadHandler(
+    filename = function() { 
+      paste("SATB2-Portal_database_", Sys.Date(), ".csv", sep="")
+    },
+    content = function(file) {
+      write.csv(download_data.df, file)
+    })
+  
+  output$downloadData_Nonsense <- downloadHandler(
+    filename = function() { 
+      paste("SATB2-Portal_database_", Sys.Date(), ".csv", sep="")
+    },
+    content = function(file) {
+      write.csv(download_data.df, file)
+    })
+  
+  output$downloadData_Other <- downloadHandler(
+    filename = function() { 
+      paste("SATB2-Portal_database_", Sys.Date(), ".csv", sep="")
+    },
+    content = function(file) {
+      write.csv(download_data.df, file)
+    })
   #####Research #####
   # Filter for subset of variants
   res_mod_ini <- callModule(

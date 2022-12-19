@@ -988,7 +988,9 @@ tabPanel(title = "Families", value = "familyTab",
                     br(),
                     br(),
                     DT::dataTableOutput(outputId = "compareTable"), # variant table
-                    br(), p(var_patient_info_abb, style=sub_style, align = "center") # abbreviations for variant table
+                    br(), p(var_patient_info_abb, style=sub_style, align = "center"), # abbreviations for variant table
+                    br(),
+                    downloadButton('downloadData_Missense', 'Download all data'),
                   ),
                   tabPanel("Phenotype scores", 
                            # shinyjs:::useShinyjs(), 
@@ -1280,7 +1282,9 @@ tabPanel(title = "Families", value = "familyTab",
                                             div(width = "100%", plotlyOutput("comparePlot_nonsense")),
                                             br(),
                                             br(),
-                                            DT::dataTableOutput(outputId = "compareTable_nonsense")
+                                            DT::dataTableOutput(outputId = "compareTable_nonsense"),
+                                            br(),
+                                            downloadButton('downloadData_Nonsense', 'Download all data'),
                                  ))),
                 tabPanel("Phenotype scores",
                          br(),
@@ -1441,7 +1445,9 @@ tabPanel(title = "Families", value = "familyTab",
                          div(width = "100%", plotlyOutput("comparePlot_other")),
                          br(),
                          br(),
-                         DT::dataTableOutput(outputId = "compareTable_other")
+                         DT::dataTableOutput(outputId = "compareTable_other"),
+                         br(),
+                         downloadButton('downloadData_Other', 'Download all data'),
                    ))))
       )
       
