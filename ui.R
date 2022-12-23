@@ -866,7 +866,6 @@ tabPanel(title = "Families", value = "familyTab",
          fluidRow(
            column(10, offset = 1,
                   panel(heading = "Analyze your variants", status = "info",
-                        
                         fluidRow(column(12,style='padding:30px;',
                                         fluidRow(panel(status="default", heading = "Enter variant",
                                                        column(3, 
@@ -1452,7 +1451,11 @@ tabPanel(title = "Families", value = "familyTab",
       )
       
 
-                   )))
+                   ))),
+      fluidRow(
+        column(10, offset = 1,
+               panel(heading = "Individual severity scores", status = "primary",
+                     fluidRow(column(12,style='padding:30px;')))))
    ), # end variant analysis tab
 
 ##### RESEARCH #####
