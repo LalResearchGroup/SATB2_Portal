@@ -988,8 +988,7 @@ tabPanel(title = "Families", value = "familyTab",
                     br(),
                     DT::dataTableOutput(outputId = "compareTable"), # variant table
                     br(), p(var_patient_info_abb, style=sub_style, align = "center"), # abbreviations for variant table
-                    br(),
-                    downloadButton('downloadData_Missense', 'Download all data'),
+                    br()#,
                   ),
                   tabPanel("Phenotype scores", 
                            # shinyjs:::useShinyjs(), 
@@ -1283,7 +1282,6 @@ tabPanel(title = "Families", value = "familyTab",
                                             br(),
                                             DT::dataTableOutput(outputId = "compareTable_nonsense"),
                                             br(),
-                                            downloadButton('downloadData_Nonsense', 'Download all data'),
                                  ))),
                 tabPanel("Phenotype scores",
                          br(),
@@ -1446,7 +1444,6 @@ tabPanel(title = "Families", value = "familyTab",
                          br(),
                          DT::dataTableOutput(outputId = "compareTable_other"),
                          br(),
-                         downloadButton('downloadData_Other', 'Download all data'),
                    ))))
       )
       
@@ -1455,7 +1452,8 @@ tabPanel(title = "Families", value = "familyTab",
       fluidRow(
         column(10, offset = 1,
                panel(heading = "Individual severity scores", status = "primary",
-                     fluidRow(column(12,style='padding:30px;')))))
+                     fluidRow(column(12,style='padding:30px;',
+                                     downloadButton('downloadData_Missense', 'Download all data'))))))
    ), # end variant analysis tab
 
 ##### RESEARCH #####

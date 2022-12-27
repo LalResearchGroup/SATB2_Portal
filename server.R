@@ -2251,21 +2251,6 @@ shinyServer(function(input, output, session) {
       write.csv(download_data.df, file)
     })
   
-  output$downloadData_Nonsense <- downloadHandler(
-    filename = function() { 
-      paste("SATB2-Portal_database_", Sys.Date(), ".csv", sep="")
-    },
-    content = function(file) {
-      write.csv(download_data.df, file)
-    })
-  
-  output$downloadData_Other <- downloadHandler(
-    filename = function() { 
-      paste("SATB2-Portal_database_", Sys.Date(), ".csv", sep="")
-    },
-    content = function(file) {
-      write.csv(download_data.df, file)
-    })
   #####Research #####
   # Filter for subset of variants
   res_mod_ini <- callModule(
