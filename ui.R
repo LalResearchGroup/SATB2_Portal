@@ -467,7 +467,7 @@ shinyUI(
                                  timelineLabel(1989, color = "teal"),
                                  timelineItem(
                                    title = div(strong("First report of an individual with a chromosome 2 deletion including the",em("SATB2")," gene and the origin of the term 'Glass syndrome'")),
-                                   icon = icon("dna"),
+                                   icon = tags$i(class = "fas fa-dna", style="font-size: 36px"),
                                    color = "olive",
                                    #ADD link to the publication
                                    time = shiny::a("Glass et al.", href="https://pubmed.ncbi.nlm.nih.gov/2918541/", target = '_blank'),
@@ -476,7 +476,7 @@ shinyUI(
                                  timelineLabel(2003, color = "teal"),
                                  timelineItem(
                                      title = div(em("SATB2"), " gene discovery"),
-                                     icon = icon("user"),
+                                     icon = tags$i(class = "fas fa-user", style="font-size: 36px"),
                                      color = "aqua",
                                      #ADD link to the publication
                                      time = shiny::a("FitzPatrick et al.", href="https://pubmed.ncbi.nlm.nih.gov/12915443/", target = '_blank'),
@@ -485,7 +485,7 @@ shinyUI(
                                  timelineLabel(2017, color = "teal"),
                                  timelineItem(
                                    title = HTML(paste0("Delineation of the phenotype and functional studies")),
-                                   icon = icon("user"),
+                                   icon = tags$i(class = "fas fa-user", style="font-size: 36px"),
                                    color = "aqua",
                                    #ADD link to the publication
                                    time = shiny::a("Bengani et al.", href="https://pubmed.ncbi.nlm.nih.gov/28151491/", target = '_blank'),
@@ -494,7 +494,7 @@ shinyUI(
                                  timelineLabel(2018, color = "teal"),
                                  timelineItem(
                                    title = HTML(paste0("Delineation of the phenotype and natural history of SAS")),
-                                   icon = icon("user"),
+                                   icon = tags$i(class = "fas fa-user", style="font-size: 36px"),
                                    color = "aqua",
                                    #ADD link to the publication
                                    time = shiny::a("Zarate et al.", href="https://pubmed.ncbi.nlm.nih.gov/29436146/", target = '_blank'),
@@ -503,7 +503,7 @@ shinyUI(
                                  timelineLabel(2019, color = "teal"),
                                  timelineItem(
                                    title = div("Comprehensive mutation spectrum overview"),
-                                   icon = icon("user"),
+                                   icon = tags$i(class = "fas fa-user", style="font-size: 36px"),
                                    color = "aqua",
                                    #ADD link to the publication
                                    time = shiny::a("Zarate et al.", href="https://pubmed.ncbi.nlm.nih.gov/31021519/", target = '_blank'),
