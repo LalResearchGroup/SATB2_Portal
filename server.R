@@ -586,9 +586,6 @@ map_var_3d <- function(data,Gene_sel,gnomad_bool,pdb_sel,structure_coordinates,s
   #Specify yourself- color of the cartoon per subunit
   subunit_color <- c("wheat","white") #
   
-  print(variant.df)
-  print("now gnomad")
-  print(gnomad.df)
   #Model for the protein complex
   
   modelo <- r3dmol(
@@ -831,7 +828,8 @@ Patient_data.df <- read_delim("data/SATB2_Patient_variants_v2.txt", delim = "\t"
          #Protein = paste0("p.",AA_ref,AA_pos,AA_alt_complex),
          Protein = Original_AA_change) %>% 
   mutate(rowID = 1:nrow(.)) %>% 
-  na_if("N/A") %>% 
+  mutate(across(everything(), ~replace(., .=="N/A", NA))) %>% 
+  #na_if("N/A") %>% 
   dplyr::rename(Neurodevelopmental_total = "Neurodevelopmental total",
          Systemic_total = "Systemic total",
          Total = "Total ") %>% 
@@ -1122,8 +1120,6 @@ shinyServer(function(input, output, session) {
     
     output$value <- renderText({ variant_conseq })
     
-    print(variant_conseq)
-    
     output$vartype <- reactive({
       ifelse(variant_conseq == "Missense","Missense",
              ifelse(variant_conseq %in% c("Frameshift Insertion", "Frameshift Deletion","Frameshift Duplication", "splice-site", "Nonsense","Stop-gain","Stop-loss"),"Nonsense","Other"))
@@ -1401,8 +1397,6 @@ shinyServer(function(input, output, session) {
   # Table with patient information ####
   output$patientTable <- DT::renderDataTable({
     
-    print(varFilterInput$data)
-    
     validate(
       need(!plyr::empty(varFilterInput$data),
            "There is no data that matches your filters.")) 
@@ -1450,9 +1444,8 @@ shinyServer(function(input, output, session) {
                 mutate_all(as.character) %>% 
                 replace(is.na(.),"NA"),
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
-              options = list(dom = 'rtip',
-                             scrollX = TRUE,
-                             scrollY = "250px", escape = FALSE))
+              options = list(dom = 'rtip', scrollX = TRUE,
+                             scrollY = "250px"), escape = FALSE)
   })
   
   output$patientTable_other <- DT::renderDataTable({
@@ -1486,9 +1479,8 @@ shinyServer(function(input, output, session) {
                 mutate_all(as.character) %>% 
                 replace(is.na(.),"NA"),
               colnames = c("Domain","cDNA level","Protein level","Origin","CP","Low BMD","Abnl MRI","Walk at (months)", "Talk at (months)","Speech (words)","Abnl Teeth","Seizures", "Abnl behaviour","Abnl sleep","Link"),
-              options = list(dom = 'rtip',
-                             scrollX = TRUE,
-                             scrollY = "250px", escape = FALSE))
+              options = list(dom = 'rtip', scrollX = TRUE,
+                             scrollY = "250px"), escape = FALSE)
   })
   
   observe_helpers(withMathJax = TRUE)

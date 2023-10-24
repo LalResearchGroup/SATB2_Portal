@@ -550,7 +550,7 @@ shinyUI(
                                      column(12,
                                             align="center",
                                             p(basic_abbreviations1, style=sub_style)))),
-                                
+
                                 ##Tab 2
                                 tabPanel(title = basic_phenotype_title2,
                                          br(),
@@ -566,8 +566,8 @@ shinyUI(
                                                   column(12,
                                                          align="center",
                                                          p(basic_abbreviations1, style=sub_style)))),
-                                
-                                #Tab3 
+
+                                #Tab3
                                 tabPanel(title = basic_phenotype_title3,
                                          br(),
                                          column(6,
@@ -580,7 +580,7 @@ shinyUI(
                                                   column(12,
                                                          align="center",
                                                          p(basic_abbreviations1, style=sub_style)))),
-                              #Tab4 
+                              #Tab4
                                 tabPanel(title = basic_phenotype_title4,
                                          br(),
                                          column(6,
@@ -647,47 +647,47 @@ tabPanel(title = "Families", value = "familyTab",
                                                 family_video_description_content
                                             ))
                                    )),
-                          
+
                           # Second tab for Logos linked to family organizations
                           tabPanel(title = "Family Organizations",
                                    panel(status="default", heading = "Family Organizations", width = 12,
                                          fluidRow(
                                            column(12, align = "center",
                                                   offset = 0,
-                                                  div(style = "display: inline-block; width: 40%;", 
+                                                  div(style = "display: inline-block; width: 40%;",
                                                       width = 12, shiny::a(
-                                                        img(src = "SATB2_LOGO_1.jpg", 
-                                                            width = 300, 
+                                                        img(src = "SATB2_LOGO_1.jpg",
+                                                            width = 300,
                                                             height = 300),
                                                         href = "https://satb2gene.org/",
                                                         target = '_blank')),
-                                                  div(style = "display: inline-block; width: 40%;", 
+                                                  div(style = "display: inline-block; width: 40%;",
                                                       width = 12, shiny::a(
-                                                        img(src = "SATB2_logo_satb2_connect.jpg", 
-                                                            width = 350, 
+                                                        img(src = "SATB2_logo_satb2_connect.jpg",
+                                                            width = 350,
                                                             height = 250),
                                                         href = "https://satb2.org.au/",
                                                         target = '_blank')),
-                                                  div(style = "display: inline-block; width: 40%;", 
+                                                  div(style = "display: inline-block; width: 40%;",
                                                       width = 12, shiny::a(
-                                                        img(src = "SATB2_LOGO_esp.png", 
-                                                            width = 600, 
+                                                        img(src = "SATB2_LOGO_esp.png",
+                                                            width = 600,
                                                             height = 600),
                                                         href = "http://satb2.es/",
                                                         target = '_blank')),
                                                   div(style = "display: inline-block; width: 40%",
                                                       width = 12, shiny::a(
-                                                        img(src = "SATB2_LOGO_2_Europe.jpg", 
-                                                            width = 300, 
+                                                        img(src = "SATB2_LOGO_2_Europe.jpg",
+                                                            width = 300,
                                                             height = 300),
-                                                        href = "https://www.satb2europe.org/", 
+                                                        href = "https://www.satb2europe.org/",
                                                         target = '_blank'))
                                            ),
                                            column(12, align = "center",
                                                   br(),
                                                   br(),
-                                                  div("Please", 
-                                                      shiny::a("contact us", 
+                                                  div("Please",
+                                                      shiny::a("contact us",
                                                                href="mailto:yazarate@uams.edu") ,"if you would like your organization to be listed here."))
                                          )
                                    ),
@@ -736,8 +736,8 @@ tabPanel(title = "Families", value = "familyTab",
                                    #               target = '_blank'))
                                    #     ),
                                    #     column(12, align = "center",
-                                   #            div("...and many more! Please", 
-                                   #                shiny::a("contact us", 
+                                   #            div("...and many more! Please",
+                                   #                shiny::a("contact us",
                                    #                         href="mailto:GRIN@medizin.uni-leipzig.de") ,"if you would like your organization to be listed here."))
                                    #   ))
                           ),
@@ -748,70 +748,70 @@ tabPanel(title = "Families", value = "familyTab",
                                          fluidRow(
                                            column(10, align = "left",
                                                   br(),
-                                                  div(style = "display: inline-block; width: 40%;", 
+                                                  div(style = "display: inline-block; width: 40%;",
                                                       width = 12, shiny::a(
-                                                        img(src = "pdf_icon.png", 
-                                                            width = 16, 
+                                                        img(src = "pdf_icon.png",
+                                                            width = 16,
                                                             height = 20),
                                                         href = "03Background_info.pdf",
                                                         target = '_blank'), "Background Information"),
-                                                  div(style = "display: inline-block; width: 40%;", 
+                                                  div(style = "display: inline-block; width: 40%;",
                                                       width = 12, shiny::a(
-                                                        img(src = "pdf_icon.png", 
-                                                            width = 16, 
+                                                        img(src = "pdf_icon.png",
+                                                            width = 16,
                                                             height = 20),
                                                         href = "04SATB2_Quick_Facts.pdf",
                                                         target = '_blank'), "Quick facts"),
                                                   br(), br(),
-                                                  div(style = "display: inline-block; width: 40%;", 
+                                                  div(style = "display: inline-block; width: 40%;",
                                                       width = 12, shiny::a(
-                                                        img(src = "pdf_icon.png", 
-                                                            width = 16, 
+                                                        img(src = "pdf_icon.png",
+                                                            width = 16,
                                                             height = 20),
                                                         href = "05SATB2_Information_Sheet_Families.pdf",
                                                         target = '_blank'), "Information Sheet for Families"),
-                                                  div(style = "display: inline-block; width: 40%;", 
+                                                  div(style = "display: inline-block; width: 40%;",
                                                       width = 12, shiny::a(
-                                                        img(src = "pdf_icon.png", 
-                                                            width = 16, 
+                                                        img(src = "pdf_icon.png",
+                                                            width = 16,
                                                             height = 20),
                                                         href = "06SATB2_Information_sheet_Provider.pdf",
                                                         target = '_blank'), "Information Sheet for Providers"),
                                                   br(), br(),
-                                                  div(style = "display: inline-block; width: 40%;", 
+                                                  div(style = "display: inline-block; width: 40%;",
                                                       width = 12, shiny::a(
-                                                        img(src = "pdf_icon.png", 
-                                                            width = 16, 
+                                                        img(src = "pdf_icon.png",
+                                                            width = 16,
                                                             height = 20),
                                                         href = "07SATB2_Infographic_Behavior.pdf",
                                                         target = '_blank'), "Infographic Behavior"),
-                                                  div(style = "display: inline-block; width: 40%;", 
+                                                  div(style = "display: inline-block; width: 40%;",
                                                       width = 12, shiny::a(
-                                                        img(src = "pdf_icon.png", 
-                                                            width = 16, 
+                                                        img(src = "pdf_icon.png",
+                                                            width = 16,
                                                             height = 20),
                                                         href = "08SATB2_Infographic_Dental.pdf",
                                                         target = '_blank'), "Infographic Dental"),
                                                   br(), br(),
-                                                  div(style = "display: inline-block; width: 40%;", 
+                                                  div(style = "display: inline-block; width: 40%;",
                                                       width = 12, shiny::a(
-                                                        img(src = "pdf_icon.png", 
-                                                            width = 16, 
+                                                        img(src = "pdf_icon.png",
+                                                            width = 16,
                                                             height = 20),
                                                         href = "09SATB2_Infographic_Speech.pdf",
                                                         target = '_blank'), "Infographic Speech"),
-                                                  div(style = "display: inline-block; width: 40%;", 
+                                                  div(style = "display: inline-block; width: 40%;",
                                                       width = 12, shiny::a(
-                                                        img(src = "pdf_icon.png", 
-                                                            width = 16, 
+                                                        img(src = "pdf_icon.png",
+                                                            width = 16,
                                                             height = 20),
                                                         href = "11Final_Dental_letter_for_SATB2_professionals.pdf",
                                                         target = '_blank'), "Dental letter for ", em("SATB2 "), "Professionals"),
                                                   br(), br(),
-                                                  div(style = "display: inline-block; width: 40%;", 
+                                                  div(style = "display: inline-block; width: 40%;",
                                                       width = 12, shiny::a(
-                                                        img(src = "pdf_icon.png", 
-                                                            width = 16, 
+                                                        img(src = "pdf_icon.png",
+                                                            width = 16,
                                                             height = 20),
                                                         href = "10Final_Speech_letter_for_SATB2_Families_and_Professionals.pdf",
                                                         target = '_blank'), "Speech letter for ", em("SATB2 "), "Families and Professionals")
@@ -835,7 +835,7 @@ tabPanel(title = "Families", value = "familyTab",
                                                   # p(HTML("<li> Final Dental letter for SATB2 Professionals</li>"))
                                                   ),
                                            ),
-                                         
+
                                          # fluidRow(
                                          #   column(12, align = "center",
                                          #          offset = 0,
@@ -852,7 +852,7 @@ tabPanel(title = "Families", value = "familyTab",
                                          #   ))
                                    ))
                         ))))
-         
+
 ), # end families tab
 
         # ##### VARIANT ANALYSIS #####
@@ -869,7 +869,7 @@ tabPanel(title = "Families", value = "familyTab",
                   panel(heading = "Analyze your variants", status = "info",
                         fluidRow(column(12,style='padding:30px;',
                                         fluidRow(panel(status="default", heading = "Enter variant",
-                                                       column(3, 
+                                                       column(3,
                                                               br(),
                                                               br(),
                                                               h3("Selected gene: ", em("SATB2")),
@@ -885,10 +885,10 @@ tabPanel(title = "Families", value = "familyTab",
                                                        column(2,align = "center",
                                                               br(),br(),br(),
                                                               h3("and")),
-                                                       column(3, 
+                                                       column(3,
                                                               br(),
-                                                              
-                                                              textInput(inputId = "cDNA", 
+
+                                                              textInput(inputId = "cDNA",
                                                                         label = p(h4("cDNA input",
                                                                                      tippy(icon("question-circle"),
                                                                                            tooltip = h6(HTML(paste0("Possible variant input (only single variants can be searched):")),
@@ -901,17 +901,17 @@ tabPanel(title = "Families", value = "familyTab",
                                                                                            animation = "scale",
                                                                                            theme = "light"))),
                                                                         value = "c.346G>A"),
-                                                              
-                                                              
+
+
                                                               br(),
                                                               actionButton(inputId = "search_var_c", label = "Search")),
                                                        column(1,align = "center",
                                                               br(),br(),br(),
                                                               h3("or")),
-                                                       column(3, 
+                                                       column(3,
                                                               br(),
-                                                              
-                                                              textInput("Protein", 
+
+                                                              textInput("Protein",
                                                                         label = p(h4("Protein input",
                                                                                      tippy(icon("question-circle"),
                                                                                            tooltip = h6(HTML(paste0("Variant input (Only single amino acids exchanges can be searched):")),
@@ -919,11 +919,11 @@ tabPanel(title = "Families", value = "familyTab",
                                                                                                                     "<li>p.Gly116Stop</li>")),
                                                                                                         align = "left"),
                                                                                            animation = "scale",
-                                                                                           theme = "light"))), 
+                                                                                           theme = "light"))),
                                                                         value = "p.Gly116Arg"),
                                                               br(),
                                                               actionButton(inputId = "search_var_p", label = "Search")),
-                                                       
+
                                                        column(8, offset = 2, align = "center",
                                                               br(),br(),
                                                               #h4("Variant consequence"),
@@ -991,8 +991,8 @@ tabPanel(title = "Families", value = "familyTab",
                     br(), p(var_patient_info_abb, style=sub_style, align = "center"), # abbreviations for variant table
                     br()#,
                   ),
-                  tabPanel("Phenotype scores", 
-                           # shinyjs:::useShinyjs(), 
+                  tabPanel("Phenotype scores",
+                           # shinyjs:::useShinyjs(),
                            # shinyjs:::extendShinyjs(text = jscode, functions = "collapse"),
                            fluidRow(
                              column(12,
@@ -1254,7 +1254,7 @@ tabPanel(title = "Families", value = "familyTab",
                                   div(width = "100%", plotlyOutput("Var_analyis_per"))
                            ),
                            column(12,plotOutput(outputId = "paraz_legend", height = 30, width = 600))
-                           
+
                   )
             )))))
         ),
@@ -1287,7 +1287,7 @@ tabPanel(title = "Families", value = "familyTab",
                 tabPanel("Phenotype scores",
                          br(),
                          column(12,style='padding:30px;',
-                                # shinyjs:::useShinyjs(), 
+                                # shinyjs:::useShinyjs(),
                                 # shinyjs:::extendShinyjs(text = jscode, functions = "collapse"),
                                 fluidRow(
                                   column(12,
@@ -1300,7 +1300,7 @@ tabPanel(title = "Families", value = "familyTab",
                                            inline = T
                                          )
                                   ),
-                                  
+
                                   conditionalPanel(
                                     condition = "output.var_analysis_pheno2=='show func'",
                                   box(
@@ -1528,10 +1528,10 @@ tabPanel(title = "Families", value = "familyTab",
                                  column(4, plotlyOutput(outputId = "pheno_score_pl_total_non"))
                              )
                                  ))
-                                 
+
                              ))
-                
-                
+
+
               )
           )
       ),
@@ -1559,7 +1559,7 @@ tabPanel(title = "Families", value = "familyTab",
                          br(),
                    ))))
       )
-      
+
 
                    ))),
       fluidRow(
@@ -1573,7 +1573,7 @@ tabPanel(title = "Families", value = "familyTab",
 
 tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of top menu
          fluidRow(
-           column(12, 
+           column(12,
                   panel(heading = "Analyze your variants", status = "danger",
                         fluidRow(
                           column(3,style='padding:15px;',
@@ -1673,20 +1673,20 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                   right = T,
                                                   inline = T
                                                 )),
-                                         column(12, 
+                                         column(12,
                                                 sliderInput("systemic",
-                                                            h5("Systemic"), 
+                                                            h5("Systemic"),
                                                             min = 0, max = 22, value = c(0, 22))),
-                                         column(12, 
+                                         column(12,
                                                 sliderInput("neurodevelopmental",
-                                                            h5("Neurodevelopmental"), 
+                                                            h5("Neurodevelopmental"),
                                                             min = 0, max = 25, value = c(0, 25))),
-                                         column(12, 
+                                         column(12,
                                                 sliderInput("total",
-                                                            h5("Total phenotype score"), 
+                                                            h5("Total phenotype score"),
                                                             min = 0, max = 50, value = c(0, 50)))
-                                         
-                                         
+
+
                                          ))),
                       #  fluidRow(
                           column(8,style='padding:15px;',
@@ -1745,16 +1745,16 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                                 shiny::a("Alpha fold", href = "https://www.alphafold.ebi.ac.uk/entry/Q9UPW6", target = "_blank"))))
                                                )),
                                              fluidRow(
-                                               column(12, 
+                                               column(12,
                                                       panel(heading = strong("Display variants"), status = "default",
                                                             DT::dataTableOutput(outputId = "compareTableResearch"),
                                                             br(), p(var_patient_info_abb, style=sub_style, align = "center"),
                                                       ))
                                              )
                                            )),
-                                         
+
                                          tabPanel("Phenotype Interface",
-                                                 
+
                                                     br(),
                                                     fluidRow(
                                                       column(12, align = "justify", plotlyOutput("research_phenotype1"))),
@@ -1780,7 +1780,7 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                       column(6,align="justify", plotlyOutput("research_phenotype6"))
                                                     ),
                                                     fluidRow(
-                                                      column(12, 
+                                                      column(12,
                                                              panel(heading = strong("Display variants"), status = "default",
                                                                    DT::dataTableOutput(outputId = "compareTableResearch2"),
                                                                    br(), p(var_patient_info_abb, style=sub_style, align = "center")
@@ -1809,7 +1809,7 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
                                                       column(4, align = "justify", plotlyOutput("Phenotype_score16")),
                                                       column(4, align = "justify", plotlyOutput("Phenotype_score17")),
                                                       column(4, align = "justify", plotlyOutput("Phenotype_score18")),
-                                                      
+
                                                     )
                                                   ))
            ))))
@@ -1818,27 +1818,27 @@ tabPanel(title = "Genotype-Phenotype", value = "researchTab", # title name of to
 
 ##### SATB2 REGISTRY #####
 
-tabPanel(title = p(HTML(paste0(em("SATB2"), " Registry"))), value = "registryTab", # change font size -> style = "font-size:16px;", 
+tabPanel(title = p(HTML(paste0(em("SATB2"), " Registry"))), value = "registryTab", # change font size -> style = "font-size:16px;",
          fluidRow(column(10, offset=1,
                          panel(heading = p(HTML(paste0("How to enter the ", em("SATB2"), " Registry"))), status="primary",
                                fluidRow(
                                  panel(column(8,
-                                              #style = 'padding:30px;', 
+                                              #style = 'padding:30px;',
                                               panel(heading = p(HTML(paste0(em("SATB2"), " Registry information"))),
-                                                      "This large worldwide registry for SATB2-Associated syndrome (SAS) is led by Dr. Yuri Zarate and Katie Bosanko. 
+                                                      "This large worldwide registry for SATB2-Associated syndrome (SAS) is led by Dr. Yuri Zarate and Katie Bosanko.
                                                       After you contact the team, the participation consent is sent and reviewed for questions. Next, a link to the
-                                                      database with SAS-specific questions is sent to the family to complete. The registry team collects medical records 
-                                                      from providers and provides a high level of data curation. The registry has provided a great deal of information 
-                                                      that is published in the literature as it is analyzed.", 
-                                                    br(), br(), 
-                                                    p(HTML(paste0("Arkansas Children’s Hospital hosts the only dedicated multidisciplinary clinic for the ", em("SATB2"), "-Associated 
+                                                      database with SAS-specific questions is sent to the family to complete. The registry team collects medical records
+                                                      from providers and provides a high level of data curation. The registry has provided a great deal of information
+                                                      that is published in the literature as it is analyzed.",
+                                                    br(), br(),
+                                                    p(HTML(paste0("Arkansas Children’s Hospital hosts the only dedicated multidisciplinary clinic for the ", em("SATB2"), "-Associated
                                                     syndrome in the United States. This clinic is hosted quarterly and participants can anticipate undergoing a comprehensive evaluation
-                                                    by our experienced ", em("SATB2"), " team. More information at ", em("SATB2"), " International Clinic (", 
-                                                                  shiny::a("archildrens.org", 
-                                                                           href = "https://www.archildrens.org/programs-and-services/satb2-international-clinic?&journey=symptoms", 
+                                                    by our experienced ", em("SATB2"), " team. More information at ", em("SATB2"), " International Clinic (",
+                                                                  shiny::a("archildrens.org",
+                                                                           href = "https://www.archildrens.org/programs-and-services/satb2-international-clinic?&journey=symptoms",
                                                                            target = "_blank"), ").")))
                                  )),
-                                 column(4,align="center", img(src="SAS_registry_LOGO.jpg", width="95%"), 
+                                 column(4,align="center", img(src="SAS_registry_LOGO.jpg", width="95%"),
                                         actionBttn(
                                           inputId="link2",
                                           label = shiny::a("Participate", href =  contact_katie, style="color: white;", target =
@@ -1851,7 +1851,7 @@ tabPanel(title = p(HTML(paste0(em("SATB2"), " Registry"))), value = "registryTab
                                           no_outline = TRUE
                                         )))),
                          )))),
-                               
+
                                # fluidRow(
                                #   panel(
                                #     column(8,
@@ -1861,7 +1861,7 @@ tabPanel(title = p(HTML(paste0(em("SATB2"), " Registry"))), value = "registryTab
                                #                Jenifer.Sargent@cuanschutz.edu. This chapter of the study is led by neurologists Drs. Tim Benke and Kristen Park
                                #                (University of Colorado) and Dr. Jennifer Bain (", shiny::a("Simons Foundation/Columbia University", href = "https://www.simonssearchlight.org/"
                                #                ),")",
-                               #              
+                               #
                                #              br(),
                                #              br(),
                                #              "1. Email Jenifer Sargent your de-identified genetic testing results to make sure you qualify.",
@@ -1886,8 +1886,8 @@ tabPanel(title = p(HTML(paste0(em("SATB2"), " Registry"))), value = "registryTab
                                #            align="center", img(src="grin-world-1.PNG", width="95%"),
                                #            actionBttn(
                                #              inputId="link1",
-                               #              label = shiny::a("Participate", 
-                               #                               href="mailto:Jenifer.Sargent@cuanschutz.edu?subject=GRIN%20Registry&body=Dear%20Jenifer,%0D%0A%0D%0AWe%20would%20like%20to%20participate%20in%20the%20GRIN%20Registry.%20Please%20let%20us%20know%20how%20we%20can%20contribute.", 
+                               #              label = shiny::a("Participate",
+                               #                               href="mailto:Jenifer.Sargent@cuanschutz.edu?subject=GRIN%20Registry&body=Dear%20Jenifer,%0D%0A%0D%0AWe%20would%20like%20to%20participate%20in%20the%20GRIN%20Registry.%20Please%20let%20us%20know%20how%20we%20can%20contribute.",
                                #                               style="color:white;"
                                #              ),
                                #              icon = icon("arrow-right"),
@@ -1897,9 +1897,9 @@ tabPanel(title = p(HTML(paste0(em("SATB2"), " Registry"))), value = "registryTab
                                #              block = F,
                                #              no_outline = TRUE
                                #            )))),
-                               
+
                          #))),
-         
+
 #), # end GRIN Registry tab
 
 ##### ABOUT #####
